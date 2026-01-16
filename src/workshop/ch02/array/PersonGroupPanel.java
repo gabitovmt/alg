@@ -38,10 +38,6 @@ public class PersonGroupPanel extends JPanel {
     }
 
     private void drawIdx(Graphics g, int idx, int x, int y) {
-        if (group.getDrawMode() != DrawMode.FULL) {
-            return;
-        }
-
         g.setColor(Color.BLACK);
         var idxText = String.valueOf(idx);
         int textWidth = g.getFontMetrics().stringWidth(idxText);
@@ -66,7 +62,13 @@ public class PersonGroupPanel extends JPanel {
     }
 
     private void drawArrow(Graphics g, int idx, int x, int y) {
-        g.setColor(idx == group.getCurIn() ? Color.RED : Color.LIGHT_GRAY);
+        if (idx == group.getPos()) {
+            g.setColor(Color.RED);
+        } else if (idx == group.getPrevPos()) {
+            g.setColor(Color.ORANGE);
+        } else {
+            return;
+        }
         ((Graphics2D) g).setStroke(new BasicStroke(2f));
 
         g.drawLine(x, y, x + ARROW_W, y);
@@ -88,20 +90,11 @@ public class PersonGroupPanel extends JPanel {
     }
 
     private void draw(Graphics g) {
-        if (group.getDrawMode() == DrawMode.SHORT) {
-            fillBackground(g);
-            drawNote(g);
-            drawPerson(g, group.getOldCurIn());
-            drawPerson(g, group.getCurIn());
-        } else if (group.getDrawMode() == DrawMode.FULL) {
-            fillBackground(g);
-            drawNote(g);
-            for (int idx = 0; idx < group.getPersons().length; ++idx) {
-                drawPerson(g, idx);
-            }
+        fillBackground(g);
+        drawNote(g);
+        for (int idx = 0; idx < group.getPersons().length; ++idx) {
+            drawPerson(g, idx);
         }
-
-        group.setDrawMode(DrawMode.FULL);
     }
 
     @Override

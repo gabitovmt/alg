@@ -5,41 +5,19 @@ import java.util.Arrays;
 public class PersonGroup {
     private static final String DEFAULT_NOTE = "Press any button";
     private static final int MAX_HEIGHT = 999;
+    private static final int MAX_SIZE = 60;
 
     private Person[] persons;
-    private int size;
-    private int nPersons;
-
-    private Person tempPers;
-    private String note;
-    private int fillValue;
-    private int insKey;
-    private int findKey;
-    private int delKey;
-
-    private int codePart;
-    private int codePart2;
-    private int opMode;
-
-    private int curIn;
-    private int oldCurIn;
-    private int lastDeletion;
-    private DrawMode drawMode;
-    private boolean dupsOK;
-    private boolean isOKChangeDups;
-    private boolean wasJustFound;
-    private int nDeleted;
+    private int size = 0;
+    private String note = DEFAULT_NOTE;
+    private int pos = 0;
+    private int prevPos = 0;
+    private boolean dupsOK = false;
+    private boolean isOKChangeDups = false;
+    private Operation operation = new NoneOperation();
 
     public PersonGroup(int size) {
-        this.size = size;
         persons = new Person[size];
-        curIn = oldCurIn = 0;
-        nPersons = 0;
-        codePart = 1;
-        codePart2 = 1;
-        drawMode = DrawMode.FULL;
-        dupsOK = false;
-        note = DEFAULT_NOTE;
     }
 
     public Person[] getPersons() {
@@ -50,150 +28,155 @@ public class PersonGroup {
         return note;
     }
 
-    public int getCurIn() {
-        return curIn;
-    }
-
-    public int getOldCurIn() {
-        return oldCurIn;
-    }
-
-    public DrawMode getDrawMode() {
-        return drawMode;
-    }
-
-    public void setDrawMode(DrawMode drawMode) {
-        this.drawMode = drawMode;
-    }
-
     public boolean getDupsStatus() {
         return dupsOK;
     }
 
-    public boolean getChangeStatus() {
-        return isOKChangeDups;
-    }
-
-    public void setDupsStatus(boolean var1) {
-        if (isOKChangeDups && var1 != dupsOK) {
-            dupsOK = var1;
+    public void setDupsStatus(boolean dups) {
+        if (isOKChangeDups && dups != dupsOK) {
+            dupsOK = dups;
         }
 
         if (!isOKChangeDups) {
             note = "To change duplication status, create array with New";
         }
+    }
 
-        drawMode = DrawMode.SHORT;
+    public int getPos() {
+        return pos;
+    }
+
+    public int getPrevPos() {
+        return prevPos;
+    }
+
+    private void resetPosition() {
+        prevPos = pos = 0;
+    }
+
+    private void setPosition(int value) {
+        prevPos = pos;
+        pos = value;
+    }
+
+    private void nextPosition() {
+        setPosition(pos + 1);
+    }
+
+    private static class NoneOperation extends BaseOperation {
+        NoneOperation() {
+            super(OperationMode.NONE);
+            addAction(1, it -> {
+            });
+        }
+    }
+
+    private class NewArrayOperation extends BaseOperation {
+        private int newSize;
+
+        NewArrayOperation() {
+            super(OperationMode.NEW_ARRAY);
+
+            addAction(1, it -> {
+                resetPosition();
+                note = "Enter size of array to create";
+                setCodePart(2);
+            });
+
+            addAction(2, it -> {
+                if (it != null && it >= 0 && it <= MAX_SIZE) {
+                    newSize = it;
+                    note = "Will create empty array with " + newSize + " cells";
+                    setCodePart(3);
+                } else {
+                    note = "ERROR: use size between 0 and " + MAX_SIZE;
+                    setCodePart(1);
+                }
+            });
+
+            addAction(3, it -> {
+                note = "Select Duplicates OK, or No Dups";
+                isOKChangeDups = true;
+                setCodePart(5);
+            });
+
+            addAction(5, it -> {
+                persons = new Person[newSize];
+                size = 0;
+                note = "New array created; total items = " + size;
+                isOKChangeDups = false;
+                setCodePart(6);
+            });
+
+            addAction(6, it -> {
+                note = DEFAULT_NOTE;
+                setCodePart(1);
+            });
+        }
     }
 
     public void newArray(Integer value) {
-        if (opMode != 1) {
-            opMode = 1;
-            codePart = 1;
+        if (operation.getMode() != OperationMode.NEW_ARRAY) {
+            operation = new NewArrayOperation();
         }
+        operation.run(value);
+    }
 
-        switch (codePart) {
-            case 1:
-                note = "Enter size of array to create";
-                drawMode = DrawMode.SHORT;
-                codePart = 2;
-                oldCurIn = curIn;
-                curIn = 0;
-                break;
-            case 2:
-                final int MAX_SIZE = 60;
-                if (value != null && value >= 0 && value <= MAX_SIZE) {
-                    size = value;
-                    note = "Will create empty array with " + size + " cells";
-                    codePart = 3;
-                } else {
-                    note = "ERROR: use size between 0 and " + MAX_SIZE;
-                    codePart = 1;
+    private class FillOperation extends BaseOperation {
+        private int fillSize;
+
+        FillOperation() {
+            super(OperationMode.FILL);
+
+            addAction(1, it -> {
+                note = "Enter number of items to fill in";
+                setCodePart(2);
+            });
+
+            addAction(2, it -> {
+                if (it != null && it >= 0 && it <= persons.length) {
+                    fillSize = it;
+                    note = "Will fill in " + fillSize + " items";
+                    setCodePart(3);
+                    return;
                 }
 
-                drawMode = DrawMode.SHORT;
-                break;
-            case 3:
-                note = "Select Duplicates OK, or No Dups";
-                isOKChangeDups = true;
-                drawMode = DrawMode.SHORT;
-                codePart = 5;
-                break;
-            case 5:
-                persons = new Person[size];
-                nPersons = 0;
-                note = "New array created; total items = " + nPersons;
-                isOKChangeDups = false;
-                oldCurIn = curIn;
-                curIn = 0;
-                drawMode = DrawMode.FULL;
-                codePart = 6;
-                break;
-            case 6:
+                note = "ERROR: can't fill more than " + persons.length + " items";
+                setCodePart(1);
+            });
+
+            addAction(3, it -> {
+                size = 0;
+                doFill(fillSize);
+                resetPosition();
+                note = "Fill completed; total items = " + size;
+                if (!dupsOK) {
+                    checkDups();
+                }
+                setCodePart(4);
+            });
+
+            addAction(4, it -> {
                 note = DEFAULT_NOTE;
-                drawMode = DrawMode.SHORT;
-                codePart = 1;
-                break;
-            default:
+                setCodePart(1);
+            });
         }
     }
 
     public void fill(Integer value) {
-        if (opMode != 2) {
-            opMode = 2;
-            codePart2 = 1;
+        if (operation.getMode() != OperationMode.FILL) {
+            operation = new FillOperation();
         }
-
-        switch (codePart2) {
-            case 1:
-                note = "Enter number of items to fill in";
-                drawMode = DrawMode.SHORT;
-                codePart2 = 2;
-                break;
-            case 2:
-                if (value != null && value >= 0 && value <= persons.length) {
-                    fillValue = value;
-                    note = "Will fill in " + fillValue + " items";
-                    drawMode = DrawMode.SHORT;
-                    codePart2 = 3;
-                    break;
-                }
-
-                note = "ERROR: can't fill more than " + persons.length + " items";
-                drawMode = DrawMode.SHORT;
-                codePart2 = 1;
-                break;
-            case 3:
-                nPersons = 0;
-                doFill(fillValue);
-                opMode = 2;
-                note = "Fill completed; total items = " + nPersons;
-                oldCurIn = curIn;
-                curIn = 0;
-                if (!dupsOK) {
-                    checkDups();
-                }
-                drawMode = DrawMode.FULL;
-                codePart2 = 4;
-                break;
-            case 4:
-                note = DEFAULT_NOTE;
-                drawMode = DrawMode.SHORT;
-                codePart2 = 1;
-                break;
-            default:
-        }
+        operation.run(value);
     }
 
     public void doFill(int size) {
         Arrays.fill(persons, null);
+        resetPosition();
 
-        oldCurIn = curIn;
-        curIn = 0;
-        codePart = 1;
-
-        while (nPersons < size) {
-            insert(1000);
+        while (this.size < size) {
+            var insOperation = new InsertOperation();
+            insOperation.run(null);
             int height = Utils.nextHeight();
 
             if (!dupsOK) {
@@ -201,16 +184,14 @@ public class PersonGroup {
                     height = Utils.nextHeight();
                 }
             }
-            insert(height);
-
-            while (codePart != 1) {
-                insert(1000);
+            insOperation.run(height);
+            while (!insOperation.atStart()) {
+                insOperation.run(null);
             }
         }
-
     }
 
-    public int getDuplicate(int value) {
+    private int getDuplicate(int value) {
         for (int idx = 0; idx < persons.length; ++idx) {
             if (persons[idx] != null && persons[idx].getHeight() == value) {
                 return idx;
@@ -220,269 +201,298 @@ public class PersonGroup {
         return -1;
     }
 
-    public void checkDups() {
+    private void checkDups() {
         for (int i = 0; i < persons.length - 1; ++i) {
             for (int j = i + 1; j < persons.length; ++j) {
                 if (persons[i] != null && persons[j] != null
                         && persons[i].getHeight() == persons[j].getHeight()
                 ) {
                     note = "ERROR: " + i + " same as " + j;
-                    drawMode = DrawMode.FULL;
                     return;
                 }
             }
         }
     }
 
-    public void insert(Integer value) {
-        if (opMode != 3) {
-            opMode = 3;
-            codePart = 1;
-        }
+    private class InsertOperation extends BaseOperation {
+        private int insKey;
+        private Person newPerson;
 
-        switch (codePart) {
-            case 1:
-                oldCurIn = curIn;
-                curIn = 0;
+        InsertOperation() {
+            super(OperationMode.INSERT);
+
+            addAction(1, it -> {
+                resetPosition();
                 note = "Enter key of item to insert";
-                drawMode = DrawMode.SHORT;
-                codePart = 2;
-                break;
-            case 2:
-                if (value != null && value >= 0 && value <= MAX_HEIGHT) {
-                    if (nPersons >= persons.length) {
+                setCodePart(2);
+            });
+
+            addAction(2, it -> {
+                if (it != null && it >= 0 && it <= MAX_HEIGHT) {
+                    if (size >= persons.length) {
                         note = "CAN'T INSERT: array is full";
-                        codePart = 6;
+                        setCodePart(6);
                     } else {
-                        insKey = value;
-                        tempPers = new Person(insKey);
+                        insKey = it;
+                        newPerson = new Person(insKey);
                         note = "Will insert item with key " + insKey;
-                        codePart = 4;
+                        setCodePart(4);
                     }
                 } else {
                     note = "CAN'T INSERT: need key between 0 and " + MAX_HEIGHT;
-                    codePart = 1;
+                    setCodePart(1);
                 }
+            });
 
-                drawMode = DrawMode.SHORT;
-                break;
-            case 4:
-                oldCurIn = curIn;
-                curIn = nPersons;
-                persons[curIn] = tempPers;
-                ++nPersons;
-                note = "Inserted item with key " + insKey + " at index " + curIn;
-                drawMode = DrawMode.SHORT;
-                codePart = 5;
-                break;
-            case 5:
-                note = "Insertion completed; total items = " + nPersons;
+            addAction(4, it -> {
+                setPosition(size);
+                persons[pos] = newPerson;
+                ++size;
+                note = "Inserted item with key " + insKey + " at index " + pos;
+                setCodePart(5);
+            });
+
+            addAction(5, it -> {
+                note = "Insertion completed; total items = " + size;
                 if (!dupsOK) {
                     checkDups();
                 }
-                drawMode = DrawMode.FULL;
-                codePart = 6;
-                break;
-            case 6:
-                oldCurIn = curIn;
-                curIn = 0;
+                setCodePart(6);
+            });
+
+            addAction(6, it -> {
+                resetPosition();
                 note = DEFAULT_NOTE;
-                drawMode = DrawMode.SHORT;
-                codePart = 1;
-                break;
-            default:
+                setCodePart(1);
+            });
+        }
+    }
+
+    public void insert(Integer value) {
+        if (operation.getMode() != OperationMode.INSERT) {
+            operation = new InsertOperation();
+        }
+        operation.run(value);
+    }
+
+    private class FindOperation extends BaseOperation {
+        private int findKey;
+        private boolean wasJustFound;
+
+        FindOperation() {
+            super(OperationMode.FIND);
+
+            addAction(1, it -> run1());
+            addAction(2, this::run2);
+            addAction(3, it -> run3());
+            addAction(4, it -> run4());
+            addAction(6, it -> run6());
+        }
+
+        private void run1() {
+            resetPosition();
+            note = "Enter key of item to find";
+            setCodePart(2);
+        }
+
+        private void run2(Integer value) {
+            if (value != null && value >= 0 && value <= MAX_HEIGHT) {
+                findKey = value;
+                note = "Looking for item with key " + findKey;
+                setCodePart(3);
+            } else {
+                note = "ERROR: use key between 0 and " + MAX_HEIGHT;
+                setCodePart(1);
+            }
+        }
+
+        private void run3() {
+            if (pos >= size) {
+                note = "Can't locate item with key " + findKey;
+                setCodePart(6);
+            } else if (persons[pos].getHeight() == findKey) {
+                note = "Have found item with key " + findKey;
+                wasJustFound = true;
+                setCodePart(dupsOK ? 4 : 6);
+            } else {
+                nextPosition();
+                note = "Checking next cell; index = " + pos;
+                setCodePart(3);
+            }
+        }
+
+        private void run4() {
+            if (wasJustFound) {
+                nextPosition();
+            }
+
+            if (pos >= size) {
+                note = "No additional items with key " + findKey;
+                setCodePart(6);
+            } else if (persons[pos].getHeight() == findKey) {
+                note = "Have found additional item with key " + findKey + " at index " + pos;
+                wasJustFound = true;
+                setCodePart(4);
+            } else {
+                if (!wasJustFound) {
+                    nextPosition();
+                }
+
+                wasJustFound = false;
+                note = "Checking for additional matches; index = " + pos;
+                setCodePart(4);
+            }
+        }
+
+        private void run6() {
+            resetPosition();
+            note = DEFAULT_NOTE;
+            setCodePart(1);
         }
     }
 
     public void find(Integer value) {
-        if (opMode != 4) {
-            opMode = 4;
-            codePart = 1;
+        if (operation.getMode() != OperationMode.FIND) {
+            operation = new FindOperation();
+        }
+        operation.run(value);
+    }
+
+    private class DeleteOperation extends BaseOperation {
+        private int delKey;
+        private int lastDeletion;
+        private int nDeleted;
+
+        DeleteOperation() {
+            super(OperationMode.DELETE);
+
+            addAction(1, it -> run1());
+            addAction(2, this::run2);
+            addAction(3, it -> run3());
+            addAction(4, it -> run4());
+            addAction(5, it -> run5());
+            addAction(6, it -> run6());
+            addAction(10, it -> run10());
+            addAction(11, it -> run11());
+            addAction(12, it -> run12());
         }
 
-        switch (codePart) {
-            case 1:
-                oldCurIn = curIn;
-                curIn = 0;
-                note = "Enter key of item to find";
-                codePart = 2;
-                break;
-            case 2:
-                if (value != null && value >= 0 && value <= MAX_HEIGHT) {
-                    findKey = value;
-                    note = "Looking for item with key " + findKey;
-                    codePart = 3;
-                } else {
-                    note = "ERROR: use key between 0 and " + MAX_HEIGHT;
-                    codePart = 1;
-                }
-                break;
-            case 3:
-                if (curIn >= nPersons) {
-                    note = "Can't locate item with key " + findKey;
-                    codePart = 6;
-                } else if (persons[curIn].getHeight() == findKey) {
-                    note = "Have found item with key " + findKey;
-                    wasJustFound = true;
-                    codePart = dupsOK ? 4 : 6;
-                } else {
-                    oldCurIn = curIn++;
-                    note = "Checking next cell; index = " + curIn;
-                    codePart = 3;
-                }
-                break;
-            case 4:
-                if (wasJustFound) {
-                    oldCurIn = curIn++;
-                }
+        private void run1() {
+            resetPosition();
 
-                if (curIn >= nPersons) {
-                    note = "No additional items with key " + findKey;
-                    codePart = 6;
-                } else if (persons[curIn].getHeight() == findKey) {
-                    note = "Have found additional item with key " + findKey + " at index " + curIn;
-                    wasJustFound = true;
-                    codePart = 4;
-                } else {
-                    if (!wasJustFound) {
-                        oldCurIn = curIn++;
-                    }
-
-                    wasJustFound = false;
-                    note = "Checking for additional matches; index = " + curIn;
-                    codePart = 4;
-                }
-                break;
-            case 6:
-                oldCurIn = curIn;
-                curIn = 0;
-                note = DEFAULT_NOTE;
-                codePart = 1;
-                break;
-            default:
+            lastDeletion = -1;
+            nDeleted = 0;
+            note = "Enter key of item to delete";
+            setCodePart(2);
         }
 
-        drawMode = DrawMode.SHORT;
+        private void run2(Integer value) {
+            if (value != null && value >= 0 && value <= MAX_HEIGHT) {
+                delKey = value;
+                note = "Looking for item with key " + delKey;
+                setCodePart(3);
+            } else {
+                note = "ERROR: use key between 0 and " + MAX_HEIGHT;
+                setCodePart(1);
+            }
+        }
+
+        private void run3() {
+            if (pos >= size) {
+                if (lastDeletion == -1) {
+                    note = "No item with key " + delKey + " found";
+                    setCodePart(5);
+                } else {
+                    note = "No additional items with key " + delKey + " found";
+                    setCodePart(6);
+                }
+            } else if (persons[pos].getHeight() == delKey) {
+                persons[pos] = null;
+                note = "Have found and deleted item with key " + delKey;
+                lastDeletion = pos;
+                if (dupsOK) {
+                    nDeleted = 1;
+                    setCodePart(10);
+                } else {
+                    setCodePart(4);
+                }
+            } else {
+                nextPosition();
+                note = "Checking index = " + pos + " for item";
+                setCodePart(3);
+            }
+        }
+
+        private void run4() {
+            if (pos < size - 1) {
+                nextPosition();
+                persons[pos - 1] = persons[pos];
+                persons[pos] = null;
+                note = "Shifted item from " + pos + " to " + (pos - 1);
+            } else {
+                --size;
+                note = "Shifting completed. Total items = " + size;
+                setPosition(size-1);
+                if (dupsOK) {
+                    setPosition(lastDeletion);
+                    setCodePart(3);
+                } else {
+                    setCodePart(6);
+                }
+            }
+        }
+
+        private void run5() {
+            note = "Deletion not completed";
+            setCodePart(6);
+        }
+
+        private void run6() {
+            resetPosition();
+            note = DEFAULT_NOTE;
+            setCodePart(1);
+        }
+
+        private void run10() {
+            setPosition(pos + nDeleted);
+            note = "Will shift item " + nDeleted + " spaces";
+            setCodePart(11);
+        }
+
+        private void run11() {
+            if (pos < size) {
+                persons[pos - nDeleted] = persons[pos];
+                persons[pos] = null;
+                note = "Shifted item from " + pos + " to " + (pos - nDeleted);
+                setPosition(pos - nDeleted);
+                setCodePart(12);
+            } else {
+                size -= nDeleted;
+                note = "Shifts complete; no more items to delete";
+                setCodePart(6);
+            }
+        }
+
+        private void run12() {
+            if (persons[pos].getHeight() == delKey) {
+                ++nDeleted;
+                persons[pos] = null;
+                note = "Have deleted additional item with key " + delKey;
+                lastDeletion = pos;
+                setPosition(pos + nDeleted);
+            } else {
+                note = "Item at " + pos + " is not a duplicate";
+                setPosition(pos + nDeleted + 1);
+            }
+
+            setCodePart(11);
+        }
     }
 
     public void delete(Integer value) {
-        if (opMode != 5) {
-            opMode = 5;
-            codePart = 1;
+        if (operation.getMode() != OperationMode.DELETE) {
+            operation = new DeleteOperation();
         }
-
-        switch (codePart) {
-            case 1:
-                oldCurIn = curIn;
-                curIn = 0;
-                lastDeletion = -1;
-                nDeleted = 0;
-                note = "Enter key of item to delete";
-                codePart = 2;
-                break;
-            case 2:
-                if (value != null && value >= 0 && value <= MAX_HEIGHT) {
-                    delKey = value;
-                    note = "Looking for item with key " + delKey;
-                    codePart = 3;
-                } else {
-                    note = "ERROR: use key between 0 and " + MAX_HEIGHT;
-                    codePart = 1;
-                }
-                break;
-            case 3:
-                if (curIn >= nPersons) {
-                    if (lastDeletion == -1) {
-                        note = "No item with key " + delKey + " found";
-                        codePart = 5;
-                    } else {
-                        note = "No additional items with key " + delKey + " found";
-                        codePart = 6;
-                    }
-                } else if (persons[curIn].getHeight() == delKey) {
-                    persons[curIn] = null;
-                    note = "Have found and deleted item with key " + delKey;
-                    lastDeletion = curIn;
-                    if (dupsOK) {
-                        nDeleted = 1;
-                        codePart = 10;
-                    } else {
-                        codePart = 4;
-                    }
-                } else {
-                    oldCurIn = curIn++;
-                    note = "Checking index = " + curIn + " for item";
-                    codePart = 3;
-                }
-                break;
-            case 4:
-                if (curIn < nPersons - 1) {
-                    oldCurIn = curIn++;
-                    persons[curIn - 1] = persons[curIn];
-                    persons[curIn] = null;
-                    note = "Shifted item from " + curIn + " to " + (curIn - 1);
-                } else {
-                    --nPersons;
-                    note = "Shifting completed. Total items = " + nPersons;
-                    oldCurIn = curIn;
-                    curIn = nPersons - 1;
-                    if (dupsOK) {
-                        curIn = lastDeletion;
-                        codePart = 3;
-                    } else {
-                        codePart = 6;
-                    }
-                }
-                break;
-            case 5:
-                note = "Deletion not completed";
-                codePart = 6;
-                break;
-            case 6:
-                oldCurIn = curIn;
-                curIn = 0;
-                note = DEFAULT_NOTE;
-                codePart = 1;
-                break;
-            case 10:
-                oldCurIn = curIn;
-                curIn += nDeleted;
-                note = "Will shift item " + nDeleted + " spaces";
-                codePart = 11;
-                break;
-            case 11:
-                if (curIn < nPersons) {
-                    persons[curIn - nDeleted] = persons[curIn];
-                    persons[curIn] = null;
-                    note = "Shifted item from " + curIn + " to " + (curIn - nDeleted);
-                    oldCurIn = curIn;
-                    curIn -= nDeleted;
-                    codePart = 12;
-                } else {
-                    nPersons -= nDeleted;
-                    note = "Shifts complete; no more items to delete";
-                    codePart = 6;
-                }
-                break;
-            case 12:
-                if (persons[curIn].getHeight() == delKey) {
-                    ++nDeleted;
-                    persons[curIn] = null;
-                    note = "Have deleted additional item with key " + delKey;
-                    lastDeletion = curIn;
-                    oldCurIn = curIn;
-                    curIn += nDeleted;
-                } else {
-                    note = "Item at " + curIn + " is not a duplicate";
-                    oldCurIn = curIn;
-                    curIn += nDeleted + 1;
-                }
-
-                codePart = 11;
-                break;
-            default:
-        }
-
-        drawMode = DrawMode.SHORT;
+        operation.run(value);
     }
 }

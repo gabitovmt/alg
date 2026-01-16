@@ -79,7 +79,6 @@ public class ArrayFrame extends JFrame implements ActionListener, ItemListener {
 
         personGroup = new PersonGroup(20);
         personGroup.doFill(10);
-        personGroup.setDrawMode(DrawMode.FULL);
         var personGroupPanel = new PersonGroupPanel(personGroup);
         add(personGroupPanel, BorderLayout.CENTER);
 
@@ -122,19 +121,9 @@ public class ArrayFrame extends JFrame implements ActionListener, ItemListener {
 
     @Override
     public void itemStateChanged(ItemEvent e) {
-        boolean isDups = e.getSource() == this.dups;
-        boolean dupsStatus = personGroup.getDupsStatus();
-        boolean changeStatus = personGroup.getChangeStatus();
+        boolean isDups = e.getSource() == dups;
         personGroup.setDupsStatus(isDups);
-
-        if (isDups && changeStatus && !dupsStatus || !isDups && !changeStatus && dupsStatus) {
-            this.dups.setState(true);
-            this.noDups.setState(false);
-        }
-
-        if (!isDups && changeStatus && dupsStatus || isDups && !changeStatus && !dupsStatus) {
-            this.dups.setState(false);
-            this.noDups.setState(true);
-        }
+        dups.setState(personGroup.getDupsStatus());
+        noDups.setState(!personGroup.getDupsStatus());
     }
 }
