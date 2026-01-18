@@ -14,7 +14,7 @@ public class OrderedArrayFrame extends JFrame implements ActionListener, ItemLis
     private static final int DEFAULT_WIDTH = 440;
     private static final int DEFAULT_HEIGHT = 320;
 
-    private final transient PersonGroup personGroup;
+    private final transient PersonGroupImpl personGroup;
 
     private final TextField tf;
     private final Checkbox lin;
@@ -83,7 +83,7 @@ public class OrderedArrayFrame extends JFrame implements ActionListener, ItemLis
         tf = new TextField("", 4);
         numPanel.add(tf);
 
-        personGroup = new PersonGroup(DEFAULT_PERSON_CAPACITY);
+        personGroup = new PersonGroupImpl(DEFAULT_PERSON_CAPACITY);
         personGroup.doFill(DEFAULT_PERSON_SIZE);
         var personGroupPanel = new PersonGroupPanel(personGroup);
         add(personGroupPanel, BorderLayout.CENTER);

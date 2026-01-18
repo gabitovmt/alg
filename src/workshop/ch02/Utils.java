@@ -1,4 +1,4 @@
-package workshop.ch02.orderedarray;
+package workshop.ch02;
 
 import java.awt.*;
 import java.util.Random;

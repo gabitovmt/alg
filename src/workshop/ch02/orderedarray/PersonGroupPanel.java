@@ -20,9 +20,9 @@ public class PersonGroupPanel extends JPanel {
     private static final int NOTE_X = 8;
     private static final int NOTE_Y = 16;
 
-    private final transient PersonGroup group;
+    private final transient PersonGroupImpl group;
 
-    public PersonGroupPanel(PersonGroup personGroup) {
+    public PersonGroupPanel(PersonGroupImpl personGroup) {
         this.group = personGroup;
     }
 

@@ -1,31 +1,21 @@
 package workshop.ch02.array;
 
+import workshop.ch02.BasePersonGroup;
+import workshop.ch02.Person;
+import workshop.ch02.Utils;
+
 import java.util.Arrays;
 
-public class PersonGroup {
-    private static final String DEFAULT_NOTE = "Press any button";
+public class PersonGroupImpl extends BasePersonGroup {
     private static final int MAX_HEIGHT = 999;
     private static final int MAX_SIZE = 60;
 
-    private Person[] persons;
-    private int size = 0;
-    private String note = DEFAULT_NOTE;
-    private int pos = 0;
-    private int prevPos = 0;
     private boolean dupsOK = false;
     private boolean isOKChangeDups = false;
     private Operation operation = new NoneOperation();
 
-    public PersonGroup(int size) {
-        persons = new Person[size];
-    }
-
-    public Person[] getPersons() {
-        return persons;
-    }
-
-    public String getNote() {
-        return note;
+    public PersonGroupImpl(int size) {
+        setPersons(new Person[size]);
     }
 
     public boolean getDupsStatus() {
@@ -38,29 +28,8 @@ public class PersonGroup {
         }
 
         if (!isOKChangeDups) {
-            note = "To change duplication status, create array with New";
+            setNote("To change duplication status, create array with New");
         }
-    }
-
-    public int getPos() {
-        return pos;
-    }
-
-    public int getPrevPos() {
-        return prevPos;
-    }
-
-    private void resetPosition() {
-        prevPos = pos = 0;
-    }
-
-    private void setPosition(int value) {
-        prevPos = pos;
-        pos = value;
-    }
-
-    private void nextPosition() {
-        setPosition(pos + 1);
     }
 
     private static class NoneOperation extends BaseOperation {
@@ -79,37 +48,37 @@ public class PersonGroup {
 
             addAction(1, it -> {
                 resetPosition();
-                note = "Enter size of array to create";
+                setNote("Enter size of array to create");
                 setCodePart(2);
             });
 
             addAction(2, it -> {
                 if (it != null && it >= 0 && it <= MAX_SIZE) {
                     newSize = it;
-                    note = "Will create empty array with " + newSize + " cells";
+                    setNote("Will create empty array with " + newSize + " cells");
                     setCodePart(3);
                 } else {
-                    note = "ERROR: use size between 0 and " + MAX_SIZE;
+                    setNote("ERROR: use size between 0 and " + MAX_SIZE);
                     setCodePart(1);
                 }
             });
 
             addAction(3, it -> {
-                note = "Select Duplicates OK, or No Dups";
+                setNote("Select Duplicates OK, or No Dups");
                 isOKChangeDups = true;
                 setCodePart(5);
             });
 
             addAction(5, it -> {
-                persons = new Person[newSize];
-                size = 0;
-                note = "New array created; total items = " + size;
+                setPersons(new Person[newSize]);
+                setSize(0);
+                setNote("New array created; total items = " + getSize());
                 isOKChangeDups = false;
                 setCodePart(6);
             });
 
             addAction(6, it -> {
-                note = DEFAULT_NOTE;
+                setDefaultNote();
                 setCodePart(1);
             });
         }
@@ -129,27 +98,27 @@ public class PersonGroup {
             super(OperationMode.FILL);
 
             addAction(1, it -> {
-                note = "Enter number of items to fill in";
+                setNote("Enter number of items to fill in");
                 setCodePart(2);
             });
 
             addAction(2, it -> {
-                if (it != null && it >= 0 && it <= persons.length) {
+                if (it != null && it >= 0 && it <= getCapacity()) {
                     fillSize = it;
-                    note = "Will fill in " + fillSize + " items";
+                    setNote("Will fill in " + fillSize + " items");
                     setCodePart(3);
                     return;
                 }
 
-                note = "ERROR: can't fill more than " + persons.length + " items";
+                setNote("ERROR: can't fill more than " + getCapacity() + " items");
                 setCodePart(1);
             });
 
             addAction(3, it -> {
-                size = 0;
+                setSize(0);
                 doFill(fillSize);
                 resetPosition();
-                note = "Fill completed; total items = " + size;
+                setNote("Fill completed; total items = " + getSize());
                 if (!dupsOK) {
                     checkDups();
                 }
@@ -157,7 +126,7 @@ public class PersonGroup {
             });
 
             addAction(4, it -> {
-                note = DEFAULT_NOTE;
+                setDefaultNote();
                 setCodePart(1);
             });
         }
@@ -171,10 +140,10 @@ public class PersonGroup {
     }
 
     public void doFill(int size) {
-        Arrays.fill(persons, null);
+        Arrays.fill(getPersons(), null);
         resetPosition();
 
-        while (this.size < size) {
+        while (getSize() < size) {
             var insOperation = new InsertOperation();
             insOperation.run(null);
             int height = Utils.nextHeight();
@@ -192,8 +161,8 @@ public class PersonGroup {
     }
 
     private int getDuplicate(int value) {
-        for (int idx = 0; idx < persons.length; ++idx) {
-            if (persons[idx] != null && persons[idx].getHeight() == value) {
+        for (int idx = 0; idx < getCapacity(); ++idx) {
+            if (getPerson(idx) != null && getPerson(idx).getHeight() == value) {
                 return idx;
             }
         }
@@ -202,12 +171,12 @@ public class PersonGroup {
     }
 
     private void checkDups() {
-        for (int i = 0; i < persons.length - 1; ++i) {
-            for (int j = i + 1; j < persons.length; ++j) {
-                if (persons[i] != null && persons[j] != null
-                        && persons[i].getHeight() == persons[j].getHeight()
+        for (int i = 0; i < getCapacity() - 1; ++i) {
+            for (int j = i + 1; j < getCapacity(); ++j) {
+                if (getPerson(i) != null && getPerson(j) != null &&
+                        getPerson(i).getHeight() == getPerson(j).getHeight()
                 ) {
-                    note = "ERROR: " + i + " same as " + j;
+                    setNote("ERROR: " + i + " same as " + j);
                     return;
                 }
             }
@@ -223,37 +192,37 @@ public class PersonGroup {
 
             addAction(1, it -> {
                 resetPosition();
-                note = "Enter key of item to insert";
+                setNote("Enter key of item to insert");
                 setCodePart(2);
             });
 
             addAction(2, it -> {
                 if (it != null && it >= 0 && it <= MAX_HEIGHT) {
-                    if (size >= persons.length) {
-                        note = "CAN'T INSERT: array is full";
+                    if (getSize() >= getCapacity()) {
+                        setNote("CAN'T INSERT: array is full");
                         setCodePart(6);
                     } else {
                         insKey = it;
-                        newPerson = new Person(insKey);
-                        note = "Will insert item with key " + insKey;
+                        newPerson = new Person(insKey, Utils.nextColor());
+                        setNote("Will insert item with key " + insKey);
                         setCodePart(4);
                     }
                 } else {
-                    note = "CAN'T INSERT: need key between 0 and " + MAX_HEIGHT;
+                    setNote("CAN'T INSERT: need key between 0 and " + MAX_HEIGHT);
                     setCodePart(1);
                 }
             });
 
             addAction(4, it -> {
-                setPosition(size);
-                persons[pos] = newPerson;
-                ++size;
-                note = "Inserted item with key " + insKey + " at index " + pos;
+                setPosition(getSize());
+                setCurrentPerson(newPerson);
+                setSize(getSize() + 1);
+                setNote("Inserted item with key " + insKey + " at index " + getPosition());
                 setCodePart(5);
             });
 
             addAction(5, it -> {
-                note = "Insertion completed; total items = " + size;
+                setNote("Insertion completed; total items = " + getSize());
                 if (!dupsOK) {
                     checkDups();
                 }
@@ -262,7 +231,7 @@ public class PersonGroup {
 
             addAction(6, it -> {
                 resetPosition();
-                note = DEFAULT_NOTE;
+                setDefaultNote();
                 setCodePart(1);
             });
         }
@@ -291,32 +260,32 @@ public class PersonGroup {
 
         private void run1() {
             resetPosition();
-            note = "Enter key of item to find";
+            setNote("Enter key of item to find");
             setCodePart(2);
         }
 
         private void run2(Integer value) {
             if (value != null && value >= 0 && value <= MAX_HEIGHT) {
                 findKey = value;
-                note = "Looking for item with key " + findKey;
+                setNote("Looking for item with key " + findKey);
                 setCodePart(3);
             } else {
-                note = "ERROR: use key between 0 and " + MAX_HEIGHT;
+                setNote("ERROR: use key between 0 and " + MAX_HEIGHT);
                 setCodePart(1);
             }
         }
 
         private void run3() {
-            if (pos >= size) {
-                note = "Can't locate item with key " + findKey;
+            if (getPosition() >= getSize()) {
+                setNote("Can't locate item with key " + findKey);
                 setCodePart(6);
-            } else if (persons[pos].getHeight() == findKey) {
-                note = "Have found item with key " + findKey;
+            } else if (getCurrentPerson().getHeight() == findKey) {
+                setNote("Have found item with key " + findKey);
                 wasJustFound = true;
                 setCodePart(dupsOK ? 4 : 6);
             } else {
                 nextPosition();
-                note = "Checking next cell; index = " + pos;
+                setNote("Checking next cell; index = " + getPosition());
                 setCodePart(3);
             }
         }
@@ -326,11 +295,11 @@ public class PersonGroup {
                 nextPosition();
             }
 
-            if (pos >= size) {
-                note = "No additional items with key " + findKey;
+            if (getPosition() >= getSize()) {
+                setNote("No additional items with key " + findKey);
                 setCodePart(6);
-            } else if (persons[pos].getHeight() == findKey) {
-                note = "Have found additional item with key " + findKey + " at index " + pos;
+            } else if (getCurrentPerson().getHeight() == findKey) {
+                setNote("Have found additional item with key " + findKey + " at index " + getPosition());
                 wasJustFound = true;
                 setCodePart(4);
             } else {
@@ -339,14 +308,14 @@ public class PersonGroup {
                 }
 
                 wasJustFound = false;
-                note = "Checking for additional matches; index = " + pos;
+                setNote("Checking for additional matches; index = " + getPosition());
                 setCodePart(4);
             }
         }
 
         private void run6() {
             resetPosition();
-            note = DEFAULT_NOTE;
+            setDefaultNote();
             setCodePart(1);
         }
     }
@@ -382,34 +351,34 @@ public class PersonGroup {
 
             lastDeletion = -1;
             nDeleted = 0;
-            note = "Enter key of item to delete";
+            setNote("Enter key of item to delete");
             setCodePart(2);
         }
 
         private void run2(Integer value) {
             if (value != null && value >= 0 && value <= MAX_HEIGHT) {
                 delKey = value;
-                note = "Looking for item with key " + delKey;
+                setNote("Looking for item with key " + delKey);
                 setCodePart(3);
             } else {
-                note = "ERROR: use key between 0 and " + MAX_HEIGHT;
+                setNote("ERROR: use key between 0 and " + MAX_HEIGHT);
                 setCodePart(1);
             }
         }
 
         private void run3() {
-            if (pos >= size) {
+            if (getPosition() >= getSize()) {
                 if (lastDeletion == -1) {
-                    note = "No item with key " + delKey + " found";
+                    setNote("No item with key " + delKey + " found");
                     setCodePart(5);
                 } else {
-                    note = "No additional items with key " + delKey + " found";
+                    setNote("No additional items with key " + delKey + " found");
                     setCodePart(6);
                 }
-            } else if (persons[pos].getHeight() == delKey) {
-                persons[pos] = null;
-                note = "Have found and deleted item with key " + delKey;
-                lastDeletion = pos;
+            } else if (getCurrentPerson().getHeight() == delKey) {
+                setCurrentPerson(null);
+                setNote("Have found and deleted item with key " + delKey);
+                lastDeletion = getPosition();
                 if (dupsOK) {
                     nDeleted = 1;
                     setCodePart(10);
@@ -418,21 +387,21 @@ public class PersonGroup {
                 }
             } else {
                 nextPosition();
-                note = "Checking index = " + pos + " for item";
+                setNote("Checking index = " + getPosition() + " for item");
                 setCodePart(3);
             }
         }
 
         private void run4() {
-            if (pos < size - 1) {
+            if (getPosition() < getSize() - 1) {
                 nextPosition();
-                persons[pos - 1] = persons[pos];
-                persons[pos] = null;
-                note = "Shifted item from " + pos + " to " + (pos - 1);
+                setPerson(getPosition() - 1, getCurrentPerson());
+                setCurrentPerson(null);
+                setNote("Shifted item from " + getPosition() + " to " + (getPosition() - 1));
             } else {
-                --size;
-                note = "Shifting completed. Total items = " + size;
-                setPosition(size-1);
+                setSize(getSize() - 1);
+                setNote("Shifting completed. Total items = " + getSize());
+                setPosition(getSize() - 1);
                 if (dupsOK) {
                     setPosition(lastDeletion);
                     setCodePart(3);
@@ -443,46 +412,46 @@ public class PersonGroup {
         }
 
         private void run5() {
-            note = "Deletion not completed";
+            setNote("Deletion not completed");
             setCodePart(6);
         }
 
         private void run6() {
             resetPosition();
-            note = DEFAULT_NOTE;
+            setDefaultNote();
             setCodePart(1);
         }
 
         private void run10() {
-            setPosition(pos + nDeleted);
-            note = "Will shift item " + nDeleted + " spaces";
+            setPosition(getPosition() + nDeleted);
+            setNote("Will shift item " + nDeleted + " spaces");
             setCodePart(11);
         }
 
         private void run11() {
-            if (pos < size) {
-                persons[pos - nDeleted] = persons[pos];
-                persons[pos] = null;
-                note = "Shifted item from " + pos + " to " + (pos - nDeleted);
-                setPosition(pos - nDeleted);
+            if (getPosition() < getSize()) {
+                setPerson(getPosition() - nDeleted, getCurrentPerson());
+                setCurrentPerson(null);
+                setNote("Shifted item from " + getPosition() + " to " + (getPosition() - nDeleted));
+                setPosition(getPosition() - nDeleted);
                 setCodePart(12);
             } else {
-                size -= nDeleted;
-                note = "Shifts complete; no more items to delete";
+                setSize(getSize() - nDeleted);
+                setNote("Shifts complete; no more items to delete");
                 setCodePart(6);
             }
         }
 
         private void run12() {
-            if (persons[pos].getHeight() == delKey) {
+            if (getCurrentPerson().getHeight() == delKey) {
                 ++nDeleted;
-                persons[pos] = null;
-                note = "Have deleted additional item with key " + delKey;
-                lastDeletion = pos;
-                setPosition(pos + nDeleted);
+                setCurrentPerson(null);
+                setNote("Have deleted additional item with key " + delKey);
+                lastDeletion = getPosition();
+                setPosition(getPosition() + nDeleted);
             } else {
-                note = "Item at " + pos + " is not a duplicate";
-                setPosition(pos + nDeleted + 1);
+                setNote("Item at " + getPosition() + " is not a duplicate");
+                setPosition(getPosition() + nDeleted + 1);
             }
 
             setCodePart(11);

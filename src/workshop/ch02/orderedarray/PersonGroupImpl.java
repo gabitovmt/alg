@@ -1,9 +1,10 @@
 package workshop.ch02.orderedarray;
 
-import java.awt.Color;
-import java.awt.Graphics;
+import workshop.ch02.Person;
 
-public class PersonGroup {
+import java.awt.*;
+
+public class PersonGroupImpl {
     private Person[] personArray;
     private int totalCells;
     private int nPersons;
@@ -19,7 +20,6 @@ public class PersonGroup {
     private int curIn;
     private int oldCurIn;
     private int insertPoint;
-    private int drawMode;
     private boolean isLinear;
     private boolean isOKChange;
     private boolean noShiftsYet;
@@ -29,14 +29,13 @@ public class PersonGroup {
     private int oldLB;
     private int oldUB;
 
-    public PersonGroup(int var1) {
+    public PersonGroupImpl(int var1) {
         this.totalCells = var1;
         this.personArray = new Person[this.totalCells];
         this.curIn = this.oldCurIn = 0;
         this.nPersons = 0;
         this.codePart = 1;
         this.codePart2 = 1;
-        this.drawMode = 2;
         this.isLinear = true;
         this.isShowRange = false;
         this.note = "Press any button";
@@ -86,8 +85,6 @@ public class PersonGroup {
         if (!this.isOKChange) {
             this.note = "To change search type, create array with New";
         }
-
-        this.drawMode = 1;
     }
 
     public Person makePerson(int var1) {
@@ -107,7 +104,6 @@ public class PersonGroup {
         switch (this.codePart) {
             case 1:
                 this.note = "Enter size of array to create";
-                this.drawMode = 1;
                 this.codePart = 2;
                 this.oldCurIn = this.curIn;
                 this.curIn = 0;
@@ -122,12 +118,10 @@ public class PersonGroup {
                     this.codePart = 1;
                 }
 
-                this.drawMode = 1;
                 return;
             case 3:
                 this.note = "Select Linear or Binary Search";
                 this.isOKChange = true;
-                this.drawMode = 1;
                 this.codePart = 5;
                 return;
             case 4:
@@ -150,12 +144,10 @@ public class PersonGroup {
                 this.note = "New array created; total items = " + this.nPersons;
                 this.oldCurIn = this.curIn;
                 this.curIn = 0;
-                this.drawMode = 2;
                 this.codePart = 6;
                 return;
             case 6:
                 this.note = "Press any button";
-                this.drawMode = 1;
                 this.codePart = 1;
                 return;
             default:
@@ -171,20 +163,17 @@ public class PersonGroup {
         switch (this.codePart2) {
             case 1:
                 this.note = "Enter number of items to fill in";
-                this.drawMode = 1;
                 this.codePart2 = 2;
                 return;
             case 2:
                 if (var1 && var2 >= 0 && var2 <= this.totalCells) {
                     this.fillValue = var2;
                     this.note = "Will fill in " + this.fillValue + " items (may take several seconds)";
-                    this.drawMode = 1;
                     this.codePart2 = 4;
                     return;
                 }
 
                 this.note = "ERROR: can't fill more than " + this.totalCells + " items";
-                this.drawMode = 1;
                 this.codePart2 = 1;
                 return;
             case 3:
@@ -198,12 +187,10 @@ public class PersonGroup {
                 this.oldCurIn = this.curIn;
                 this.curIn = 0;
                 this.checkDups();
-                this.drawMode = 3;
                 this.codePart2 = 5;
                 return;
             case 5:
                 this.note = "Press any button";
-                this.drawMode = 1;
                 this.codePart2 = 1;
         }
     }
@@ -244,7 +231,6 @@ public class PersonGroup {
             for(int var2 = var1 + 1; var2 < this.totalCells; ++var2) {
                 if (this.personArray[var1] != null && this.personArray[var2] != null && this.personArray[var1].getHeight() == this.personArray[var2].getHeight()) {
                     this.note = "ERROR: " + var1 + " same as " + var2;
-                    this.drawMode = 2;
                     return;
                 }
             }
@@ -263,7 +249,6 @@ public class PersonGroup {
                 this.oldCurIn = this.curIn;
                 this.curIn = 0;
                 this.note = "Enter key of item to insert";
-                this.drawMode = 1;
                 this.codePart = 2;
                 return;
             case 2:
@@ -289,7 +274,6 @@ public class PersonGroup {
                     this.codePart = 1;
                 }
 
-                this.drawMode = 1;
                 return;
             case 3:
                 if (this.curIn >= this.nPersons) {
@@ -343,7 +327,6 @@ public class PersonGroup {
                     }
                 }
 
-                this.drawMode = 1;
                 return;
             case 4:
                 if (this.noShiftsYet) {
@@ -366,21 +349,18 @@ public class PersonGroup {
                     this.codePart = 4;
                 }
 
-                this.drawMode = 1;
                 return;
             case 5:
             default:
                 return;
             case 6:
                 this.note = "Insertion completed; total items = " + this.nPersons;
-                this.drawMode = 1;
                 this.codePart = 7;
                 return;
             case 7:
                 this.oldCurIn = this.curIn;
                 this.curIn = 0;
                 this.note = "Press any button";
-                this.drawMode = 1;
                 this.codePart = 1;
         }
     }
@@ -466,8 +446,6 @@ public class PersonGroup {
                 this.note = "Press any button";
                 this.codePart = 1;
         }
-
-        this.drawMode = 1;
     }
 
     public void delete(boolean var1, int var2) {
@@ -569,7 +547,5 @@ public class PersonGroup {
                 this.note = "Press any button";
                 this.codePart = 1;
         }
-
-        this.drawMode = 1;
     }
 }

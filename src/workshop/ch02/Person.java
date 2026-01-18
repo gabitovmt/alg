@@ -1,4 +1,4 @@
-package workshop.ch02.array;
+package workshop.ch02;
 
 import java.awt.*;
 
@@ -9,10 +9,6 @@ public class Person {
     public Person(int height, Color color) {
         this.height = height;
         this.color = color;
-    }
-
-    public Person(int height) {
-        this(height, Utils.nextColor());
     }
 
     public int getHeight() {
