@@ -4,33 +4,10 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 public class PersonGroup {
-    private final int appletWidth = 440;
-    private final int appletHeight = 320;
-    private final int topMargin = 80;
-    private final int leftMargin = 10;
-    private final int textHeight = 13;
-    private final int hF1 = 12;
-    private final int hF2 = 6;
-//    private final int hF3;
-    private final int vF = 8;
-    private final int nColumns = 5;
-    private final int nCellsPerCol = 12;
-    private final int columnWidth = 85;
-    private final int cellWidth = 35;
-    private final int cellHeight = 17;
-    private final int digits3Width = 18;
-    private final int vertSeparation = 19;
-    private final int horizSeparation = 60;
-    private final int noteBoxTop = 55;
-    private final int noteBoxHeight = 25;
-    private final int noteBoxWidth = 325;
-    private final int rangeRectWidth = 4;
-    private final int ASIZE = 60;
-    private final int MAX_KEY = 999;
-    private person[] personArray;
+    private Person[] personArray;
     private int totalCells;
     private int nPersons;
-    private person tempPers;
+    private Person tempPers;
     private String note;
     private int fillValue;
     private int insKey;
@@ -46,7 +23,7 @@ public class PersonGroup {
     private boolean isLinear;
     private boolean isOKChange;
     private boolean noShiftsYet;
-    private boolean showRange;
+    private boolean isShowRange;
     private int lowerBound;
     private int upperBound;
     private int oldLB;
@@ -54,19 +31,43 @@ public class PersonGroup {
 
     public PersonGroup(int var1) {
         this.totalCells = var1;
-        this.personArray = new person[this.totalCells];
+        this.personArray = new Person[this.totalCells];
         this.curIn = this.oldCurIn = 0;
         this.nPersons = 0;
         this.codePart = 1;
         this.codePart2 = 1;
         this.drawMode = 2;
         this.isLinear = true;
-        this.showRange = false;
+        this.isShowRange = false;
         this.note = "Press any button";
     }
 
-    public void setDrawMode(int var1) {
-        this.drawMode = var1;
+    public Person[] getPersons() {
+        return personArray;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public int getPos() {
+        return curIn;
+    }
+
+    public int getPrevPos() {
+        return oldCurIn;
+    }
+
+    public boolean isShowRange() {
+        return isShowRange;
+    }
+
+    public int getOldLB() {
+        return oldLB;
+    }
+
+    public int getOldUB() {
+        return oldUB;
     }
 
     public boolean getSearchType() {
@@ -89,12 +90,12 @@ public class PersonGroup {
         this.drawMode = 1;
     }
 
-    public person makePerson(int var1) {
+    public Person makePerson(int var1) {
         int var2 = 100 + (int)(Math.random() * (double)154.0F);
         int var3 = 100 + (int)(Math.random() * (double)154.0F);
         int var4 = 100 + (int)(Math.random() * (double)154.0F);
         Color var5 = new Color(var2, var3, var4);
-        return new person(var1, var5);
+        return new Person(var1, var5);
     }
 
     public void newArray(boolean var1, int var2) {
@@ -139,7 +140,7 @@ public class PersonGroup {
                 this.isOKChange = false;
                 return;
             case 5:
-                this.personArray = new person[this.totalCells];
+                this.personArray = new Person[this.totalCells];
 
                 for(int var3 = 0; var3 < this.totalCells; ++var3) {
                     this.personArray[var3] = null;
@@ -311,7 +312,7 @@ public class PersonGroup {
                         this.codePart = 3;
                     }
                 } else {
-                    this.showRange = true;
+                    this.isShowRange = true;
                     if (this.personArray[this.curIn].getHeight() == this.insKey) {
                         this.note = "CAN'T INSERT: duplicate at " + this.curIn;
                         this.oldLB = this.oldUB = -1;
@@ -346,7 +347,7 @@ public class PersonGroup {
                 return;
             case 4:
                 if (this.noShiftsYet) {
-                    this.showRange = false;
+                    this.isShowRange = false;
                     this.noShiftsYet = false;
                     this.note = "Will shift cells to make room";
                     this.oldCurIn = this.curIn;
@@ -430,7 +431,7 @@ public class PersonGroup {
                         this.codePart = 6;
                     }
                 } else {
-                    this.showRange = true;
+                    this.isShowRange = true;
                     if (this.personArray[this.curIn].getHeight() == this.findKey) {
                         this.note = "Have found item with key " + this.findKey;
                         this.oldLB = this.oldUB = -1;
@@ -461,7 +462,7 @@ public class PersonGroup {
             case 6:
                 this.oldCurIn = this.curIn;
                 this.curIn = 0;
-                this.showRange = false;
+                this.isShowRange = false;
                 this.note = "Press any button";
                 this.codePart = 1;
         }
@@ -516,7 +517,7 @@ public class PersonGroup {
                         this.codePart = 5;
                     }
                 } else {
-                    this.showRange = true;
+                    this.isShowRange = true;
                     if (this.personArray[this.curIn].getHeight() == this.delKey) {
                         this.personArray[this.curIn] = null;
                         this.note = "Have found and deleted item with key " + this.delKey;
@@ -570,106 +571,5 @@ public class PersonGroup {
         }
 
         this.drawMode = 1;
-    }
-
-    public void drawPerson(Graphics var1, int var2) {
-        int var3 = 10 + 85 * (var2 / 12);
-        int var4 = 89 + 17 * (var2 % 12);
-        byte var5;
-        if (var2 < 10) {
-            var5 = 12;
-        } else if (var2 < 100) {
-            var5 = 6;
-        } else {
-            var5 = 0;
-        }
-
-        if (this.drawMode == 2) {
-            var1.setColor(Color.black);
-            var1.drawString(String.valueOf(var2), var3 + var5, var4 + 17 - 8);
-        }
-
-        var1.setColor(Color.black);
-        var1.drawRect(var3 + 18 + 5, var4 - 5, 35, 17);
-        if (this.personArray[var2] == null) {
-            var1.setColor(Color.lightGray);
-            var1.fill3DRect(var3 + 18 + 6, var4 - 4, 34, 16, true);
-        } else {
-            int var6 = this.personArray[var2].getHeight();
-            var1.setColor(this.personArray[var2].getColor());
-            var1.fill3DRect(var3 + 18 + 6, var4 - 4, 34, 16, true);
-            if (var6 < 10) {
-                var5 = 12;
-            } else if (var6 < 100) {
-                var5 = 6;
-            } else {
-                var5 = 0;
-            }
-
-            var1.setColor(Color.black);
-            var1.drawString(String.valueOf(var6), var3 + 18 + var5 + 15, var4 + 17 - 8);
-        }
-
-        if (var2 == this.curIn) {
-            var1.setColor(Color.red);
-        } else {
-            var1.setColor(Color.lightGray);
-        }
-
-        int var7 = var3 + 18 + 35 + 12;
-        int var8 = var4 + 8 - 4;
-        var1.drawLine(var7, var8, var7 + 17, var8);
-        var1.drawLine(var7, var8 + 1, var7 + 17, var8 + 1);
-        var1.drawLine(var7, var8, var7 + 5, var8 - 5);
-        var1.drawLine(var7, var8 + 1, var7 + 5, var8 - 4);
-        var1.drawLine(var7, var8, var7 + 5, var8 + 5);
-        var1.drawLine(var7, var8 + 1, var7 + 5, var8 + 6);
-    }
-
-    public void draw(Graphics var1) {
-        if (this.drawMode == 1) {
-            var1.setColor(Color.lightGray);
-            var1.fillRect(10, 55, 325, 25);
-            var1.setColor(Color.black);
-            var1.drawString(this.note, 16, 74);
-            this.drawPerson(var1, this.oldCurIn);
-            this.drawPerson(var1, this.curIn);
-        } else if (this.drawMode == 2) {
-            var1.setColor(Color.lightGray);
-            var1.fillRect(0, 0, 440, 320);
-
-            for(int var2 = 0; var2 < this.totalCells; ++var2) {
-                this.drawPerson(var1, var2);
-            }
-
-            var1.setColor(Color.black);
-            var1.drawString(this.note, 16, 74);
-        } else {
-            var1.setColor(Color.lightGray);
-            var1.fillRect(10, 55, 325, 25);
-
-            for(int var5 = 0; var5 < this.totalCells; ++var5) {
-                this.drawPerson(var1, var5);
-            }
-
-            var1.setColor(Color.black);
-            var1.drawString(this.note, 16, 74);
-        }
-
-        if (this.showRange) {
-            for(int var6 = 0; var6 < this.nPersons; ++var6) {
-                int var3 = 70 + 85 * (var6 / 12);
-                int var4 = 84 + 17 * (var6 % 12);
-                if (var6 >= this.oldLB && var6 <= this.oldUB) {
-                    var1.setColor(Color.blue);
-                } else {
-                    var1.setColor(Color.lightGray);
-                }
-
-                var1.fillRect(var3, var4, 4, 17);
-            }
-        }
-
-        this.drawMode = 2;
     }
 }
