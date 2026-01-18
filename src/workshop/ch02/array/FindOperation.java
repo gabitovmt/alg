@@ -1,32 +1,26 @@
 package workshop.ch02.array;
 
-import workshop.ch02.BaseOperation;
+import workshop.ch02.BasePersonGroupOperation;
 import workshop.ch02.OperationMode;
 import workshop.ch02.PersonGroup;
 
-class FindOperation extends BaseOperation {
-    private final PersonGroup group;
+class FindOperation extends BasePersonGroupOperation {
     private int findKey;
     private boolean wasJustFound;
 
     FindOperation(PersonGroup group) {
-        super(OperationMode.FIND);
-        this.group = group;
-
-        addAction(1, it -> run1());
-        addAction(2, this::run2);
-        addAction(3, it -> run3());
-        addAction(4, it -> run4());
-        addAction(6, it -> run6());
+        super(OperationMode.FIND, group);
     }
 
-    private void run1() {
+    @Override
+    protected void run1() {
         group.resetPosition();
         group.setNote("Enter key of item to find");
         setCodePart(2);
     }
 
-    private void run2(Integer value) {
+    @Override
+    protected void run2(Integer value) {
         if (value != null && value >= 0 && value <= group.getMaxHeight()) {
             findKey = value;
             group.setNote("Looking for item with key " + findKey);
@@ -37,7 +31,8 @@ class FindOperation extends BaseOperation {
         }
     }
 
-    private void run3() {
+    @Override
+    protected void run3() {
         if (group.getPosition() >= group.getSize()) {
             group.setNote("Can't locate item with key " + findKey);
             setCodePart(6);
@@ -52,7 +47,8 @@ class FindOperation extends BaseOperation {
         }
     }
 
-    private void run4() {
+    @Override
+    protected void run4() {
         if (wasJustFound) {
             group.nextPosition();
         }
@@ -75,7 +71,8 @@ class FindOperation extends BaseOperation {
         }
     }
 
-    private void run6() {
+    @Override
+    protected void run6() {
         group.resetPosition();
         group.setDefaultNote();
         setCodePart(1);

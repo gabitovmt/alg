@@ -1,44 +1,48 @@
 package workshop.ch02.orderedarray;
 
-import workshop.ch02.BaseOperation;
+import workshop.ch02.BasePersonGroupOperation;
 import workshop.ch02.OperationMode;
 import workshop.ch02.PersonGroup;
 
-class FillOperation extends BaseOperation {
+class FillOperation extends BasePersonGroupOperation {
     private int fillSize;
 
     FillOperation(PersonGroup group) {
-        super(OperationMode.FILL);
+        super(OperationMode.FILL, group);
+    }
 
-        addAction(1, it -> {
-            group.setNote("Enter number of items to fill in");
-            setCodePart(2);
-        });
+    @Override
+    protected void run1() {
+        group.setNote("Enter number of items to fill in");
+        setCodePart(2);
+    }
 
-        addAction(2, it -> {
-            if (it != null && it >= 0 && it <= group.getCapacity()) {
-                fillSize = it;
-                group.setNote("Will fill in " + fillSize + " items");
-                setCodePart(4);
-                return;
-            }
+    @Override
+    protected void run2(Integer value) {
+        if (value != null && value >= 0 && value <= group.getCapacity()) {
+            fillSize = value;
+            group.setNote("Will fill in " + fillSize + " items");
+            setCodePart(4);
+            return;
+        }
 
-            group.setNote("ERROR: can't fill more than " + group.getCapacity() + " items");
-            setCodePart(1);
-        });
+        group.setNote("ERROR: can't fill more than " + group.getCapacity() + " items");
+        setCodePart(1);
+    }
 
-        addAction(4, it -> {
-            group.setSize(0);
-            group.doFill(fillSize);
-            group.resetPosition();
-            group.setNote("Fill completed; total items = " + group.getSize());
-            group.checkDuplicates();
-            setCodePart(5);
-        });
+    @Override
+    protected void run4() {
+        group.setSize(0);
+        group.doFill(fillSize);
+        group.resetPosition();
+        group.setNote("Fill completed; total items = " + group.getSize());
+        group.checkDuplicates();
+        setCodePart(5);
+    }
 
-        addAction(5, it -> {
-            group.setDefaultNote();
-            setCodePart(1);
-        });
+    @Override
+    protected void run5() {
+        group.setDefaultNote();
+        setCodePart(1);
     }
 }

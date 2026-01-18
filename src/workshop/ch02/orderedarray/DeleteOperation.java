@@ -1,34 +1,27 @@
 package workshop.ch02.orderedarray;
 
-import workshop.ch02.BaseOperation;
+import workshop.ch02.BasePersonGroupOperation;
 import workshop.ch02.OperationMode;
 import workshop.ch02.PersonGroup;
 
-class DeleteOperation extends BaseOperation {
-    private final PersonGroup group;
+class DeleteOperation extends BasePersonGroupOperation {
     private int delKey;
     private int lowerBound;
     private int upperBound;
 
     DeleteOperation(PersonGroup group) {
-        super(OperationMode.DELETE);
-        this.group = group;
-
-        addAction(1, it -> run1());
-        addAction(2, this::run2);
-        addAction(3, it -> run3());
-        addAction(4, it -> run4());
-        addAction(5, it -> run5());
-        addAction(6, it -> run6());
+        super(OperationMode.DELETE, group);
     }
 
-    private void run1() {
+    @Override
+    protected void run1() {
         group.resetPosition();
         group.setNote("Enter key of item to delete");
         setCodePart(2);
     }
 
-    private void run2(Integer value) {
+    @Override
+    protected void run2(Integer value) {
         if (value != null && value >= 0 && value <= group.getMaxHeight()) {
             if (!group.isLinearSearch()) {
                 lowerBound = 0;
@@ -45,7 +38,8 @@ class DeleteOperation extends BaseOperation {
         }
     }
 
-    private void run3() {
+    @Override
+    protected void run3() {
         if (group.isLinearSearch()) {
             if (group.getPosition() < group.getSize() && group.getCurrentPerson().getHeight() <= delKey) {
                 if (group.getCurrentPerson().getHeight() == delKey) {
@@ -93,7 +87,8 @@ class DeleteOperation extends BaseOperation {
         }
     }
 
-    private void run4() {
+    @Override
+    protected void run4() {
         if (group.getPosition() < group.getSize() - 1) {
             group.nextPosition();
             group.setPerson(group.getPosition() - 1, group.getCurrentPerson());
@@ -108,12 +103,14 @@ class DeleteOperation extends BaseOperation {
         }
     }
 
-    private void run5() {
+    @Override
+    protected void run5() {
         group.setNote("Deletion not completed");
         setCodePart(6);
     }
 
-    private void run6() {
+    @Override
+    protected void run6() {
         group.resetPosition();
         group.setDefaultNote();
         setCodePart(1);

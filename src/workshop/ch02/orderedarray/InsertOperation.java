@@ -1,13 +1,12 @@
 package workshop.ch02.orderedarray;
 
-import workshop.ch02.BaseOperation;
+import workshop.ch02.BasePersonGroupOperation;
 import workshop.ch02.OperationMode;
 import workshop.ch02.Person;
 import workshop.ch02.PersonGroup;
 import workshop.ch02.Utils;
 
-class InsertOperation extends BaseOperation {
-    private final PersonGroup group;
+class InsertOperation extends BasePersonGroupOperation {
     private int insKey;
     private Person newPerson;
     private boolean noShiftsYet;
@@ -16,24 +15,18 @@ class InsertOperation extends BaseOperation {
     private int upperBound;
 
     InsertOperation(PersonGroup group) {
-        super(OperationMode.INSERT);
-        this.group = group;
-
-        addAction(1, it -> run1());
-        addAction(2, this::run2);
-        addAction(3, it -> run3());
-        addAction(4, it -> run4());
-        addAction(6, it -> run6());
-        addAction(7, it -> run7());
+        super(OperationMode.INSERT, group);
     }
 
-    private void run1() {
+    @Override
+    protected void run1() {
         group.resetPosition();
         group.setNote("Enter key of item to insert");
         setCodePart(2);
     }
 
-    private void run2(Integer value) {
+    @Override
+    protected void run2(Integer value) {
         if (value != null && value >= 0 && value <= group.getMaxHeight()) {
             if (group.getSize() >= group.getCapacity()) {
                 group.setNote("CAN'T INSERT: array is full");
@@ -55,7 +48,8 @@ class InsertOperation extends BaseOperation {
         }
     }
 
-    private void run3() {
+    @Override
+    protected void run3() {
         if (group.getPosition() >= group.getSize()) {
             group.setCurrentPerson(newPerson);
             group.setSize(group.getSize() + 1);
@@ -111,7 +105,8 @@ class InsertOperation extends BaseOperation {
         }
     }
 
-    private void run4() {
+    @Override
+    protected void run4() {
         if (noShiftsYet) {
             group.setShowRange(false);
             noShiftsYet = false;
@@ -132,12 +127,14 @@ class InsertOperation extends BaseOperation {
         }
     }
 
-    private void run6() {
+    @Override
+    protected void run6() {
         group.setNote("Insertion completed; total items = " + group.getSize());
         setCodePart(7);
     }
 
-    private void run7() {
+    @Override
+    protected void run7() {
         group.resetPosition();
         group.setDefaultNote();
         setCodePart(1);
