@@ -89,33 +89,27 @@ public class ArrayFrame extends JFrame implements ActionListener, ItemListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        Integer value;
-
-        try {
-            value = Integer.valueOf(tf.getText());
-        } catch (NumberFormatException ex) {
-            value = null;
-        }
-
         var source = e.getSource();
         if (source == newButton) {
-            personGroup.newArray(value);
+            personGroup.newArray(getValue());
         } else if (source == fillButton) {
-            personGroup.fill(value);
+            personGroup.fill(getValue());
         } else if (source == insButton) {
-            personGroup.insert(value);
+            personGroup.insert(getValue());
         } else if (source == findButton) {
-            personGroup.find(value);
+            personGroup.find(getValue());
         } else if (source == delButton) {
-            personGroup.delete(value);
+            personGroup.delete(getValue());
         }
 
         repaint();
+    }
 
+    private Integer getValue() {
         try {
-            Thread.sleep(10L);
-        } catch (InterruptedException ex) {
-            Thread.currentThread().interrupt();
+            return Integer.valueOf(tf.getText());
+        } catch (NumberFormatException ex) {
+            return null;
         }
     }
 
