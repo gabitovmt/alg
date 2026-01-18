@@ -1,4 +1,4 @@
-package workshop.ch02.array;
+package workshop.ch02;
 
 public interface Operation {
     OperationMode getMode();

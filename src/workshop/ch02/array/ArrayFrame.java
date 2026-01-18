@@ -1,5 +1,7 @@
 package workshop.ch02.array;
 
+import workshop.ch02.PersonGroupPanel;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -13,7 +15,7 @@ public class ArrayFrame extends JFrame implements ActionListener, ItemListener {
     private static final int DEFAULT_WIDTH = 440;
     private static final int DEFAULT_HEIGHT = 320;
 
-    private final transient PersonGroupImpl personGroup;
+    private final transient NonOrderedPersonGroup personGroup;
 
     private final TextField tf;
     private final Checkbox dups;
@@ -121,8 +123,8 @@ public class ArrayFrame extends JFrame implements ActionListener, ItemListener {
     @Override
     public void itemStateChanged(ItemEvent e) {
         boolean isDups = e.getSource() == dups;
-        personGroup.setDupsStatus(isDups);
-        dups.setState(personGroup.getDupsStatus());
-        noDups.setState(!personGroup.getDupsStatus());
+        personGroup.setHasDuplicate(isDups);
+        dups.setState(personGroup.hasDuplicate());
+        noDups.setState(!personGroup.hasDuplicate());
     }
 }

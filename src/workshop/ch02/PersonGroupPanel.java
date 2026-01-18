@@ -1,6 +1,4 @@
-package workshop.ch02.array;
-
-import workshop.ch02.PersonGroup;
+package workshop.ch02;
 
 import javax.swing.*;
 import java.awt.*;
