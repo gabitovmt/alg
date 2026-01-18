@@ -8,6 +8,11 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 public class ArrayFrame extends JFrame implements ActionListener, ItemListener {
+    private static final int DEFAULT_PERSON_CAPACITY = 20;
+    private static final int DEFAULT_PERSON_SIZE = 10;
+    private static final int DEFAULT_WIDTH = 440;
+    private static final int DEFAULT_HEIGHT = 320;
+
     private final transient PersonGroup personGroup;
 
     private final TextField tf;
@@ -77,12 +82,12 @@ public class ArrayFrame extends JFrame implements ActionListener, ItemListener {
         tf = new TextField("", 4);
         numPanel.add(tf);
 
-        personGroup = new PersonGroup(20);
-        personGroup.doFill(10);
+        personGroup = new PersonGroup(DEFAULT_PERSON_CAPACITY);
+        personGroup.doFill(DEFAULT_PERSON_SIZE);
         var personGroupPanel = new PersonGroupPanel(personGroup);
         add(personGroupPanel, BorderLayout.CENTER);
 
-        setSize(440, 320);
+        setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
     }
