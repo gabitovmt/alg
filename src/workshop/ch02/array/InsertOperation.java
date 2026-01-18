@@ -3,13 +3,14 @@ package workshop.ch02.array;
 import workshop.ch02.BaseOperation;
 import workshop.ch02.OperationMode;
 import workshop.ch02.Person;
+import workshop.ch02.PersonGroup;
 import workshop.ch02.Utils;
 
 class InsertOperation extends BaseOperation {
     private int insKey;
     private Person newPerson;
 
-    InsertOperation(NonOrderedPersonGroup group) {
+    InsertOperation(PersonGroup group) {
         super(OperationMode.INSERT);
 
         addAction(1, it -> {

@@ -2,18 +2,17 @@ package workshop.ch02.array;
 
 import workshop.ch02.BaseOperation;
 import workshop.ch02.OperationMode;
+import workshop.ch02.PersonGroup;
 
 class DeleteOperation extends BaseOperation {
-    private final NonOrderedPersonGroup group;
-    private final int maxHeight;
+    private final PersonGroup group;
     private int delKey;
     private int lastDeletion;
     private int nDeleted;
 
-    DeleteOperation(NonOrderedPersonGroup group, int maxHeight) {
+    DeleteOperation(PersonGroup group) {
         super(OperationMode.DELETE);
         this.group = group;
-        this.maxHeight = maxHeight;
 
         addAction(1, it -> run1());
         addAction(2, this::run2);
@@ -36,12 +35,12 @@ class DeleteOperation extends BaseOperation {
     }
 
     private void run2(Integer value) {
-        if (value != null && value >= 0 && value <= maxHeight) {
+        if (value != null && value >= 0 && value <= group.getMaxHeight()) {
             delKey = value;
             group.setNote("Looking for item with key " + delKey);
             setCodePart(3);
         } else {
-            group.setNote("ERROR: use key between 0 and " + maxHeight);
+            group.setNote("ERROR: use key between 0 and " + group.getMaxHeight());
             setCodePart(1);
         }
     }
@@ -78,6 +77,7 @@ class DeleteOperation extends BaseOperation {
             group.setPerson(group.getPosition() - 1, group.getCurrentPerson());
             group.setCurrentPerson(null);
             group.setNote("Shifted item from " + group.getPosition() + " to " + (group.getPosition() - 1));
+            setCodePart(4);
         } else {
             group.setSize(group.getSize() - 1);
             group.setNote("Shifting completed. Total items = " + group.getSize());

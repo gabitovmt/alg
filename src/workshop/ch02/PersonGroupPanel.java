@@ -67,7 +67,7 @@ public class PersonGroupPanel extends JPanel {
     }
 
     private void drawRange(Graphics g, int idx, int x, int y) {
-        g.setColor(idx >= group.getOldLB() && idx <= group.getOldUB() ? Color.BLUE : Color.LIGHT_GRAY);
+        g.setColor(idx >= group.getLowerBound() && idx <= group.getUpperBound() ? Color.BLUE : Color.LIGHT_GRAY);
         g.fillRect(x, y, RANGE_SIZE, CELL_H + 1);
     }
 

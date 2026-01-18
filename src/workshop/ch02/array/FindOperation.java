@@ -2,13 +2,14 @@ package workshop.ch02.array;
 
 import workshop.ch02.BaseOperation;
 import workshop.ch02.OperationMode;
+import workshop.ch02.PersonGroup;
 
 class FindOperation extends BaseOperation {
-    private final NonOrderedPersonGroup group;
+    private final PersonGroup group;
     private int findKey;
     private boolean wasJustFound;
 
-    FindOperation(NonOrderedPersonGroup group) {
+    FindOperation(PersonGroup group) {
         super(OperationMode.FIND);
         this.group = group;
 

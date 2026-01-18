@@ -1,17 +1,18 @@
 package workshop.ch02.orderedarray;
 
+import workshop.ch02.PersonGroupPanel;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.Objects;
 
 public class OrderedArrayFrame extends JFrame implements ActionListener, ItemListener {
     private static final int DEFAULT_PERSON_CAPACITY = 20;
     private static final int DEFAULT_PERSON_SIZE = 10;
-    private static final int DEFAULT_WIDTH = 440;
+    private static final int DEFAULT_WIDTH = 500;
     private static final int DEFAULT_HEIGHT = 320;
 
     private final transient PersonGroupImpl personGroup;
@@ -94,19 +95,17 @@ public class OrderedArrayFrame extends JFrame implements ActionListener, ItemLis
     }
 
     public void actionPerformed(ActionEvent e) {
-        int value = Objects.requireNonNullElse(getValue(), 0);
-        boolean isNumber = value != 0;
-
-        if (e.getSource() == newButton) {
-            personGroup.newArray(isNumber, value);
-        } else if (e.getSource() == fillButton) {
-            personGroup.fill(isNumber, value);
-        } else if (e.getSource() == insButton) {
-            personGroup.insert(isNumber, value);
-        } else if (e.getSource() == findButton) {
-            personGroup.find(isNumber, value);
-        } else if (e.getSource() == delButton) {
-            personGroup.delete(isNumber, value);
+        var source = e.getSource();
+        if (source == newButton) {
+            personGroup.newArray(getValue());
+        } else if (source == fillButton) {
+            personGroup.fill(getValue());
+        } else if (source == insButton) {
+            personGroup.insert(getValue());
+        } else if (source == findButton) {
+            personGroup.find(getValue());
+        } else if (source == delButton) {
+            personGroup.delete(getValue());
         }
 
         repaint();
@@ -122,17 +121,8 @@ public class OrderedArrayFrame extends JFrame implements ActionListener, ItemLis
 
     public void itemStateChanged(ItemEvent e) {
         boolean isLinear = e.getSource() == lin;
-        boolean var3 = personGroup.getSearchType();
-        boolean var4 = personGroup.getChangeStatus();
-        personGroup.setSearchType(isLinear);
-        if (isLinear && var4 && !var3 || !isLinear && !var4 && var3) {
-            lin.setState(true);
-            bin.setState(false);
-        }
-
-        if (!isLinear && var4 && var3 || isLinear && !var4 && !var3) {
-            lin.setState(false);
-            bin.setState(true);
-        }
+        personGroup.setLinearSearch(isLinear);
+        lin.setState(personGroup.isLinearSearch());
+        bin.setState(!personGroup.isLinearSearch());
     }
 }

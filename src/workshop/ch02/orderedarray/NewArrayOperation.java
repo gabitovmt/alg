@@ -1,4 +1,4 @@
-package workshop.ch02.array;
+package workshop.ch02.orderedarray;
 
 import workshop.ch02.BaseOperation;
 import workshop.ch02.OperationMode;
@@ -29,8 +29,13 @@ class NewArrayOperation extends BaseOperation {
         });
 
         addAction(3, it -> {
-            group.setNote("Select Duplicates OK, or No Dups");
-            group.setCanChangeDuplicate(true);
+            group.setNote("Select Linear or Binary Search");
+            group.setCanChangeSearch(true);
+            setCodePart(4);
+        });
+
+        addAction(4, it -> {
+            group.setNote(group.isLinearSearch() ? "User linear search" : "User binary search");
             setCodePart(5);
         });
 
@@ -38,7 +43,6 @@ class NewArrayOperation extends BaseOperation {
             group.setPersons(new Person[newSize]);
             group.setSize(0);
             group.setNote("New array created; total items = " + group.getSize());
-            group.setCanChangeDuplicate(false);
             group.resetPosition();
             setCodePart(6);
         });

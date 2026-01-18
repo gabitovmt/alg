@@ -1,4 +1,4 @@
-package workshop.ch02.array;
+package workshop.ch02.orderedarray;
 
 import workshop.ch02.BaseOperation;
 import workshop.ch02.OperationMode;
@@ -19,7 +19,7 @@ class FillOperation extends BaseOperation {
             if (it != null && it >= 0 && it <= group.getCapacity()) {
                 fillSize = it;
                 group.setNote("Will fill in " + fillSize + " items");
-                setCodePart(3);
+                setCodePart(4);
                 return;
             }
 
@@ -27,18 +27,16 @@ class FillOperation extends BaseOperation {
             setCodePart(1);
         });
 
-        addAction(3, it -> {
+        addAction(4, it -> {
             group.setSize(0);
             group.doFill(fillSize);
             group.resetPosition();
             group.setNote("Fill completed; total items = " + group.getSize());
-            if (!group.hasDuplicate()) {
-                group.checkDuplicates();
-            }
-            setCodePart(4);
+            group.checkDuplicates();
+            setCodePart(5);
         });
 
-        addAction(4, it -> {
+        addAction(5, it -> {
             group.setDefaultNote();
             setCodePart(1);
         });

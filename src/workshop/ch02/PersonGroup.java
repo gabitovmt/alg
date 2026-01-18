@@ -25,8 +25,30 @@ public interface PersonGroup {
 
     boolean isShowRange();
     void setShowRange(boolean isShowRange);
-    int getOldLB();
-    void setOldLB(int oldLB);
-    int getOldUB();
-    void setOldUB(int oldUB);
+    int getLowerBound();
+    void setLowerBound(int lowerBound);
+    int getUpperBound();
+    void setUpperBound(int upperBound);
+    void resetBounds();
+
+    int getMaxHeight();
+    int getMaxSize();
+
+    void doFill(int size);
+    int getDuplicate(int value);
+    void checkDuplicates();
+
+    void newArray(Integer size);
+    void fill(Integer size);
+    void insert(Integer key);
+    void find(Integer key);
+    void delete(Integer key);
+
+    boolean hasDuplicate();
+    void setHasDuplicate(boolean hasDuplicate);
+    void setCanChangeDuplicate(boolean canChangeDuplicate);
+
+    boolean isLinearSearch();
+    void setLinearSearch(boolean isLinearSearch);
+    void setCanChangeSearch(boolean canChangeSearch);
 }
