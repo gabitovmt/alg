@@ -20,6 +20,7 @@ public class BankAccount {
     }
 
     // Вывод баланса
+    @SuppressWarnings("java:S106")
     public void display() {
         System.out.println("balance=" + balance);
     }

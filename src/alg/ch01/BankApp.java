@@ -1,6 +1,8 @@
 package alg.ch01;
 
 public class BankApp {
+
+    @SuppressWarnings("java:S106")
     public static void main(String[] args) {
         // Создание счёта
         var ba1 = new BankAccount(100.00);
