@@ -34,6 +34,6 @@ public abstract class BaseOperation implements Operation {
     }
 
     protected void addAction(int codePart, Consumer<Integer> action) {
-        this.actions.put(codePart, action);
+        actions.put(codePart, action);
     }
 }

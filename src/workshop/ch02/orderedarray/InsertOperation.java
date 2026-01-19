@@ -70,11 +70,11 @@ class InsertOperation extends BasePersonGroupOperation {
                 setCodePart(3);
             }
         } else {
-            run3Else();
+            run3BinarySearch();
         }
     }
 
-    private void run3Else() {
+    private void run3BinarySearch() {
         group.setShowRange(true);
         if (group.getCurrentPerson().getHeight() == insKey) {
             group.setNote("CAN'T INSERT: duplicate at " + group.getPosition());
@@ -96,7 +96,7 @@ class InsertOperation extends BasePersonGroupOperation {
             group.setNote(
                     "Checking index " + group.getPosition() + ", range = " + lowerBound + " to " + upperBound
             );
-            if (group.getCurrentPerson().getHeight() < this.insKey) {
+            if (group.getCurrentPerson().getHeight() < insKey) {
                 lowerBound = group.getPosition() + 1;
             } else {
                 upperBound = group.getPosition() - 1;

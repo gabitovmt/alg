@@ -40,25 +40,29 @@ class FindOperation extends BasePersonGroupOperation {
     @Override
     protected void run3() {
         if (group.isLinearSearch()) {
-            if (group.getPosition() < group.getSize() && group.getCurrentPerson().getHeight() <= findKey) {
-                if (group.getCurrentPerson().getHeight() == findKey) {
-                    group.setNote("Have found item with key " + findKey);
-                    setCodePart(6);
-                } else {
-                    group.nextPosition();
-                    group.setNote("Checking next cell; index = " + group.getPosition());
-                    setCodePart(3);
-                }
-            } else {
-                group.setNote("Can't locate item with key " + findKey);
-                setCodePart(6);
-            }
+            run3LinearSearch();
         } else {
-            run3Else();
+            run3BinarySearch();
         }
     }
 
-    private void run3Else() {
+    private void run3LinearSearch() {
+        if (group.getPosition() < group.getSize() && group.getCurrentPerson().getHeight() <= findKey) {
+            if (group.getCurrentPerson().getHeight() == findKey) {
+                group.setNote("Have found item with key " + findKey);
+                setCodePart(6);
+            } else {
+                group.nextPosition();
+                group.setNote("Checking next cell; index = " + group.getPosition());
+                setCodePart(3);
+            }
+        } else {
+            group.setNote("Can't locate item with key " + findKey);
+            setCodePart(6);
+        }
+    }
+
+    private void run3BinarySearch() {
         group.setShowRange(true);
         if (group.getCurrentPerson().getHeight() == findKey) {
             group.setNote("Have found item with key " + findKey);

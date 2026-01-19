@@ -91,6 +91,7 @@ public class OrderedArrayFrame extends JFrame implements ActionListener, ItemLis
         
         setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Ordered Workshop");
         setVisible(true);
     }
 

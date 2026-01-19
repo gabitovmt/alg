@@ -92,6 +92,7 @@ public class ArrayFrame extends JFrame implements ActionListener, ItemListener {
 
         setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Array Workshop");
         setVisible(true);
     }
 

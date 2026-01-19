@@ -41,33 +41,37 @@ class DeleteOperation extends BasePersonGroupOperation {
     @Override
     protected void run3() {
         if (group.isLinearSearch()) {
-            if (group.getPosition() < group.getSize() && group.getCurrentPerson().getHeight() <= delKey) {
-                if (group.getCurrentPerson().getHeight() == delKey) {
-                    group.setCurrentPerson(null);
-                    group.setNote("Have found and deleted item with key " + delKey);
-                    setCodePart(4);
-                } else {
-                    group.nextPosition();
-                    group.setNote("Checking index = " + group.getPosition() + " for item");
-                    setCodePart(3);
-                }
-            } else {
-                group.setNote("No item with key " + delKey + " found");
-                setCodePart(5);
-            }
+            run3LinearSearch();
         } else {
-            run3Else();
+            run3BinarySearch();
         }
     }
 
-    private void run3Else() {
+    private void run3LinearSearch() {
+        if (group.getPosition() < group.getSize() && group.getCurrentPerson().getHeight() <= delKey) {
+            if (group.getCurrentPerson().getHeight() == delKey) {
+                group.setCurrentPerson(null);
+                group.setNote("Have found and deleted item with key " + delKey);
+                setCodePart(4);
+            } else {
+                group.nextPosition();
+                group.setNote("Checking index = " + group.getPosition() + " for item");
+                setCodePart(3);
+            }
+        } else {
+            group.setNote("No item with key " + delKey + " found");
+            setCodePart(5);
+        }
+    }
+
+    private void run3BinarySearch() {
         group.setShowRange(true);
         if (group.getCurrentPerson().getHeight() == delKey) {
             group.setCurrentPerson(null);
             group.setNote("Have found and deleted item with key " + delKey);
             group.resetBounds();
             setCodePart(4);
-        } else if (this.lowerBound > this.upperBound) {
+        } else if (lowerBound > upperBound) {
             group.setNote("No item with key " + delKey + " found");
             group.resetBounds();
             setCodePart(5);

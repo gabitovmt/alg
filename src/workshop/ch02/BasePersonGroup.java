@@ -22,7 +22,7 @@ public abstract class BasePersonGroup implements PersonGroup {
     private boolean hasDuplicate = false;
     private boolean canChangeDuplicate = false;
 
-    private boolean isLinearSearch = false;
+    private boolean isLinearSearch = true;
     private boolean canChangeSearch = false;
 
     protected Operation operation = new NoneOperation();

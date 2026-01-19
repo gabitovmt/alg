@@ -40,7 +40,7 @@ class NewArrayOperation extends BasePersonGroupOperation {
 
     @Override
     protected void run4() {
-        group.setNote(group.isLinearSearch() ? "User linear search" : "User binary search");
+        group.setNote(group.isLinearSearch() ? "Uses linear search" : "Uses binary search");
         setCodePart(5);
     }
 
