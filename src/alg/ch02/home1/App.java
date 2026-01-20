@@ -14,6 +14,7 @@ public class App {
         ex3();
         ex4();
         ex5();
+        ex6();
     }
 
     private static void ex1() {
@@ -82,6 +83,25 @@ public class App {
             arr1.insert(arr2.get(i));
         }
         arr1.display();
+    }
+
+    private static void ex6() {
+        System.out.println("\nExercise 6");
+
+        var arr = new HighArray(10);
+        arr.insert(1);
+        arr.insert(7);
+        arr.insert(3);
+        arr.insert(7);
+        arr.insert(4);
+        arr.insert(3);
+        arr.insert(7);
+        arr.insert(2);
+        arr.display();
+
+        arr.noDups();
+        arr.display();
+        System.out.println("Size of array: " + arr.size());
     }
 
     private static void fillArray(Array arr) {

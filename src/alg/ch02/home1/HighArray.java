@@ -65,4 +65,22 @@ public class HighArray extends AbstractArray {
 
         return true;
     }
+
+    public void noDups() {
+        int nDeleted = 0;
+        for (int i = 0; i < size; i++) {
+            long value = a[i];
+            for (int j = i + 1; j < size; j++) {
+                if (value == a[j]) {
+                    nDeleted++;
+                    continue;
+                }
+                if (nDeleted > 0) {
+                    a[j - nDeleted] = a[j];
+                }
+            }
+            size -= nDeleted;
+            nDeleted = 0;
+        }
+    }
 }
