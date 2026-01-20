@@ -1,10 +1,10 @@
 package workshop.ch02.orderedarray;
 
-import workshop.ch02.BasePersonGroupOperation;
+import workshop.ch02.AbstractPersonGroupOperation;
 import workshop.ch02.OperationMode;
 import workshop.ch02.PersonGroup;
 
-class FindOperation extends BasePersonGroupOperation {
+class FindOperation extends AbstractPersonGroupOperation {
     private int findKey;
     private int lowerBound;
     private int upperBound;

@@ -4,13 +4,13 @@ import java.awt.*;
 import java.util.Random;
 
 public class Utils {
-    private static final Random rand = new Random();
+    private static final Random RANDOM = new Random();
 
     private Utils() {
     }
 
     private static int nextColorValue() {
-        return 100 + rand.nextInt(155);
+        return 100 + RANDOM.nextInt(155);
     }
 
     public static Color nextColor() {
@@ -18,6 +18,6 @@ public class Utils {
     }
 
     public static int nextHeight() {
-        return rand.nextInt(1000);
+        return RANDOM.nextInt(1000);
     }
 }

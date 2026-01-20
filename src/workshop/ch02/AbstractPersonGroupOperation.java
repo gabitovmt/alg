@@ -1,9 +1,9 @@
 package workshop.ch02;
 
-public abstract class BasePersonGroupOperation extends BaseOperation {
+public abstract class AbstractPersonGroupOperation extends AbstractOperation {
     protected final PersonGroup group;
     
-    protected BasePersonGroupOperation(OperationMode mode, PersonGroup group) {
+    protected AbstractPersonGroupOperation(OperationMode mode, PersonGroup group) {
         super(mode);
         this.group = group;
 

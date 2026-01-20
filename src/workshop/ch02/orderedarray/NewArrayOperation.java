@@ -1,11 +1,11 @@
 package workshop.ch02.orderedarray;
 
-import workshop.ch02.BasePersonGroupOperation;
+import workshop.ch02.AbstractPersonGroupOperation;
 import workshop.ch02.OperationMode;
 import workshop.ch02.Person;
 import workshop.ch02.PersonGroup;
 
-class NewArrayOperation extends BasePersonGroupOperation {
+class NewArrayOperation extends AbstractPersonGroupOperation {
     private int newSize;
 
     NewArrayOperation(PersonGroup group) {

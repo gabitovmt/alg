@@ -1,35 +1,35 @@
 package workshop.ch02.array;
 
-import workshop.ch02.BasePersonGroup;
+import workshop.ch02.AbstractPersonGroup;
 import workshop.ch02.Operation;
 
-public class PersonGroupImpl extends BasePersonGroup {
+public class PersonGroupImpl extends AbstractPersonGroup {
     public PersonGroupImpl(int size) {
         super(size);
     }
 
     @Override
-    protected Operation newArrayOperation(BasePersonGroup group) {
+    protected Operation newArrayOperation(AbstractPersonGroup group) {
         return new NewArrayOperation(group);
     }
 
     @Override
-    protected Operation fillOperation(BasePersonGroup group) {
+    protected Operation fillOperation(AbstractPersonGroup group) {
         return new FillOperation(group);
     }
 
     @Override
-    protected Operation insertOperation(BasePersonGroup group) {
+    protected Operation insertOperation(AbstractPersonGroup group) {
         return new InsertOperation(group);
     }
 
     @Override
-    protected Operation findOperation(BasePersonGroup group) {
+    protected Operation findOperation(AbstractPersonGroup group) {
         return new FindOperation(group);
     }
 
     @Override
-    protected Operation deleteOperation(BasePersonGroup group) {
+    protected Operation deleteOperation(AbstractPersonGroup group) {
         return new DeleteOperation(group);
     }
 }

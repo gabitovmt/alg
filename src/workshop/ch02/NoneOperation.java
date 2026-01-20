@@ -1,6 +1,6 @@
 package workshop.ch02;
 
-public class NoneOperation extends BaseOperation {
+public class NoneOperation extends AbstractOperation {
 
     public NoneOperation() {
         super(OperationMode.NONE);

@@ -1,10 +1,10 @@
 package workshop.ch02.orderedarray;
 
-import workshop.ch02.BasePersonGroupOperation;
+import workshop.ch02.AbstractPersonGroupOperation;
 import workshop.ch02.OperationMode;
 import workshop.ch02.PersonGroup;
 
-class DeleteOperation extends BasePersonGroupOperation {
+class DeleteOperation extends AbstractPersonGroupOperation {
     private int delKey;
     private int lowerBound;
     private int upperBound;

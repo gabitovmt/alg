@@ -1,10 +1,10 @@
 package workshop.ch02.array;
 
-import workshop.ch02.BasePersonGroupOperation;
+import workshop.ch02.AbstractPersonGroupOperation;
 import workshop.ch02.OperationMode;
 import workshop.ch02.PersonGroup;
 
-class FindOperation extends BasePersonGroupOperation {
+class FindOperation extends AbstractPersonGroupOperation {
     private int findKey;
     private boolean wasJustFound;
 

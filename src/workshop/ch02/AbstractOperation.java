@@ -5,12 +5,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-public abstract class BaseOperation implements Operation {
+public abstract class AbstractOperation implements Operation {
     private final OperationMode mode;
     private int codePart = 1;
     private final Map<Integer, Consumer<Integer>> actions = new HashMap<>();
 
-    protected BaseOperation(OperationMode mode) {
+    protected AbstractOperation(OperationMode mode) {
         this.mode = mode;
     }
 

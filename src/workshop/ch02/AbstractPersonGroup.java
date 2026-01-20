@@ -2,7 +2,7 @@ package workshop.ch02;
 
 import java.util.Arrays;
 
-public abstract class BasePersonGroup implements PersonGroup {
+public abstract class AbstractPersonGroup implements PersonGroup {
     protected static final String DEFAULT_NOTE = "Press any button";
     protected static final int MAX_HEIGHT = 999;
     protected static final int MAX_SIZE = 60;
@@ -27,7 +27,7 @@ public abstract class BasePersonGroup implements PersonGroup {
 
     protected Operation operation = new NoneOperation();
 
-    protected BasePersonGroup(int size) {
+    protected AbstractPersonGroup(int size) {
         setPersons(new Person[size]);
     }
 
@@ -293,9 +293,9 @@ public abstract class BasePersonGroup implements PersonGroup {
         operation.run(key);
     }
 
-    protected abstract Operation newArrayOperation(BasePersonGroup group);
-    protected abstract Operation fillOperation(BasePersonGroup group);
-    protected abstract Operation insertOperation(BasePersonGroup group);
-    protected abstract Operation findOperation(BasePersonGroup group);
-    protected abstract Operation deleteOperation(BasePersonGroup group);
+    protected abstract Operation newArrayOperation(AbstractPersonGroup group);
+    protected abstract Operation fillOperation(AbstractPersonGroup group);
+    protected abstract Operation insertOperation(AbstractPersonGroup group);
+    protected abstract Operation findOperation(AbstractPersonGroup group);
+    protected abstract Operation deleteOperation(AbstractPersonGroup group);
 }
