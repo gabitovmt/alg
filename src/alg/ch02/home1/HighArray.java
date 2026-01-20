@@ -1,16 +1,13 @@
 package alg.ch02.home1;
 
-public class HighArray {
-    private final long[] a;
-    private int size;
+public class HighArray extends AbstractArray {
 
     public HighArray(int max) {
-        a = new long[max];
-        size = 0;
+        super(max);
     }
 
     public long getMax() {
-        if (size == 0) {
+        if (isEmpty()) {
             return -1;
         }
 
@@ -25,28 +22,30 @@ public class HighArray {
     }
 
     public void removeMax() {
-        long max = getMax();
-        if (max == -1) {
+        if (isEmpty()) {
             return;
         }
 
-        delete(max);
+        delete(getMax());
     }
 
-    public boolean find(long searchKey) {
+    @Override
+    public int find(long value) {
         for (int i = 0; i < size; i++) {
-            if (a[i] == searchKey) {
-                return true;
+            if (a[i] == value) {
+                return i;
             }
         }
 
-        return false;
+        return size - 1;
     }
 
+    @Override
     public void insert(long value) {
         a[size++] = value;
     }
 
+    @Override
     public boolean delete(long value) {
         int i;
         for (i = 0; i < size; i++) {
@@ -65,13 +64,5 @@ public class HighArray {
         size--;
 
         return true;
-    }
-
-    @SuppressWarnings("java:S106")
-    public void display() {
-        for (int i = 0; i < size; i++) {
-            System.out.print(a[i] + " ");
-        }
-        System.out.println();
     }
 }
