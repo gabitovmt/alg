@@ -46,7 +46,7 @@ public class ClassDataArray {
         }
 
         // Сдвиг последующих элементов
-        for (int k = j; k < nElems; k++) {
+        for (int k = j; k < nElems - 1; k++) {
             a[k] = a[k + 1];
         }
         nElems--;
