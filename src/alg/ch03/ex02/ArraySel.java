@@ -1,6 +1,6 @@
 package alg.ch03.ex02;
 
-// Массив с сортировкой выбора
+// Массив с сортировкой методом выбора
 public class ArraySel {
     private final long[] a;
     private int nElems;
