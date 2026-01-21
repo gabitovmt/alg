@@ -1,5 +1,6 @@
 package workshop.ch03.bubblesort;
 
+import workshop.ch03.BarPanel;
 import workshop.ch03.GroupBS;
 import workshop.ch03.Order;
 
@@ -9,13 +10,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class BubbleSortFrame extends JFrame implements Runnable, ActionListener {
-    private static final int DEFAULT_WIDTH = 370;
-    private static final int DEFAULT_HEIGHT = 320;
+    private static final int DEFAULT_WIDTH = 400;
+    private static final int DEFAULT_HEIGHT = 370;
 
-    private Image offscreenImage;
-    private Graphics offscreenGraphics;
-    private int aWidth;
-    private int aHeight;
     private GroupBS personGroup;
 
     private boolean runFlag;
@@ -33,49 +30,42 @@ public class BubbleSortFrame extends JFrame implements Runnable, ActionListener 
     }
 
     public BubbleSortFrame() {
-        personGroup = new GroupBS(groupSize, order);
-        setLayout(new FlowLayout(FlowLayout.RIGHT));
+        setLayout(new BorderLayout());
+
+        var btnPanel = new Panel();
+        btnPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        add(btnPanel, BorderLayout.NORTH);
 
         newButton = new Button("New");
         newButton.addActionListener(this);
-        add(newButton);
+        btnPanel.add(newButton);
 
         sizeButton = new Button("Size");
         sizeButton.addActionListener(this);
-        add(sizeButton);
+        btnPanel.add(sizeButton);
 
         drawButton = new Button("Draw");
         drawButton.addActionListener(this);
-        add(drawButton);
+        btnPanel.add(drawButton);
 
         runButton = new Button("Run");
         runButton.addActionListener(this);
-        add(runButton);
+        btnPanel.add(runButton);
 
         stepButton = new Button("Step");
         stepButton.addActionListener(this);
-        add(stepButton);
+        btnPanel.add(stepButton);
 
-        this.aWidth = this.personGroup.getAppletWidth();
-        this.aHeight = this.personGroup.getAppletHeight();
-        this.offscreenImage = ((Component)this).createImage(this.aWidth, this.aHeight);
-//        this.offscreenGraphics = this.offscreenImage.getGraphics();
-        this.personGroup.setDrawMode(2);
-        this.runFlag = false;
+        personGroup = new GroupBS(groupSize, order);
+        var barPanel = new BarPanel(personGroup);
+        add(barPanel, BorderLayout.CENTER);
+
+        runFlag = false;
 
         setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("BubbleSort Workshop");
         setVisible(true);
-    }
-
-    public void paint(Graphics var1) {
-        this.personGroup.draw(this.offscreenGraphics);
-        var1.drawImage(this.offscreenImage, 0, 0, this);
-    }
-
-    public void update(Graphics var1) {
-        this.paint(var1);
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -89,13 +79,11 @@ public class BubbleSortFrame extends JFrame implements Runnable, ActionListener 
             personGroup = new GroupBS(groupSize, order);
         } else if (e.getSource() == drawButton) {
             runFlag = false;
-            personGroup.setDrawMode(2);
         } else if (e.getSource() == runButton) {
             runFlag = true;
         } else if (e.getSource() == stepButton) {
             runFlag = false;
             personGroup.sortStep();
-            personGroup.setDrawMode(1);
         }
 
         repaint();

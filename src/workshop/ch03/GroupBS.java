@@ -1,164 +1,94 @@
 package workshop.ch03;
 
-import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.*;
 
-public class GroupBS {
-    private final int appletWidth = 370;
-    private final int appletHeight = 320;
-    private final int maxHeight = 200;
-    private final int topMargin = 30;
-    private final int leftMargin = 10;
-    private final int barLeftMargin = 35;
-    private final int textHeight = 13;
-
+public class GroupBS implements PersonGroup {
     private Person[] array;
-    private int size;
+    private int length;
 
-    private int barWidth;
-    private int barSeparation;
-    private int outer;
-    private int inner;
-    private int innerOld;
-    private boolean swapFlag;
-    private boolean doneFlag;
-    private int comps;
     private int swaps;
-    private int drawMode;
+    private int comps;
+    private int inner;
+    private int outer;
+    private boolean doneFlag;
 
     public GroupBS(int var1, Order initOrder) {
-        this.size = var1;
-        this.array = new Person[this.size];
-        if (this.size == 100) {
-            this.barWidth = 2;
-            this.barSeparation = 1;
-        } else {
-            this.barWidth = 20;
-            this.barSeparation = 10;
-        }
+        length = var1;
+        array = new Person[length];
 
-        this.outer = this.size - 1;
-        this.inner = 0;
-        this.comps = 0;
-        this.swaps = 0;
-        this.swapFlag = false;
-        this.doneFlag = false;
-        this.drawMode = 2;
+        outer = length - 1;
+        inner = 0;
+        comps = 0;
+        swaps = 0;
+        doneFlag = false;
 
         if (initOrder == Order.RANDOM) {
-            for (int i = 0; i < size; ++i) {
+            for (int i = 0; i < length; ++i) {
                 array[i] = new Person(Utils.nextHeight(), Utils.nextColor());
             }
         } else {
-            for (int i = 0; i < this.size; ++i) {
-                int height = 199 - 199 * i / this.size;
+            for (int i = 0; i < length; ++i) {
+                int height = 199 - 199 * i / length;
                 var color = new Color(255 - height, 85 * (i % 3), height);
                 array[i] = new Person(height, color);
             }
         }
     }
 
-    public void setDrawMode(int var1) {
-        this.drawMode = var1;
+    @Override
+    public Person person(int index) {
+        return array[index];
     }
 
-    public int getAppletWidth() {
-        return 370;
+    @Override
+    public int length() {
+        return length;
     }
 
-    public int getAppletHeight() {
-        return 320;
+    @Override
+    public int swaps() {
+        return swaps;
     }
 
-    public boolean getDone() {
-        return this.doneFlag;
+    @Override
+    public int comps() {
+        return comps;
     }
 
-    public void arrowText(Graphics var1, Color var2, String var3, int var4, int var5, boolean var6, boolean var7) {
-        int var8 = 35 + var4 * (this.barWidth + this.barSeparation);
-        int var9 = 230 + (var5 + 1) * 13;
-        var1.setColor(var2);
-        if (var7) {
-            var1.drawString(var3, var8, var9);
-        }
-
-        if (var6) {
-            var1.drawLine(var8 + this.barWidth / 2, 232, var8 + this.barWidth / 2, var9 - 13);
-            var1.drawLine(var8 + this.barWidth / 2, 232, var8 + this.barWidth / 2 - 3, 237);
-            var1.drawLine(var8 + this.barWidth / 2, 232, var8 + this.barWidth / 2 + 3, 237);
-        }
-
+    @Override
+    public int inner() {
+        return inner;
     }
 
-    public void drawOneBar(Graphics var1, int var2) {
-        int var3 = this.array[var2].getHeight();
-        int var4 = 35 + var2 * (this.barWidth + this.barSeparation);
-        int var5 = 230 - var3;
-        Color var6 = this.array[var2].getColor();
-        var1.setColor(Color.lightGray);
-        var1.fillRect(var4, 30, this.barWidth, 200);
-        var1.setColor(var6);
-        var1.fill3DRect(var4, var5, this.barWidth, var3, true);
+    @Override
+    public int outer() {
+        return outer;
     }
 
-    public void draw(Graphics var1) {
-        if (this.drawMode != 2) {
-            if (this.swapFlag) {
-                this.drawOneBar(var1, this.innerOld);
-                this.drawOneBar(var1, this.innerOld + 1);
-                this.swapFlag = false;
-            }
-        } else {
-            var1.setColor(Color.lightGray);
-            var1.fillRect(0, 0, 370, 320);
+    @Override
+    public boolean doneFlag() {
+        return doneFlag;
+    }
 
-            for (int var2 = 0; var2 < this.size; ++var2) {
-                this.drawOneBar(var1, var2);
-            }
-        }
-
-        var1.setColor(Color.lightGray);
-        var1.fillRect(0, 0, 150, 32);
-        var1.setColor(Color.black);
-        var1.drawString("Comparisons = " + this.comps, 10, 28);
-        var1.drawString("Swaps = " + this.swaps, 10, 15);
-        var1.setColor(Color.lightGray);
-        var1.fillRect(0, 230, 370, 65);
-        if (this.size == 10) {
-            this.arrowText(var1, Color.red, "outer", this.outer, 3, true, true);
-            this.arrowText(var1, Color.blue, "inner", this.inner, 1, true, true);
-            this.arrowText(var1, Color.blue, "inner+1", this.inner + 1, 1, true, true);
-            if (this.doneFlag) {
-                this.arrowText(var1, Color.black, "Sort is complete", this.inner, 2, false, true);
-            } else if (this.array[this.inner].getHeight() > this.array[this.inner + 1].getHeight()) {
-                this.arrowText(var1, Color.blue, "Will be swapped", this.inner, 2, false, true);
-            } else {
-                this.arrowText(var1, Color.blue, "Will not be swapped", this.inner, 2, false, true);
-            }
-        } else {
-            this.arrowText(var1, Color.red, "xxx", this.outer, 3, true, false);
-            this.arrowText(var1, Color.blue, "xxx", this.inner, 1, true, false);
-            this.arrowText(var1, Color.blue, "xxx", this.inner + 1, 1, true, false);
-        }
-
-        this.drawMode = 2;
+    @Override
+    public BarMode barMode() {
+        return length <= 10 ? BarMode.NORMAL : BarMode.NARROW;
     }
 
     public void sortStep() {
-        if (!this.doneFlag) {
-            ++this.comps;
-            if (this.array[this.inner].getHeight() > this.array[this.inner + 1].getHeight()) {
-                this.swap(this.inner, this.inner + 1);
-                this.swapFlag = true;
-                ++this.swaps;
+        if (!doneFlag) {
+            ++comps;
+            if (array[inner].getHeight() > array[inner + 1].getHeight()) {
+                swap(inner, inner + 1);
+                ++swaps;
             }
 
-            this.innerOld = this.inner++;
-            if (this.inner > this.outer - 1) {
-                this.inner = 0;
-                --this.outer;
-                if (this.outer == 0) {
-                    this.doneFlag = true;
+            inner++;
+            if (inner > outer - 1) {
+                inner = 0;
+                --outer;
+                if (outer == 0) {
+                    doneFlag = true;
                 }
             }
         }
