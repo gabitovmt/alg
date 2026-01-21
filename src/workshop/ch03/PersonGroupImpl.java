@@ -1,6 +1,7 @@
 package workshop.ch03;
 
 import java.awt.*;
+import java.util.List;
 
 public class PersonGroupImpl extends AbstractPersonGroup {
 
@@ -51,5 +52,32 @@ public class PersonGroupImpl extends AbstractPersonGroup {
                 doneFlag = true;
             }
         }
+    }
+
+    @Override
+    public List<ArrowText> arrowTexts() {
+        if (barMode() == BarMode.NARROW) {
+            return List.of(
+                    ArrowText.ofArrow(outer, 3, Color.RED),
+                    ArrowText.ofArrow(inner, 1, Color.BLUE),
+                    ArrowText.ofArrow(inner + 1, 1, Color.BLUE)
+            );
+        }
+
+        ArrowText comment;
+        if (doneFlag) {
+            comment = ArrowText.ofText("Sort is complete", inner, 2, Color.BLACK);
+        } else if (person(inner).getHeight() > person(inner + 1).getHeight()) {
+            comment = ArrowText.ofText("Will be swapped", inner, 2, Color.BLUE);
+        } else {
+            comment = ArrowText.ofText("Will not be swapped", inner, 2, Color.BLUE);
+        }
+
+        return List.of(
+                ArrowText.of("outer", outer, 3, Color.RED),
+                ArrowText.of("inner", inner, 1, Color.BLUE),
+                ArrowText.of("inner+1", inner + 1, 1, Color.BLUE),
+                comment
+        );
     }
 }

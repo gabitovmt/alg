@@ -14,7 +14,7 @@ public class BarPanel extends JPanel {
     private static final int NORMAL_SEPARATION_WIDTH = 10;
     private static final int NARROW_SEPARATION_WIDTH = 1;
 
-    private final PersonGroup pg;
+    private final transient PersonGroup pg;
 
     public BarPanel(PersonGroup personGroup) {
         this.pg = personGroup;
@@ -63,40 +63,25 @@ public class BarPanel extends JPanel {
         }
     }
 
-    private void arrowText(Graphics g, Color c, String text, int idxX, int idxY, boolean showArrow, boolean showText) {
-        int x = PADDING + idxX * (getBarWidth() + getBarSeparation());
+    private void drawArrowText(Graphics g, ArrowText at) {
+        int x = PADDING + at.indexX() * (getBarWidth() + getBarSeparation());
         int y = PADDING + STATS_HEIGHT + BAR_MAX_HEIGHT;
-        g.setColor(c);
+        g.setColor(at.color());
 
-        if (showText) {
-            g.drawString(text, x, y + (idxY + 1) * TEXT_HEIGHT);
+        if (at.showText()) {
+            g.drawString(at.text(), x, y + (at.indexY() + 1) * TEXT_HEIGHT);
         }
 
-        if (showArrow) {
+        if (at.showArrow()) {
             int x1 = x + getBarWidth() / 2;
-            g.drawLine(x1, y, x1, y + idxY * TEXT_HEIGHT);
+            g.drawLine(x1, y, x1, y + at.indexY() * TEXT_HEIGHT);
             g.drawLine(x1, y, x1 - ARROW_SIZE, y + ARROW_SIZE);
             g.drawLine(x1, y, x1 + ARROW_SIZE, y + ARROW_SIZE);
         }
     }
 
     private void drawArrowTexts(Graphics g) {
-        if (pg.barMode() == BarMode.NORMAL) {
-            arrowText(g, Color.RED, "outer", pg.outer(), 3, true, true);
-            arrowText(g, Color.BLUE, "inner", pg.inner(), 1, true, true);
-            arrowText(g, Color.BLUE, "inner+1", pg.inner() + 1, 1, true, true);
-            if (pg.doneFlag()) {
-                arrowText(g, Color.BLACK, "Sort is complete", pg.inner(), 2, false, true);
-            } else if (pg.person(pg.inner()).getHeight() > pg.person(pg.inner() + 1).getHeight()) {
-                arrowText(g, Color.BLUE, "Will be swapped", pg.inner(), 2, false, true);
-            } else {
-                arrowText(g, Color.BLUE, "Will not be swapped", pg.inner(), 2, false, true);
-            }
-        } else {
-            arrowText(g, Color.RED, "xxx", pg.outer(), 3, true, false);
-            arrowText(g, Color.BLUE, "xxx", pg.inner(), 1, true, false);
-            arrowText(g, Color.BLUE, "xxx", pg.inner() + 1, 1, true, false);
-        }
+        pg.arrowTexts().forEach(at -> drawArrowText(g, at));
     }
 
     public void draw(Graphics g) {
