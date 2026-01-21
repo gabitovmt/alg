@@ -1,7 +1,8 @@
 package workshop.ch03.bubblesort;
 
 import workshop.ch03.BarPanel;
-import workshop.ch03.GroupBS;
+import workshop.ch03.PersonGroup;
+import workshop.ch03.PersonGroupImpl;
 import workshop.ch03.Order;
 
 import javax.swing.*;
@@ -12,12 +13,14 @@ import java.awt.event.ActionListener;
 public class BubbleSortFrame extends JFrame implements Runnable, ActionListener {
     private static final int DEFAULT_WIDTH = 400;
     private static final int DEFAULT_HEIGHT = 370;
+    private static final int NORMAL_SIZE = 10;
+    private static final int LARGE_SIZE = 100;
 
-    private GroupBS personGroup;
+    private final transient PersonGroup personGroup;
 
-    private boolean runFlag;
-    private int groupSize = 10;
     private Order order = Order.RANDOM;
+    private int size = NORMAL_SIZE;
+    private boolean runFlag = false;
 
     private final Button newButton;
     private final Button sizeButton;
@@ -56,11 +59,9 @@ public class BubbleSortFrame extends JFrame implements Runnable, ActionListener 
         stepButton.addActionListener(this);
         btnPanel.add(stepButton);
 
-        personGroup = new GroupBS(groupSize, order);
+        personGroup = new PersonGroupImpl(size, order);
         var barPanel = new BarPanel(personGroup);
         add(barPanel, BorderLayout.CENTER);
-
-        runFlag = false;
 
         setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -71,12 +72,12 @@ public class BubbleSortFrame extends JFrame implements Runnable, ActionListener 
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == newButton) {
             runFlag = false;
-            order = order == Order.RANDOM ? Order.DESC : Order.RANDOM;
-            personGroup = new GroupBS(groupSize, order);
+            changeOrder();
+            personGroup.createPeople(size, order);
         } else if (e.getSource() == sizeButton) {
             runFlag = false;
-            groupSize = groupSize == 10 ? 100 : 10;
-            personGroup = new GroupBS(groupSize, order);
+            changeSize();
+            personGroup.createPeople(size, order);
         } else if (e.getSource() == drawButton) {
             runFlag = false;
         } else if (e.getSource() == runButton) {
@@ -87,6 +88,14 @@ public class BubbleSortFrame extends JFrame implements Runnable, ActionListener 
         }
 
         repaint();
+    }
+
+    private void changeOrder() {
+        order = order == Order.RANDOM ? Order.DESC : Order.RANDOM;
+    }
+
+    private void changeSize() {
+        size = size == NORMAL_SIZE ? LARGE_SIZE : NORMAL_SIZE;
     }
 
     public void run() {

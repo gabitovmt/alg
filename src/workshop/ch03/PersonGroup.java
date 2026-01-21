@@ -10,4 +10,7 @@ public interface PersonGroup {
     int outer();
     boolean doneFlag();
     BarMode barMode();
+
+    void createPeople(int size, Order order);
+    void sortStep();
 }
