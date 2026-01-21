@@ -8,8 +8,6 @@ public interface PersonGroup {
 
     int swaps();
     int comps();
-    int inner();
-    int outer();
     boolean doneFlag();
     BarMode barMode();
     List<ArrowText> arrowTexts();

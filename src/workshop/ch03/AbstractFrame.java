@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class AbstractFrame extends JFrame implements ActionListener {
     protected static final int DEFAULT_WIDTH = 400;
-    protected static final int DEFAULT_HEIGHT = 370;
+    protected static final int DEFAULT_HEIGHT = 400;
     protected static final int NORMAL_SIZE = 10;
     protected static final int LARGE_SIZE = 100;
     protected static final int NORMAL_DELAY = 250;
