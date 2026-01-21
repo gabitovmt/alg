@@ -41,15 +41,22 @@ public class BarPanel extends JPanel {
         g.setColor(Color.LIGHT_GRAY);
         g.fillRect(x, y, (int) g.getClipBounds().getWidth() - 2 * PADDING, STATS_HEIGHT);
         g.setColor(Color.BLACK);
-        g.drawString("Swaps = " + pg.swaps(), x, y + TEXT_HEIGHT);
-        g.drawString("Comparisons = " + pg.comps(), x, y + 2 * TEXT_HEIGHT);
+
+        var texts = pg.statusTexts();
+        for (int i = 0; i < texts.size(); i++) {
+            g.drawString(texts.get(i), x, y + i * TEXT_HEIGHT);
+        }
     }
 
-    private void drawOneBar(Graphics g, int idx) {
-        int height = pg.person(idx).getHeight();
+    private void drawOneBar(Graphics g, int idx, Person person) {
+        if (person == null) {
+            return;
+        }
+
+        int height = person.height();
         int x = PADDING + idx * (getBarWidth() + getBarSeparation());
         int y = PADDING + STATS_HEIGHT + BAR_MAX_HEIGHT - height;
-        Color c = pg.person(idx).getColor();
+        Color c = person.color();
 
         g.setColor(Color.LIGHT_GRAY);
         g.fillRect(x, PADDING + STATS_HEIGHT, getBarWidth(), BAR_MAX_HEIGHT);
@@ -58,9 +65,10 @@ public class BarPanel extends JPanel {
     }
 
     private void drawBars(Graphics g) {
-        for (int idx = 0; idx < pg.length(); ++idx) {
-            drawOneBar(g, idx);
+        for (int idx = 0; idx < pg.size(); ++idx) {
+            drawOneBar(g, idx, pg.person(idx));
         }
+        drawOneBar(g, pg.size(), pg.tempPerson());
     }
 
     private void drawArrowText(Graphics g, ArrowText at) {

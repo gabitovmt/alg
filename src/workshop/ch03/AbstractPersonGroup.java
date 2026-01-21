@@ -4,9 +4,12 @@ import java.awt.*;
 
 public abstract class AbstractPersonGroup implements PersonGroup {
     protected Person[] a;
+    protected Person tempPerson;
 
-    protected int swaps;
-    protected int comps;
+    protected Integer swaps;
+    protected Integer comps;
+    protected Integer copies;
+
     protected boolean doneFlag;
 
     protected int inner;
@@ -18,18 +21,13 @@ public abstract class AbstractPersonGroup implements PersonGroup {
     }
 
     @Override
-    public int length() {
+    public Person tempPerson() {
+        return tempPerson;
+    }
+
+    @Override
+    public int size() {
         return a.length;
-    }
-
-    @Override
-    public int swaps() {
-        return swaps;
-    }
-
-    @Override
-    public int comps() {
-        return comps;
     }
 
     @Override
@@ -39,7 +37,7 @@ public abstract class AbstractPersonGroup implements PersonGroup {
 
     @Override
     public BarMode barMode() {
-        return a.length <= 10 ? BarMode.NORMAL : BarMode.NARROW;
+        return a.length <= 12 ? BarMode.NORMAL : BarMode.NARROW;
     }
 
     protected void swap(int a, int b) {
@@ -54,7 +52,10 @@ public abstract class AbstractPersonGroup implements PersonGroup {
 
         comps = 0;
         swaps = 0;
+        copies = 0;
         doneFlag = false;
+        inner = 0;
+        outer = 0;
 
         if (order == Order.RANDOM) {
             for (int i = 0; i < a.length; ++i) {

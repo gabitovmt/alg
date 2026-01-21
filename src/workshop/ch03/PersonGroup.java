@@ -4,12 +4,12 @@ import java.util.List;
 
 public interface PersonGroup {
     Person person(int index);
-    int length();
+    Person tempPerson();
+    int size();
 
-    int swaps();
-    int comps();
     boolean doneFlag();
     BarMode barMode();
+    List<String> statusTexts();
     List<ArrowText> arrowTexts();
 
     void createPeople(int size, Order order);

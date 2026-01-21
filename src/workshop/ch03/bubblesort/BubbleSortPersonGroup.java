@@ -16,10 +16,10 @@ public class BubbleSortPersonGroup extends AbstractPersonGroup {
 
     @Override
     public void createPeople(int size, Order order) {
+        super.createPeople(size, order);
+
         inner = 0;
         outer = size - 1;
-
-        super.createPeople(size, order);
     }
 
     @Override
@@ -29,7 +29,7 @@ public class BubbleSortPersonGroup extends AbstractPersonGroup {
         }
 
         ++comps;
-        if (a[inner].getHeight() > a[inner + 1].getHeight()) {
+        if (a[inner].height() > a[inner + 1].height()) {
             swap(inner, inner + 1);
             ++swaps;
         }
@@ -45,6 +45,14 @@ public class BubbleSortPersonGroup extends AbstractPersonGroup {
     }
 
     @Override
+    public List<String> statusTexts() {
+        return List.of(
+                "Swaps = " + swaps,
+                "Comparisons = " + comps
+        );
+    }
+
+    @Override
     public List<ArrowText> arrowTexts() {
         if (barMode() == BarMode.NARROW) {
             return List.of(
@@ -57,7 +65,7 @@ public class BubbleSortPersonGroup extends AbstractPersonGroup {
         ArrowText comment;
         if (doneFlag) {
             comment = ArrowText.ofText("Sort is complete", inner, 2, Color.BLACK);
-        } else if (person(inner).getHeight() > person(inner + 1).getHeight()) {
+        } else if (person(inner).height() > person(inner + 1).height()) {
             comment = ArrowText.ofText("Will be swapped", inner, 2, Color.BLUE);
         } else {
             comment = ArrowText.ofText("Will not be swapped", inner, 2, Color.BLUE);

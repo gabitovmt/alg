@@ -75,7 +75,7 @@ public abstract class AbstractFrame extends JFrame implements ActionListener {
             changeSize();
             personGroup.createPeople(size, order);
         } else if (e.getSource() == runButton) {
-            int delay = personGroup.length() == NORMAL_SIZE ? NORMAL_DELAY : FAST_DELAY;
+            int delay = personGroup.size() == NORMAL_SIZE ? NORMAL_DELAY : FAST_DELAY;
             scheduledSort = executor.scheduleAtFixedRate(this::runSort, delay, delay, TimeUnit.MILLISECONDS);
         } else if (e.getSource() == stepButton) {
             personGroup.sortStep();

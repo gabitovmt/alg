@@ -18,12 +18,12 @@ public class SelectSortPersonGroup extends AbstractPersonGroup {
 
     @Override
     public void createPeople(int size, Order order) {
+        super.createPeople(size, order);
+
         inner = 1;
         outer = 0;
         min = 0;
         searchFlag = true;
-
-        super.createPeople(size, order);
     }
 
     public void sortStep() {
@@ -33,7 +33,7 @@ public class SelectSortPersonGroup extends AbstractPersonGroup {
 
         if (searchFlag) {
             ++comps;
-            if (a[inner].getHeight() < a[min].getHeight()) {
+            if (a[inner].height() < a[min].height()) {
                 min = inner;
             }
 
@@ -55,6 +55,14 @@ public class SelectSortPersonGroup extends AbstractPersonGroup {
                 doneFlag = true;
             }
         }
+    }
+
+    @Override
+    public List<String> statusTexts() {
+        return List.of(
+                "Swaps = " + swaps,
+                "Comparisons = " + comps
+        );
     }
 
     @Override
