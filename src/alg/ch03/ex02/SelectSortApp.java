@@ -1,10 +1,10 @@
-package alg.ch03.ex01;
+package alg.ch03.ex02;
 
-// Пузырьковая сортировка
-public class BubbleSortApp {
+// Сортировка методом выбора
+public class SelectSortApp {
 
     public static void main(String[] args) {
-        var arr = new ArrayBub(100);
+        var arr = new ArraySel(100);
         arr.insert(77);
         arr.insert(99);
         arr.insert(44);
@@ -17,7 +17,7 @@ public class BubbleSortApp {
         arr.insert(33);
         arr.display();
 
-        arr.bubbleSort();
+        arr.selectionSort();
         arr.display();
     }
 }

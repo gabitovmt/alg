@@ -1,11 +1,11 @@
-package alg.ch03.ex01;
+package alg.ch03.ex02;
 
-// Массив с пузырьковой сортировкой
-public class ArrayBub {
+// Массив с сортировкой выбора
+public class ArraySel {
     private final long[] a;
     private int nElems;
 
-    public ArrayBub(int max) {
+    public ArraySel(int max) {
         a = new long[max];
         nElems = 0;
     }
@@ -22,17 +22,20 @@ public class ArrayBub {
         System.out.println();
     }
 
-    public void bubbleSort() {
+    public void selectionSort() {
         // Внешний цикл
-        for (int out = nElems - 1; out > 1; out--) {
+        for (int out = 0; out < nElems - 1; out++) {
+            // Минимум
+            int min = out;
             // Внутренний цикл
-            for (int in = 0; in < out; in++) {
-                // Порядок нарушен?
-                if (a[in] > a[in + 1]) {
-                    // Поменять местами
-                    swap(in, in + 1);
+            for (int in = out + 1; in < nElems; in++) {
+                if (a[in] < a[min]) {
+                    // Значение min больше, значит найден новый минимум
+                    min = in;
                 }
             }
+            // Поменять местами
+            swap(out, min);
         }
     }
 
