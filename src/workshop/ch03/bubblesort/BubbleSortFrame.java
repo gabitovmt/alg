@@ -1,30 +1,37 @@
 package workshop.ch03.bubblesort;
 
 import workshop.ch03.BarPanel;
+import workshop.ch03.Order;
 import workshop.ch03.PersonGroup;
 import workshop.ch03.PersonGroupImpl;
-import workshop.ch03.Order;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
-public class BubbleSortFrame extends JFrame implements Runnable, ActionListener {
+public class BubbleSortFrame extends JFrame implements ActionListener {
     private static final int DEFAULT_WIDTH = 400;
     private static final int DEFAULT_HEIGHT = 370;
     private static final int NORMAL_SIZE = 10;
     private static final int LARGE_SIZE = 100;
+    private static final int NORMAL_DELAY = 250;
+    private static final int FAST_DELAY = 75;
+
+    private final transient ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+    private transient ScheduledFuture<?> scheduledSort;
 
     private final transient PersonGroup personGroup;
 
     private Order order = Order.RANDOM;
     private int size = NORMAL_SIZE;
-    private boolean runFlag = false;
 
     private final Button newButton;
     private final Button sizeButton;
-    private final Button drawButton;
     private final Button runButton;
     private final Button stepButton;
 
@@ -47,10 +54,6 @@ public class BubbleSortFrame extends JFrame implements Runnable, ActionListener 
         sizeButton.addActionListener(this);
         btnPanel.add(sizeButton);
 
-        drawButton = new Button("Draw");
-        drawButton.addActionListener(this);
-        btnPanel.add(drawButton);
-
         runButton = new Button("Run");
         runButton.addActionListener(this);
         btnPanel.add(runButton);
@@ -70,20 +73,18 @@ public class BubbleSortFrame extends JFrame implements Runnable, ActionListener 
     }
 
     public void actionPerformed(ActionEvent e) {
+        stopSort();
+
         if (e.getSource() == newButton) {
-            runFlag = false;
             changeOrder();
             personGroup.createPeople(size, order);
         } else if (e.getSource() == sizeButton) {
-            runFlag = false;
             changeSize();
             personGroup.createPeople(size, order);
-        } else if (e.getSource() == drawButton) {
-            runFlag = false;
         } else if (e.getSource() == runButton) {
-            runFlag = true;
+            int delay = personGroup.length() == NORMAL_SIZE ? NORMAL_DELAY : FAST_DELAY;
+            scheduledSort = executor.scheduleAtFixedRate(this::runSort, delay, delay, TimeUnit.MILLISECONDS);
         } else if (e.getSource() == stepButton) {
-            runFlag = false;
             personGroup.sortStep();
         }
 
@@ -98,22 +99,20 @@ public class BubbleSortFrame extends JFrame implements Runnable, ActionListener 
         size = size == NORMAL_SIZE ? LARGE_SIZE : NORMAL_SIZE;
     }
 
-    public void run() {
-//        Thread var1 = Thread.currentThread();
-//
-//        while(this.runner == var1) {
-//            if (this.runFlag && !this.thePersonGroup.getDone()) {
-//                this.thePersonGroup.sortStep();
-//                ((Component)this).repaint();
-//                this.thePersonGroup.setDrawMode(1);
-//                int var2 = this.groupSize == 10 ? 250 : 75;
-//
-//                try {
-//                    Thread.sleep((long)var2);
-//                } catch (InterruptedException var3) {
-//                }
-//            }
-//        }
+    private void stopSort() {
+        if (scheduledSort != null) {
+            scheduledSort.cancel(false);
+            scheduledSort = null;
+        }
+    }
 
+    private void runSort() {
+        if (personGroup.doneFlag()) {
+            stopSort();
+            return;
+        }
+
+        personGroup.sortStep();
+        repaint();
     }
 }
