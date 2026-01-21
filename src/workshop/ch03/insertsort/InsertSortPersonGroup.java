@@ -26,6 +26,10 @@ public class InsertSortPersonGroup extends AbstractPersonGroup {
 
     @Override
     public void sortStep() {
+        if (doneFlag) {
+            return;
+        }
+
         switch (codePart) {
             case 1:
                 tempPerson = a[outer];
@@ -82,7 +86,7 @@ public class InsertSortPersonGroup extends AbstractPersonGroup {
         arrowTexts.add(ArrowText.of("inner", inner, 2, Color.BLUE));
         arrowTexts.add(ArrowText.of("temp", a.length, 3, Color.MAGENTA));
 
-        String comment1 = switch (copies) {
+        String comment1 = switch (codePart) {
             case 1 -> doneFlag ? "Sort is complete" : "Will copy outer to temp";
             case 2 -> inner > 0 ? "Have compared inner-1 and temp" : "Now inner is 0, so";
             case 3 -> "Will copy temp to inner";
@@ -91,9 +95,9 @@ public class InsertSortPersonGroup extends AbstractPersonGroup {
 
         String comment2 = null;
         if (codePart == 2) {
-//            comment2 = inner > 0 && a[inner - 1].height() >= a[a.length + 1].height()
-//                    ? "Will copy inner-1 to inner"
-//                    : "No copy necessary";
+            comment2 = inner > 0 && a[inner - 1].height() >= tempPerson.height()
+                    ? "Will copy inner-1 to inner"
+                    : "No copy necessary";
         }
 
         if (comment1 != null) {
