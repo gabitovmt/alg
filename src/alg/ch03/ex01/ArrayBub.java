@@ -24,7 +24,7 @@ public class ArrayBub {
 
     public void bubbleSort() {
         // Внешний цикл
-        for (int out = nElems - 1; out > 1; out--) {
+        for (int out = nElems - 1; out > 0; out--) {
             // Внутренний цикл
             for (int in = 0; in < out; in++) {
                 // Порядок нарушен?
