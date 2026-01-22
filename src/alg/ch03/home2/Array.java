@@ -88,4 +88,54 @@ public class Array {
             }
         } while (wasSwap);
     }
+
+    @SuppressWarnings("java:S106")
+    public void insertionSortWithLog() {
+        int comp = 0;
+        int copy = 0;
+
+        for (int out = 1; out < size; out++) {
+            long temp = a[out];
+            copy++;
+            int in = out;
+
+            while (in > 0 && a[in - 1] >= temp) {
+                comp++;
+                a[in] = a[in - 1];
+                copy++;
+                --in;
+            }
+            comp++;
+
+            a[in] = temp;
+            copy++;
+        }
+
+        System.out.println("Comp: " + comp + " Copy: " + copy);
+    }
+
+    public void insertionSortAndNoDups() {
+        int nDel = 0;
+        for (int out = 1; out < size; out++) {
+            long temp = a[out];
+            int in = out;
+            while (in > 0 && a[in - 1] >= temp) {
+                if (a[in - 1] == temp && temp != Integer.MIN_VALUE) {
+                    temp = Integer.MIN_VALUE;
+                    nDel++;
+                }
+                a[in] = a[in - 1];
+                --in;
+            }
+            a[in] = temp;
+        }
+
+        if (nDel == 0) {
+            return;
+        }
+        for (int i = nDel; i < size; i++) {
+            a[i - nDel] = a[i];
+        }
+        size -= nDel;
+    }
 }
