@@ -1,10 +1,11 @@
-package alg.ch03.home2;
+package alg.ch03.home1;
 
 import alg.ch03.ex01.ArrayBub;
 import alg.ch03.ex02.ArraySel;
 import alg.ch03.ex03.ArrayIns;
 
-public class App {
+// Упражнение 3
+public class AppEx3 {
 
     @SuppressWarnings("java:S106")
     public static void main(String[] args) {
@@ -15,10 +16,9 @@ public class App {
         var insArray = new ArrayIns(maxSize);
 
         for (int i = 0; i < maxSize; i++) {
-            long n = (long) maxSize - i - 1;
-            bubArray.insert(n);
-            selArray.insert(n);
-            insArray.insert(n);
+            bubArray.insert(i);
+            selArray.insert(i);
+            insArray.insert(i);
         }
 
         long start = System.currentTimeMillis();
@@ -32,7 +32,7 @@ public class App {
         insArray.insertionSort();
         long step3 = System.currentTimeMillis();
 
-        System.out.println("Elements: DESC");
+        System.out.println("Elements: ASC");
         System.out.println("Size of elements: " + maxSize);
         System.out.println("Bubble Sort: " + (step1 - start) + " ms");
         System.out.println("Selection Sort: " + (step2 - step1) + " ms");

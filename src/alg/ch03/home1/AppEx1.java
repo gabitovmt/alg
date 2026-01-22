@@ -1,10 +1,14 @@
-package alg.ch03.home3;
+package alg.ch03.home1;
 
 import alg.ch03.ex01.ArrayBub;
 import alg.ch03.ex02.ArraySel;
 import alg.ch03.ex03.ArrayIns;
 
-public class App {
+import java.util.Random;
+
+// Упражнение 1
+public class AppEx1 {
+    private static final Random RANDOM = new Random();
 
     @SuppressWarnings("java:S106")
     public static void main(String[] args) {
@@ -15,9 +19,10 @@ public class App {
         var insArray = new ArrayIns(maxSize);
 
         for (int i = 0; i < maxSize; i++) {
-            bubArray.insert(i);
-            selArray.insert(i);
-            insArray.insert(i);
+            long n = RANDOM.nextLong();
+            bubArray.insert(n);
+            selArray.insert(n);
+            insArray.insert(n);
         }
 
         long start = System.currentTimeMillis();
@@ -31,7 +36,7 @@ public class App {
         insArray.insertionSort();
         long step3 = System.currentTimeMillis();
 
-        System.out.println("Elements: ASC");
+        System.out.println("Elements: RANDOM");
         System.out.println("Size of elements: " + maxSize);
         System.out.println("Bubble Sort: " + (step1 - start) + " ms");
         System.out.println("Selection Sort: " + (step2 - step1) + " ms");

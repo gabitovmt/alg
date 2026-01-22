@@ -1,4 +1,4 @@
-package alg.ch03.home4;
+package alg.ch03.home2;
 
 // Массив с пузырьковой сортировкой
 public class ArrayBub {
@@ -44,16 +44,5 @@ public class ArrayBub {
             a[i] = a[i + 1];
             a[i + 1] = temp;
         }
-    }
-
-    public static void main(String[] args) {
-        var array = new ArrayBub(10);
-        array.insert(3);
-        array.insert(2);
-        array.insert(1);
-        array.display();
-
-        array.bubbleSort();
-        array.display();
     }
 }

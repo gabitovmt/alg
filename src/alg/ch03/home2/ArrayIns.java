@@ -1,4 +1,4 @@
-package alg.ch03.home4;
+package alg.ch03.home2;
 
 // Массив с сортировкой методом вставки
 public class ArrayIns {
@@ -38,19 +38,15 @@ public class ArrayIns {
         return a[size /2];
     }
 
-    @SuppressWarnings("java:S106")
-    public static void main(String[] args) {
-        var array = new ArrayIns(10);
-        array.insert(3);
-        array.insert(2);
-        array.insert(1);
-        array.insert(4);
-        array.insert(5);
-        array.display();
-
-        array.insertionSort();
-        array.display();
-
-        System.out.println("Median: " + array.median());
+    public void noDups() {
+        int nDeleted = 0;
+        for (int i = 1; i < size; i++) {
+            if (a[i - 1] == a[i]) {
+                nDeleted++;
+            } else if (nDeleted > 0) {
+                a[i - nDeleted] = a[i];
+            }
+        }
+        size -= nDeleted;
     }
 }
