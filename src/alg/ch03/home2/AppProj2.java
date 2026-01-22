@@ -5,7 +5,7 @@ public class AppProj2 {
 
     @SuppressWarnings("java:S106")
     public static void main(String[] args) {
-        var array = new ArrayIns(10);
+        var array = new Array(10);
         array.insert(3);
         array.insert(2);
         array.insert(1);

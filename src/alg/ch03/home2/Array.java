@@ -1,11 +1,10 @@
 package alg.ch03.home2;
 
-// Массив с сортировкой методом вставки
-public class ArrayIns {
+public class Array {
     private final long[] a;
     private int size;
 
-    public ArrayIns(int max) {
+    public Array(int max) {
         a = new long[max];
         size = 0;
     }
@@ -20,6 +19,33 @@ public class ArrayIns {
             System.out.print(a[i] + " ");
         }
         System.out.println();
+    }
+
+    public void bubbleSort() {
+        int outL = 0;
+        int outR = size - 1;
+
+        while (outL < outR) {
+            for (int in = outL; in < outR; in++) {
+                checkAndSwap(in);
+            }
+            outR--;
+            for (int in = outR - 1; in >= outL; in--) {
+                checkAndSwap(in);
+            }
+            outL++;
+        }
+    }
+
+    private boolean checkAndSwap(int i) {
+        if (a[i] > a[i + 1]) {
+            long temp = a[i];
+            a[i] = a[i + 1];
+            a[i + 1] = temp;
+            return true;
+        }
+
+        return false;
     }
 
     public void insertionSort() {
@@ -48,5 +74,18 @@ public class ArrayIns {
             }
         }
         size -= nDeleted;
+    }
+
+    public void oddEvenSort() {
+        boolean wasSwap;
+        do {
+            wasSwap = false;
+            for (int i = 1; i < size - 1; i += 2) {
+                wasSwap = checkAndSwap(i) || wasSwap;
+            }
+            for (int i = 0; i < size - 1; i += 2) {
+                wasSwap = checkAndSwap(i) || wasSwap;
+            }
+        } while (wasSwap);
     }
 }

@@ -4,7 +4,7 @@ package alg.ch03.home2;
 public class AppProj3 {
 
     public static void main(String[] args) {
-        var array = new ArrayIns(10);
+        var array = new Array(10);
         array.insert(1);
         array.insert(1);
         array.insert(2);
