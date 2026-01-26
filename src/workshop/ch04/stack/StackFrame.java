@@ -1,5 +1,8 @@
 package workshop.ch04.stack;
 
+import workshop.ch04.PersonGroup;
+import workshop.ch04.PersonGroupPanel;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -15,14 +18,14 @@ public class StackFrame extends JFrame implements ActionListener {
     protected final Button peekButton = makeButton("Peek");
     protected final TextField tf = new TextField("", 4);
 
-    private final transient personGroup personGroup;
+    private final transient PersonGroup personGroup;
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(StackFrame::new);
     }
 
     public StackFrame() {
-        personGroup = new personGroup();
+        personGroup = new PersonGroupImpl();
         personGroup.doFill();
 
         setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
@@ -33,8 +36,9 @@ public class StackFrame extends JFrame implements ActionListener {
     }
 
     public void init() {
-        setLayout(new FlowLayout());
-        add(makeToolPanel());
+        setLayout(new BorderLayout());
+        add(makeToolPanel(), BorderLayout.NORTH);
+        add(new PersonGroupPanel(personGroup), BorderLayout.CENTER);
 
         repaint();
 
@@ -77,29 +81,17 @@ public class StackFrame extends JFrame implements ActionListener {
         return panel;
     }
 
-    public void paint(Graphics var1) {
-        this.personGroup.draw(var1);
-    }
-
-    public void update(Graphics var1) {
-        this.paint(var1);
-    }
-
     public void actionPerformed(ActionEvent e) {
         var source = e.getSource();
         
-        var value = getValue();
-        boolean isNumber = value != null;
-        int num = value != null ? value : 0;
-
         if (source == newButton) {
             personGroup.newStack();
         } else if (source == pushButton) {
-            personGroup.push(isNumber, num);
+            personGroup.push(getValue());
         } else if (source == popButton) {
-            tf.setText(personGroup.pop());
+            tf.setText(toString(personGroup.pop()));
         } else if (source == peekButton) {
-            tf.setText(personGroup.peek());
+            tf.setText(toString(personGroup.peek()));
         }
 
         repaint();
@@ -111,5 +103,9 @@ public class StackFrame extends JFrame implements ActionListener {
         } catch (NumberFormatException ex) {
             return null;
         }
+    }
+
+    protected String toString(Integer value) {
+        return value != null ? value.toString() : "";
     }
 }
