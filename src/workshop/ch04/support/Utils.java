@@ -1,4 +1,4 @@
-package workshop.ch04;
+package workshop.ch04.support;
 
 import java.awt.*;
 import java.util.Random;
@@ -10,7 +10,7 @@ public class Utils {
     }
 
     private static int nextColorValue() {
-        return RANDOM.nextInt(255);
+        return 127 + RANDOM.nextInt(128);
     }
 
     public static Color nextColor() {

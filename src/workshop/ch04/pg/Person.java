@@ -1,4 +1,4 @@
-package workshop.ch04;
+package workshop.ch04.pg;
 
 import java.awt.*;
 

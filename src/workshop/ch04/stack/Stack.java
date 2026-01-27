@@ -1,4 +1,4 @@
-package workshop.ch04;
+package workshop.ch04.stack;
 
 public interface Stack<T> {
     void newStack();

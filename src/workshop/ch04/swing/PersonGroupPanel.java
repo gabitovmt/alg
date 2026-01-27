@@ -1,4 +1,7 @@
-package workshop.ch04;
+package workshop.ch04.swing;
+
+import workshop.ch04.pg.ArrowText;
+import workshop.ch04.pg.PersonGroup;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,13 +18,19 @@ public class PersonGroupPanel extends JPanel {
     private static final int NOTE_X = 16;
     private static final int NOTE_Y = 24;
 
-    private final transient PersonGroup group;
+    private final transient PersonGroup pg;
 
     public PersonGroupPanel(PersonGroup personGroup) {
-        this.group = personGroup;
+        pg = personGroup;
     }
 
-    public void drawPerson(Graphics g, int idx) {
+    private void drawPersons(Graphics g) {
+        for (int idx = 0; idx < pg.getCapacity(); ++idx) {
+            drawPerson(g, idx);
+        }
+    }
+
+    private void drawPerson(Graphics g, int idx) {
         int x = START_X;
         int y = START_Y - CELL_H * idx;
 
@@ -39,14 +48,14 @@ public class PersonGroupPanel extends JPanel {
     private void drawRect(Graphics g, int idx, int x, int y) {
         g.setColor(Color.BLACK);
         g.drawRect(x, y, RECT_W, CELL_H);
-        if (group.getPerson(idx) == null) {
+        if (pg.getPerson(idx) == null) {
             g.setColor(Color.LIGHT_GRAY);
             g.fill3DRect(x + 1, y +1, RECT_W - 1, CELL_H - 1, true);
         } else {
-            g.setColor(group.getPerson(idx).color());
+            g.setColor(pg.getPerson(idx).color());
             g.fill3DRect(x + 1, y +1, RECT_W - 1, CELL_H - 1, true);
 
-            var heightText = String.valueOf(group.getPerson(idx).height());
+            var heightText = String.valueOf(pg.getPerson(idx).height());
             int textWidth = g.getFontMetrics().stringWidth(heightText);
 
             g.setColor(Color.BLACK);
@@ -54,9 +63,15 @@ public class PersonGroupPanel extends JPanel {
         }
     }
 
-    private void drawArrow(Graphics g) {
+    private void drawArrowTexts(Graphics g) {
+        for (var arrowText : pg.getArrowTexts()) {
+            drawArrowText(g, arrowText);
+        }
+    }
+
+    private void drawArrowText(Graphics g, ArrowText arrowText) {
         int x = START_X + IDX_W + RECT_W + 2;
-        int y = START_Y - CELL_H * group.getCurrentPosition() + CELL_H / 2;
+        int y = START_Y - CELL_H * arrowText.indexY() + CELL_H / 2;
 
         g.setColor(Color.RED);
 
@@ -66,12 +81,12 @@ public class PersonGroupPanel extends JPanel {
         g.drawLine(x, y, x + ARROW_SIZE, y + ARROW_SIZE);
         ((Graphics2D) g).setStroke(new BasicStroke(1f));
 
-        g.drawString(group.getArrowText(), x + ARROW_W + PADDING, y + CELL_H / 2 - PADDING);
+        g.drawString(arrowText.text(), x + ARROW_W + PADDING, y + CELL_H / 2 - PADDING);
     }
 
     private void drawNote(Graphics g) {
         g.setColor(Color.BLACK);
-        g.drawString(group.getNote(), NOTE_X, NOTE_Y);
+        g.drawString(pg.getNote(), NOTE_X, NOTE_Y);
     }
 
     private void fillBackground(Graphics g) {
@@ -83,10 +98,8 @@ public class PersonGroupPanel extends JPanel {
     public void draw(Graphics g) {
         fillBackground(g);
         drawNote(g);
-        for (int idx = 0; idx < group.getCapacity(); ++idx) {
-            drawPerson(g, idx);
-        }
-        drawArrow(g);
+        drawPersons(g);
+        drawArrowTexts(g);
     }
 
     @Override

@@ -1,6 +1,6 @@
-package workshop.ch04;
+package workshop.ch04.operation;
 
-public enum OperationMode {
+public enum StackOperationMode {
     NONE,
     NEW_STACK,
     FILL,
