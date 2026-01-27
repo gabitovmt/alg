@@ -2,11 +2,11 @@ package workshop.ch04.stack.impl;
 
 import workshop.ch04.operation.AbstractOperation;
 import workshop.ch04.operation.StackOperationMode;
-import workshop.ch04.pg.MutablePersonGroup;
+import workshop.ch04.stack.PersonGroupStack;
 
-class PeekOperation extends AbstractOperation<StackOperationMode> {
+class PeekOperation extends AbstractOperation<StackOperationMode, PersonGroupStack> {
 
-    PeekOperation(MutablePersonGroup personGroup) {
+    PeekOperation(PersonGroupStack personGroup) {
         super(StackOperationMode.PEEK, personGroup);
     }
 

@@ -2,11 +2,11 @@ package workshop.ch04.stack.impl;
 
 import workshop.ch04.operation.AbstractOperation;
 import workshop.ch04.operation.StackOperationMode;
-import workshop.ch04.pg.MutablePersonGroup;
+import workshop.ch04.stack.PersonGroupStack;
 
-class PopOperation extends AbstractOperation<StackOperationMode> {
+class PopOperation extends AbstractOperation<StackOperationMode, PersonGroupStack> {
 
-    PopOperation(MutablePersonGroup personGroup) {
+    PopOperation(PersonGroupStack personGroup) {
         super(StackOperationMode.POP, personGroup);
     }
 

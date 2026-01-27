@@ -1,21 +1,21 @@
 package workshop.ch04.operation;
 
-import workshop.ch04.pg.MutablePersonGroup;
+import workshop.ch04.pg.PersonGroup;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public abstract class AbstractOperation<T extends Enum<T>> implements Operation<T> {
+public abstract class AbstractOperation<T extends Enum<T>, G extends PersonGroup> implements Operation<T> {
     private final T mode;
     private int codePart = 1;
     private final Map<Integer, Consumer<Integer>> actions = new HashMap<>();
 
-    protected final MutablePersonGroup pg;
+    protected final G pg;
     protected Integer arg0;
     protected Integer result;
 
-    protected AbstractOperation(T mode, MutablePersonGroup personGroup) {
+    protected AbstractOperation(T mode, G personGroup) {
         this.mode = mode;
         this.pg = personGroup;
 

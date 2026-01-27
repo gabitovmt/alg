@@ -1,14 +1,16 @@
 package workshop.ch04.stack.impl;
 
+import workshop.ch04.operation.OperationExecutor;
 import workshop.ch04.operation.StackOperationMode;
+import workshop.ch04.pg.AbstractPersonGroup;
 import workshop.ch04.pg.ArrowText;
-import workshop.ch04.pg.OperationPersonGroup;
 import workshop.ch04.stack.PersonGroupStack;
 
 import java.util.Collection;
 import java.util.List;
 
-public class PersonGroupStackImpl extends OperationPersonGroup<StackOperationMode> implements PersonGroupStack {
+public class PersonGroupStackImpl extends AbstractPersonGroup implements PersonGroupStack {
+    protected final OperationExecutor<StackOperationMode> executor = new OperationExecutor<>();
 
     @Override
     public Collection<ArrowText> getArrowTexts() {
@@ -17,26 +19,26 @@ public class PersonGroupStackImpl extends OperationPersonGroup<StackOperationMod
 
     @Override
     public void newStack() {
-        run(StackOperationMode.NEW_STACK, NewStackOperation::new);
+        executor.run(StackOperationMode.NEW_STACK, () -> new NewStackOperation(this));
     }
 
     @Override
     public void doFill() {
-        run(StackOperationMode.FILL, DoFillOperation::new);
+        executor.run(StackOperationMode.FILL, () -> new DoFillOperation(this));
     }
 
     @Override
     public void push(Integer value) {
-        run(StackOperationMode.PUSH, value, PushOperation::new);
+        executor.run(StackOperationMode.PUSH, () -> new PushOperation(this));
     }
 
     @Override
     public Integer pop() {
-        return run(StackOperationMode.POP, PopOperation::new);
+        return executor.run(StackOperationMode.POP, () -> new PopOperation(this));
     }
 
     @Override
     public Integer peek() {
-        return run(StackOperationMode.PEEK, PeekOperation::new);
+        return executor.run(StackOperationMode.PEEK, () -> new PeekOperation(this));
     }
 }

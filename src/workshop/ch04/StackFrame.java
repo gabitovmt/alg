@@ -15,7 +15,7 @@ public class StackFrame extends AbstractFrame {
     protected final Button popButton = makeButton("Pop");
     protected final Button peekButton = makeButton("Peek");
 
-    private final transient PersonGroupStack personGroup;
+    protected final transient PersonGroupStack pg;
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(StackFrame::new);
@@ -24,12 +24,12 @@ public class StackFrame extends AbstractFrame {
     public StackFrame() {
         super("Stack Workshop");
 
-        personGroup = new PersonGroupStackImpl();
-        personGroup.doFill();
+        pg = new PersonGroupStackImpl();
+        pg.doFill();
 
         setLayout(new BorderLayout());
         add(makeToolPanel(newButton, pushButton, popButton, peekButton), BorderLayout.NORTH);
-        add(new PersonGroupPanel(personGroup), BorderLayout.CENTER);
+        add(new PersonGroupPanel(pg), BorderLayout.CENTER);
 
         setVisible(true);
     }
@@ -39,13 +39,13 @@ public class StackFrame extends AbstractFrame {
         var source = e.getSource();
         
         if (source == newButton) {
-            personGroup.newStack();
+            pg.newStack();
         } else if (source == pushButton) {
-            personGroup.push(getValue());
+            pg.push(getValue());
         } else if (source == popButton) {
-            setValue(personGroup.pop());
+            setValue(pg.pop());
         } else if (source == peekButton) {
-            setValue(personGroup.peek());
+            setValue(pg.peek());
         }
 
         repaint();

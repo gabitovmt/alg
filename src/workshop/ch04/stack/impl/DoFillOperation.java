@@ -1,15 +1,15 @@
 package workshop.ch04.stack.impl;
 
-import workshop.ch04.support.Utils;
 import workshop.ch04.operation.AbstractOperation;
 import workshop.ch04.operation.StackOperationMode;
 import workshop.ch04.pg.Constants;
-import workshop.ch04.pg.MutablePersonGroup;
 import workshop.ch04.pg.Person;
+import workshop.ch04.stack.PersonGroupStack;
+import workshop.ch04.support.Utils;
 
-class DoFillOperation extends AbstractOperation<StackOperationMode> {
+class DoFillOperation extends AbstractOperation<StackOperationMode, PersonGroupStack> {
 
-    DoFillOperation(MutablePersonGroup personGroup) {
+    DoFillOperation(PersonGroupStack personGroup) {
         super(StackOperationMode.FILL, personGroup);
     }
 
