@@ -6,6 +6,7 @@ import workshop.ch04.pg.AbstractPersonGroup;
 import workshop.ch04.pg.ArrowText;
 import workshop.ch04.queue.PersonGroupQueue;
 
+import java.awt.*;
 import java.util.Collection;
 import java.util.List;
 
@@ -36,7 +37,10 @@ public class PersonGroupQueueImpl extends AbstractPersonGroup implements PersonG
 
     @Override
     public Collection<ArrowText> getArrowTexts() {
-        return List.of();
+        return List.of(
+                new ArrowText("Rear", Color.BLUE, 2, getRear()),
+                new ArrowText("Front", Color.RED, 1, getFront())
+        );
     }
 
     @Override
@@ -63,11 +67,11 @@ public class PersonGroupQueueImpl extends AbstractPersonGroup implements PersonG
 
     @Override
     public Integer remove() {
-        return 0;
+        return executor.run(QueueOperationMode.REMOVE, () -> new RemoveOperation(this));
     }
 
     @Override
     public Integer peek() {
-        return 0;
+        return executor.run(QueueOperationMode.PEEK, () -> new PeekOperation(this));
     }
 }

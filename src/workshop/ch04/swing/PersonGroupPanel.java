@@ -73,15 +73,15 @@ public class PersonGroupPanel extends JPanel {
         int x = START_X + IDX_W + RECT_W + 2;
         int y = START_Y - CELL_H * arrowText.indexY() + CELL_H / 2;
 
-        g.setColor(Color.RED);
+        g.setColor(arrowText.color());
 
         ((Graphics2D) g).setStroke(new BasicStroke(2f));
-        g.drawLine(x, y, x + ARROW_W, y);
+        g.drawLine(x, y, x + arrowText.indexX() * ARROW_W, y);
         g.drawLine(x, y, x + ARROW_SIZE, y - ARROW_SIZE);
         g.drawLine(x, y, x + ARROW_SIZE, y + ARROW_SIZE);
         ((Graphics2D) g).setStroke(new BasicStroke(1f));
 
-        g.drawString(arrowText.text(), x + ARROW_W + PADDING, y + CELL_H / 2 - PADDING);
+        g.drawString(arrowText.text(), x + arrowText.indexX() * ARROW_W + PADDING, y + CELL_H / 2 - PADDING);
     }
 
     private void drawNote(Graphics g) {

@@ -1,4 +1,6 @@
 package workshop.ch04.pg;
 
-public record ArrowText(String text, int indexX, int indexY) {
+import java.awt.*;
+
+public record ArrowText(String text, Color color, int indexX, int indexY) {
 }

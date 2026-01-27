@@ -6,6 +6,7 @@ import workshop.ch04.pg.AbstractPersonGroup;
 import workshop.ch04.pg.ArrowText;
 import workshop.ch04.stack.PersonGroupStack;
 
+import java.awt.*;
 import java.util.Collection;
 import java.util.List;
 
@@ -14,7 +15,7 @@ public class PersonGroupStackImpl extends AbstractPersonGroup implements PersonG
 
     @Override
     public Collection<ArrowText> getArrowTexts() {
-        return List.of(new ArrowText("Top", 1, getSize() - 1));
+        return List.of(new ArrowText("Top", Color.RED, 1, getSize() - 1));
     }
 
     @Override

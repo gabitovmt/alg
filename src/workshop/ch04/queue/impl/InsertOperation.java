@@ -41,7 +41,7 @@ class InsertOperation extends AbstractOperation<QueueOperationMode, PersonGroupQ
     @Override
     protected void run3() {
         pg.setNote("Inserted item with key " + newPerson.height());
-        if (pg.getRear() >= pg.getCapacity()) {
+        if (pg.getRear() >= pg.getCapacity() - 1) {
             pg.setRear(-1);
         }
         pg.setRear(pg.getRear() + 1);
