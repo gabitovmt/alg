@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+// Использование стека для поиска парных скобок
 public class BracketsApp {
 
     @SuppressWarnings("java:S106")

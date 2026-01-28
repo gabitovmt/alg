@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+// Использование стека для перестановки символов строки
 public class ReverserApp {
 
     @SuppressWarnings("java:S106")

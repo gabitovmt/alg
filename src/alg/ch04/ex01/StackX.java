@@ -1,5 +1,6 @@
 package alg.ch04.ex01;
 
+// Стек
 public class StackX {
     // Размер массива
     private final int maxSize;
