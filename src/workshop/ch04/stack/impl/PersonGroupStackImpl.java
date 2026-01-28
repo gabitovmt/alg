@@ -30,7 +30,7 @@ public class PersonGroupStackImpl extends AbstractPersonGroup implements PersonG
 
     @Override
     public void push(Integer value) {
-        executor.run(StackOperationMode.PUSH, () -> new PushOperation(this));
+        executor.run(StackOperationMode.PUSH, value, () -> new PushOperation(this));
     }
 
     @Override
