@@ -11,10 +11,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class PersonGroupPriorityQImpl extends AbstractPersonGroup implements PersonGroupPriorityQ {
+    protected static final int NULL_POSITION = Integer.MIN_VALUE;
+
     protected final OperationExecutor<QueueOperationMode> executor = new OperationExecutor<>();
     protected int front = -1;
     protected int rear = 0;
-    protected int position = -1;
+    protected int position = NULL_POSITION;
 
     @Override
     public int getFront() {
@@ -51,7 +53,7 @@ public class PersonGroupPriorityQImpl extends AbstractPersonGroup implements Per
         var arrowTexts = new ArrayList<ArrowText>();
         arrowTexts.add(new ArrowText("Rear", Color.BLUE, 3, getRear()));
         arrowTexts.add(new ArrowText("Front", Color.RED, 2, getFront()));
-        if (getPosition() >= 0) {
+        if (getPosition() != NULL_POSITION) {
             arrowTexts.add(new ArrowText("", Color.BLACK, 1, getPosition()));
         }
 
@@ -63,7 +65,7 @@ public class PersonGroupPriorityQImpl extends AbstractPersonGroup implements Per
         super.reset();
         front = -1;
         rear = 0;
-        position = -1;
+        position = NULL_POSITION;
     }
 
     @Override

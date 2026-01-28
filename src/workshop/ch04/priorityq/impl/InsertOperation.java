@@ -43,7 +43,7 @@ class InsertOperation extends AbstractOperation<QueueOperationMode, PersonGroupP
     @Override
     protected void run3() {
         pg.setNote("Found insertion point");
-        setCodePart(3);
+        setCodePart(4);
 
         if (pg.getSize() == 0 || pg.getPosition() < 0) {
             pg.setPosition(0);
@@ -74,7 +74,7 @@ class InsertOperation extends AbstractOperation<QueueOperationMode, PersonGroupP
     @Override
     protected void run5() {
         pg.setDefaultNote();
-        pg.setPosition(-9);
+        pg.setPosition(PersonGroupPriorityQImpl.NULL_POSITION);
         setCodePart(1);
     }
 }

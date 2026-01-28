@@ -7,7 +7,7 @@ import workshop.ch04.priorityq.PersonGroupPriorityQ;
 class RemoveOperation extends AbstractOperation<QueueOperationMode, PersonGroupPriorityQ> {
 
     RemoveOperation(PersonGroupPriorityQ personGroup) {
-        super(QueueOperationMode.FILL, personGroup);
+        super(QueueOperationMode.REMOVE, personGroup);
     }
 
     @Override
