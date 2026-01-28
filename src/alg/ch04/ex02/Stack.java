@@ -10,16 +10,28 @@ public class Stack<T> {
     }
 
     public void push(T j) {
+        if (top == a.length - 1) {
+            throw new StackIsFullException();
+        }
+
         a[++top] = j;
     }
 
     @SuppressWarnings("unchecked")
     public T pop() {
+        if (top == -1) {
+            throw new EmptyStackException();
+        }
+
         return (T) a[top--];
     }
 
     @SuppressWarnings("unchecked")
     public T peek() {
+        if (top == -1) {
+            throw new EmptyStackException();
+        }
+
         return (T) a[top];
     }
 
