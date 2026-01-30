@@ -1,5 +1,7 @@
 package alg.ch04.ext01;
 
+import alg.ch04.ext01.calc.Calculator;
+
 public class CalculatorApp {
     private static final Calculator CALC = new Calculator();
 
