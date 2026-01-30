@@ -4,25 +4,35 @@ class ExprElement {
     private final boolean isOperator;
     private final char operator;
     private final int operand;
+    private final boolean isNegative;
 
     ExprElement(char operator) {
         isOperator = true;
         this.operator = operator;
         operand = 0;
+        isNegative = false;
     }
 
     ExprElement(int operand) {
         isOperator = false;
         operator = 0;
         this.operand = operand;
+        isNegative = operand < 0;
     }
 
-    boolean isOperator() {
-        return isOperator;
+    ExprElement(int operand, boolean isNegative) {
+        isOperator = false;
+        operator = 0;
+        this.operand = operand;
+        this.isNegative = isNegative;
     }
 
     boolean isOperand() {
         return !isOperator;
+    }
+
+    boolean isNegative() {
+        return isNegative;
     }
 
     char operator() {

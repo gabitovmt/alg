@@ -51,6 +51,6 @@ class Stack {
 
     @Override
     public String toString() {
-        return Arrays.toString(a);
+        return Arrays.toString(toArray());
     }
 }

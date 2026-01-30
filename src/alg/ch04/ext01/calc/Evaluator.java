@@ -1,24 +1,7 @@
 package alg.ch04.ext01.calc;
 
 public class Evaluator {
-
-    @SuppressWarnings("java:S106")
-    public static void main(String[] args) {
-        var expr = new ExprElement[] {
-                new ExprElement(15),
-                new ExprElement(30),
-                new ExprElement('*'),
-                new ExprElement(17),
-                new ExprElement(34),
-                new ExprElement('*'),
-                new ExprElement('+'),
-        };
-
-        var evaluator = new Evaluator();
-        System.out.println(evaluator.eval(expr));
-    }
-
-    private static final int DEFAULT_STACK_SIZE = 10;
+    private static final int DEFAULT_STACK_SIZE = 20;
 
     int eval(ExprElement[] expr) {
         var result = new Stack(DEFAULT_STACK_SIZE);
