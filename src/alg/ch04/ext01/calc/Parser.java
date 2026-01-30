@@ -7,7 +7,7 @@ class Parser {
     @SuppressWarnings("java:S106")
     public static void main(String[] args) {
         var parser = new Parser();
-        var postfix = parser.parse("15 * 30 + 17 * 34");
+        var postfix = parser.parse("7 + 8 / 2 * 3 - 1");
         System.out.println(Arrays.toString(postfix));
     }
 
@@ -41,6 +41,7 @@ class Parser {
                 default:
                     throw new IllegalArgumentException(String.format("Illegal character '%s' at index %d", ch, i));
             }
+//            System.out.printf("input: %s, stack: %s, operators: %s%n", ch, result, operators);
             prev = ch;
         }
 
@@ -62,8 +63,13 @@ class Parser {
     private void parseOperator(char op) {
         if (operators.isEmpty() || operatorPriority(operators.peek().operator()) < operatorPriority(op)) {
             operators.push(new ExprElement(op));
-        } else {
+        } else if (operatorPriority(operators.peek().operator()) == operatorPriority(op)) {
             result.push(operators.pop());
+            operators.push(new ExprElement(op));
+        } else {
+            while (!operators.isEmpty()) {
+                result.push(operators.pop());
+            }
             operators.push(new ExprElement(op));
         }
     }

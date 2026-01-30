@@ -4,7 +4,7 @@ public class Calculator {
 
     @SuppressWarnings("java:S106")
     public static void main(String[] args) {
-        var expr = "15 * 30 + 17 * 34";
+        var expr = "10 - 2 * 3 + 1";
         var calculator = new Calculator();
         var result = calculator.calc(expr);
         System.out.printf("%s = %d%n", expr, result);
