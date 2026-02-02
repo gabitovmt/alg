@@ -3,8 +3,8 @@ package alg.ch04.ex06;
 // Приоритетная очередь
 public class PriorityQ {
     // Элементы массива сортируются по значению ключа, от максимума (0) до минимума (maxSize - 1)
-    private int maxSize;
-    private long[] queArray;
+    private final int maxSize;
+    private final long[] queArray;
     private int nItems;
 
     public PriorityQ(int s) {
