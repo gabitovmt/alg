@@ -42,13 +42,17 @@ public class Queue {
     }
 
     public int size() {
+        int s;
         // Предполагается, что очередь не пуста
         if (rear >= front) {
             // Непрерывная последовательность
-            return rear - front + 1;
+            s = rear - front + 1;
         } else {
             // Несвязанная последовательность
-            return maxSize - front + rear + 1;
+            s = maxSize - front + rear + 1;
         }
+
+        // Если rear находится сразу за front, это значит, что массив пустой, а не заполненный
+        return s == maxSize ? 0 : s;
     }
 }
