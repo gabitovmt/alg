@@ -12,15 +12,23 @@ public class Queue {
         a = new long[maxSize];
     }
 
-    public void insert(long j) {
+    public void insert(long value) {
+        if (isFull()) {
+            throw new FullException();
+        }
+
         if (rear == a.length - 1) {
             rear = -1;
         }
-        a[++rear] = j;
+        a[++rear] = value;
         size++;
     }
 
     public long remove() {
+        if (isEmpty()) {
+            throw new EmptyException();
+        }
+
         long el = a[front++];
         if (front == a.length) {
             front = 0;
@@ -31,6 +39,10 @@ public class Queue {
     }
 
     public long peek() {
+        if (isEmpty()) {
+            throw new EmptyException();
+        }
+
         return a[front];
     }
 
