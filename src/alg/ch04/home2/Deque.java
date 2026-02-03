@@ -6,12 +6,14 @@ import alg.ch04.home1.FullException;
 import java.util.Arrays;
 
 public class Deque {
+    private final String name;
     private final long[] a;
     private int left;
     private int right;
     private int size;
 
     public Deque(int maxSize) {
+        name = this.getClass().getSimpleName();
         a = new long[maxSize];
         left = 0;
         right = maxSize - 1;
@@ -76,7 +78,7 @@ public class Deque {
     @SuppressWarnings("java:S106")
     public void display() {
         if (isEmpty()) {
-            System.out.println("Queue[]");
+            System.out.println(name + "[]");
             return;
         }
 
@@ -88,6 +90,6 @@ public class Deque {
             System.arraycopy(a, 0, b, a.length - left, right + 1);
         }
 
-        System.out.printf("Queue%s%n", Arrays.toString(b));
+        System.out.println(name + Arrays.toString(b));
     }
 }
