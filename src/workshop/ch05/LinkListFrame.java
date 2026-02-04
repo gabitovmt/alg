@@ -1,6 +1,7 @@
-package workshop.ch05.swing;
+package workshop.ch05;
 
-import workshop.ch05.pg.PersonGroup;
+import workshop.ch05.pg.PersonGroupImpl;
+import workshop.ch05.swing.PersonGroupPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +15,7 @@ public class LinkListFrame extends JFrame implements ActionListener, ItemListene
     private static final int DEFAULT_HEIGHT = 300;
     private static final int DEFAULT_PERSON_SIZE = 13;
 
-    private final PersonGroup personGroup;
+    private final transient PersonGroupImpl pg;
 
     private final Button newButton = makeButton("New");
     private final Button insButton = makeButton("Ins");
@@ -32,17 +33,16 @@ public class LinkListFrame extends JFrame implements ActionListener, ItemListene
     }
 
     public LinkListFrame() {
+        pg = new PersonGroupImpl();
+        pg.doFill(DEFAULT_PERSON_SIZE);
+
         setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("LinkList Workshop");
 
         setLayout(new BorderLayout());
         add(makeToolPanel(), BorderLayout.NORTH);
-
-        personGroup = new PersonGroup();
-        personGroup.doFill(DEFAULT_PERSON_SIZE);
-        repaint();
-
+        add(new PersonGroupPanel(pg), BorderLayout.CENTER);
         setVisible(true);
     }
 
@@ -100,24 +100,16 @@ public class LinkListFrame extends JFrame implements ActionListener, ItemListene
         return panel;
     }
 
-    public void paint(Graphics var1) {
-        this.personGroup.draw(var1);
-    }
-
-    public void update(Graphics var1) {
-        this.paint(var1);
-    }
-
     public void actionPerformed(ActionEvent e) {
         var source = e.getSource();
         if (source == newButton) {
-            personGroup.newList(getValue());
+            pg.newList(getValue());
         } else if (source == insButton) {
-            personGroup.insert(getValue());
+            pg.insert(getValue());
         } else if (source == findButton) {
-            personGroup.find(getValue());
+            pg.find(getValue());
         } else if (source == delButton) {
-            personGroup.delete(getValue());
+            pg.delete(getValue());
         }
 
         repaint();
@@ -134,9 +126,9 @@ public class LinkListFrame extends JFrame implements ActionListener, ItemListene
     public void itemStateChanged(ItemEvent e) {
         boolean notSorted = e.getSource() == this.nosort;
 
-        boolean var3 = this.personGroup.getSortStatus();
-        boolean var4 = this.personGroup.getChangeStatus();
-        this.personGroup.setSortStatus(notSorted);
+        boolean var3 = this.pg.getSortStatus();
+        boolean var4 = this.pg.getChangeStatus();
+        this.pg.setSortStatus(notSorted);
         if (notSorted && var4 && !var3 || !notSorted && !var4 && var3) {
             this.nosort.setState(true);
             this.sort.setState(false);
