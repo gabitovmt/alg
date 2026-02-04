@@ -1,4 +1,4 @@
-package workshop.ch05;
+package workshop.ch05.pg;
 
 //
 // Source code recreated from a .class file by IntelliJ IDEA
@@ -8,7 +8,7 @@ package workshop.ch05;
 import java.awt.Color;
 import java.awt.Graphics;
 
-class PersonGroup {
+public class PersonGroup {
     private Link[] linkArray = new Link[28];
     private int totalLinks = 0;
     private Person tempPers;
@@ -70,7 +70,7 @@ class PersonGroup {
         this.drawMode = 1;
     }
 
-    public void newList(boolean var1, int var2) {
+    public void newList(Integer var2) {
         this.areInserting = false;
         this.areDeleting = false;
         if (this.opMode != 1) {
@@ -87,7 +87,7 @@ class PersonGroup {
                 this.curIn = 0;
                 return;
             case 2:
-                if (var1 && var2 >= 0 && var2 <= 28) {
+                if (var2 != null && var2 >= 0 && var2 <= 28) {
                     this.note = "Will create list with " + var2 + " links";
                     this.codePart = 3;
                 } else {
@@ -166,7 +166,7 @@ class PersonGroup {
         }
     }
 
-    public void insert(boolean var1, int var2) {
+    public void insert(Integer var2) {
         this.areDeleting = false;
         if (this.opMode != 3) {
             this.opMode = 3;
@@ -183,7 +183,7 @@ class PersonGroup {
                 this.codePart = 2;
                 return;
             case 2:
-                if (var1 && var2 >= 0 && var2 <= 999) {
+                if (var2 != null && var2 >= 0 && var2 <= 999) {
                     if (this.totalLinks >= 28) {
                         this.note = "CAN'T INSERT: no room in display";
                         this.codePart = 6;
@@ -206,11 +206,11 @@ class PersonGroup {
                 this.drawMode = 1;
                 return;
             case 3:
-                if (this.curIn == this.totalLinks - 1 && this.insKey > this.linkArray[this.curIn].persData.getHeight()) {
+                if (this.curIn == this.totalLinks - 1 && this.insKey > this.linkArray[this.curIn].item().height()) {
                     this.note = "Found insertion point at end of list";
                     this.insertAtEnd = true;
                     this.codePart = 5;
-                } else if (this.insKey > this.linkArray[this.curIn].persData.getHeight()) {
+                } else if (this.insKey > this.linkArray[this.curIn].item().height()) {
                     this.note = "Searching for insertion point";
                     this.oldCurIn = this.curIn++;
                     this.codePart = 3;
@@ -268,7 +268,7 @@ class PersonGroup {
         }
     }
 
-    public void find(boolean var1, int var2) {
+    public void find(Integer var2) {
         this.areInserting = false;
         this.areDeleting = false;
         if (this.opMode != 4) {
@@ -282,7 +282,7 @@ class PersonGroup {
                 this.codePart = 2;
                 break;
             case 2:
-                if (var1 && var2 >= 0 && var2 <= 999) {
+                if (var2 != null && var2 >= 0 && var2 <= 999) {
                     this.findKey = var2;
                     this.oldCurIn = this.curIn;
                     this.curIn = 0;
@@ -294,10 +294,10 @@ class PersonGroup {
                 }
                 break;
             case 3:
-                if (this.linkArray[this.curIn].persData.getHeight() == this.findKey) {
+                if (this.linkArray[this.curIn].item().height() == this.findKey) {
                     this.note = "Have found item with key " + this.findKey;
                     this.codePart = 6;
-                } else if (this.curIn != this.totalLinks - 1 && (this.notSorted || this.linkArray[this.curIn].persData.getHeight() <= this.findKey)) {
+                } else if (this.curIn != this.totalLinks - 1 && (this.notSorted || this.linkArray[this.curIn].item().height() <= this.findKey)) {
                     this.note = "Searching for item with key " + this.findKey;
                     this.oldCurIn = this.curIn++;
                     this.codePart = 3;
@@ -319,7 +319,7 @@ class PersonGroup {
         this.drawMode = 1;
     }
 
-    public void delete(boolean var1, int var2) {
+    public void delete(Integer var2) {
         this.areInserting = false;
         if (this.opMode != 5) {
             this.opMode = 5;
@@ -333,7 +333,7 @@ class PersonGroup {
                 this.codePart = 2;
                 return;
             case 2:
-                if (var1 && var2 >= 0 && var2 <= 999) {
+                if (var2 != null && var2 >= 0 && var2 <= 999) {
                     this.delKey = var2;
                     this.oldCurIn = this.curIn;
                     this.curIn = 0;
@@ -347,14 +347,14 @@ class PersonGroup {
                 this.drawMode = 1;
                 return;
             case 3:
-                if (this.linkArray[this.curIn].persData.getHeight() == this.delKey) {
+                if (this.linkArray[this.curIn].item().height() == this.delKey) {
                     this.note = "Have found item with key " + this.delKey;
                     if (this.curIn == this.totalLinks - 1) {
                         this.codePart = 5;
                     } else {
                         this.codePart = 4;
                     }
-                } else if (this.curIn != this.totalLinks - 1 && (this.notSorted || this.linkArray[this.curIn].persData.getHeight() <= this.delKey)) {
+                } else if (this.curIn != this.totalLinks - 1 && (this.notSorted || this.linkArray[this.curIn].item().height() <= this.delKey)) {
                     this.note = "Searching for item with key " + this.delKey;
                     this.oldCurIn = this.curIn++;
                     this.codePart = 3;
@@ -402,8 +402,8 @@ class PersonGroup {
         if (this.linkArray[this.curIn] != null) {
             var1.setColor(Color.black);
             var1.drawRect(var3, var4 - 5, 35, 17);
-            int var6 = this.linkArray[var2].persData.getHeight();
-            var1.setColor(this.linkArray[var2].persData.getColor());
+            int var6 = this.linkArray[var2].item().height();
+            var1.setColor(this.linkArray[var2].item().color());
             var1.fill3DRect(var3 + 1, var4 - 4, 34, 16, true);
             byte var5;
             if (var6 < 10) {
@@ -453,8 +453,8 @@ class PersonGroup {
         int var3 = 115 + 57 * (this.insDex / 7);
         var1.setColor(Color.black);
         var1.drawRect(var2, var3 - 5, 35, 17);
-        int var5 = this.tempPers.getHeight();
-        var1.setColor(this.tempPers.getColor());
+        int var5 = this.tempPers.height();
+        var1.setColor(this.tempPers.color());
         var1.fill3DRect(var2 + 1, var3 - 4, 34, 16, true);
         byte var4;
         if (var5 < 10) {
