@@ -1,10 +1,20 @@
 package workshop.ch05.pg;
 
-import java.awt.*;
+import workshop.ch05.operation.NewListOperation;
+import workshop.ch05.operation.Operation;
+import workshop.ch05.operation.OperationMode;
 
-public class PersonGroupImpl implements PersonGroup {
-    private Link[] linkArray = new Link[28];
-    private int totalLinks = 0;
+import java.util.Arrays;
+import java.util.Comparator;
+
+public class PersonGroupImpl implements MutablePersonGroup {
+    private static final String DEFAULT_NOTE = "Press any button";
+    private static final int MAX_SIZE = 28;
+
+    private final Link[] a = new Link[MAX_SIZE];
+    private int size = 0;
+    private Operation operation;
+
     private Person tempPers;
     private String note;
     private int insKey;
@@ -13,135 +23,32 @@ public class PersonGroupImpl implements PersonGroup {
     private int codePart;
     private int codePart2;
     private int opMode;
+
     private int curIn;
-    private boolean notSorted;
-    private boolean isOKChangeSort;
+
+    private boolean isSorted;
+    private boolean canChangeSort;
+
     private int insDex;
     private boolean areInserting;
     private boolean insertAtEnd;
+
     private int delDex;
     private boolean areDeleting;
 
     public PersonGroupImpl() {
-        this.curIn = 0;
-        this.codePart = 1;
-        this.codePart2 = 1;
-        this.note = "Press any button";
-        this.notSorted = true;
-        this.isOKChangeSort = false;
-        this.areInserting = false;
+        note = DEFAULT_NOTE;
+        operation = new NewListOperation(this);
+        codePart = 1;
+        codePart2 = 1;
     }
 
-    private Person makePerson(int var1) {
-        int var2 = 100 + (int) (Math.random() * (double) 154.0F);
-        int var3 = 100 + (int) (Math.random() * (double) 154.0F);
-        int var4 = 100 + (int) (Math.random() * (double) 154.0F);
-        Color var5 = new Color(var2, var3, var4);
-        return new Person(var1, var5);
-    }
-
-    public boolean getSortStatus() {
-        return this.notSorted;
-    }
-
-    public boolean getChangeStatus() {
-        return this.isOKChangeSort;
-    }
-
-    public void setSortStatus(boolean var1) {
-        if (this.isOKChangeSort && var1 != this.notSorted) {
-            this.notSorted = var1;
+    public void newList(Integer size) {
+        this.opMode = 1;
+        if (operation.getMode() != OperationMode.NEW_LIST) {
+            operation = new NewListOperation(this);
         }
-
-        if (!this.isOKChangeSort) {
-            this.note = "To change sort status, create list with New";
-        }
-    }
-
-    public void newList(Integer var2) {
-        this.areInserting = false;
-        this.areDeleting = false;
-        if (this.opMode != 1) {
-            this.opMode = 1;
-            this.codePart = 1;
-        }
-
-        switch (this.codePart) {
-            case 1:
-                this.note = "Enter size of linked list to create";
-                this.codePart = 2;
-                this.curIn = 0;
-                return;
-            case 2:
-                if (var2 != null && var2 >= 0 && var2 <= 28) {
-                    this.note = "Will create list with " + var2 + " links";
-                    this.codePart = 3;
-                } else {
-                    this.note = "ERROR: use size between 0 and " + 28;
-                    this.codePart = 1;
-                }
-                return;
-            case 3:
-                this.note = "Select unsorted or sorted data";
-                this.isOKChangeSort = true;
-                this.codePart = 4;
-                return;
-            case 4:
-                if (this.notSorted) {
-                    this.note = "Data will not be sorted";
-                } else {
-                    this.note = "Data will be sorted";
-                }
-
-                this.isOKChangeSort = false;
-                this.totalLinks = 0;
-                this.codePart = 5;
-                return;
-            case 5:
-                this.totalLinks = var2;
-                this.doFill(this.totalLinks);
-                this.note = "New list created; total links = " + this.totalLinks;
-                this.curIn = 0;
-                this.codePart = 6;
-                return;
-            case 6:
-                this.note = "Press any button";
-                this.codePart = 1;
-                return;
-            default:
-        }
-    }
-
-    public void doFill(int var1) {
-        this.totalLinks = var1;
-
-        for (int var2 = 0; var2 < 28; ++var2) {
-            this.linkArray[var2] = null;
-        }
-
-        this.curIn = 0;
-        this.codePart = 1;
-        if (this.notSorted) {
-            for (int var8 = 0; var8 < this.totalLinks; ++var8) {
-                int var9 = (int) (Math.random() * (double) 999.0F);
-                this.tempPers = this.makePerson(var9);
-                this.linkArray[var8] = new Link(this.tempPers);
-            }
-
-        } else {
-            int var4 = 0;
-            int var6 = 0;
-
-            for (int var7 = 0; var7 < this.totalLinks; ++var7) {
-                int var5 = (int) ((999.0F - (float) var6) / ((float) this.totalLinks - (float) var7));
-                int var3 = (int) (Math.random() * (double) var5);
-                var4 += var3;
-                var6 = var4;
-                this.tempPers = this.makePerson(var4);
-                this.linkArray[var7] = new Link(this.tempPers);
-            }
-
-        }
+        operation.run(size);
     }
 
     public void insert(Integer var2) {
@@ -160,13 +67,13 @@ public class PersonGroupImpl implements PersonGroup {
                 return;
             case 2:
                 if (var2 != null && var2 >= 0 && var2 <= 999) {
-                    if (this.totalLinks >= 28) {
+                    if (this.size >= 28) {
                         this.note = "CAN'T INSERT: no room in display";
                         this.codePart = 6;
                     } else {
                         this.insKey = var2;
-                        this.tempPers = this.makePerson(this.insKey);
-                        if (this.notSorted) {
+                        this.tempPers = new Person(this.insKey, Utils.nextColor());
+                        if (!this.isSorted) {
                             this.note = "Will insert item with key " + this.insKey;
                             this.codePart = 4;
                         } else {
@@ -180,11 +87,11 @@ public class PersonGroupImpl implements PersonGroup {
                 }
                 return;
             case 3:
-                if (this.curIn == this.totalLinks - 1 && this.insKey > this.linkArray[this.curIn].item().height()) {
+                if (this.curIn == this.size - 1 && this.insKey > this.a[this.curIn].item().height()) {
                     this.note = "Found insertion point at end of list";
                     this.insertAtEnd = true;
                     this.codePart = 5;
-                } else if (this.insKey > this.linkArray[this.curIn].item().height()) {
+                } else if (this.insKey > this.a[this.curIn].item().height()) {
                     this.note = "Searching for insertion point";
                     this.curIn++;
                     this.codePart = 3;
@@ -195,7 +102,7 @@ public class PersonGroupImpl implements PersonGroup {
                 return;
             case 4:
                 this.areInserting = true;
-                if (this.notSorted) {
+                if (!this.isSorted) {
                     this.insDex = 0;
                 } else {
                     this.insDex = this.curIn;
@@ -211,19 +118,19 @@ public class PersonGroupImpl implements PersonGroup {
                 } else {
                     this.areInserting = false;
 
-                    for (int var3 = this.totalLinks; var3 > this.curIn; --var3) {
-                        this.linkArray[var3] = this.linkArray[var3 - 1];
+                    for (int var3 = this.size; var3 > this.curIn; --var3) {
+                        this.a[var3] = this.a[var3 - 1];
                     }
 
                     this.note = "Inserted item with key " + this.insKey;
                 }
 
-                this.linkArray[this.curIn] = new Link(this.tempPers);
-                ++this.totalLinks;
+                this.a[this.curIn] = new Link(this.tempPers);
+                ++this.size;
                 this.codePart = 6;
                 return;
             case 6:
-                this.note = "Insertion completed; total items = " + this.totalLinks;
+                this.note = "Insertion completed; total items = " + this.size;
                 this.codePart = 7;
                 return;
             case 7:
@@ -260,10 +167,10 @@ public class PersonGroupImpl implements PersonGroup {
                 }
                 break;
             case 3:
-                if (this.linkArray[this.curIn].item().height() == this.findKey) {
+                if (this.a[this.curIn].item().height() == this.findKey) {
                     this.note = "Have found item with key " + this.findKey;
                     this.codePart = 6;
-                } else if (this.curIn != this.totalLinks - 1 && (this.notSorted || this.linkArray[this.curIn].item().height() <= this.findKey)) {
+                } else if (this.curIn != this.size - 1 && (!this.isSorted || this.a[this.curIn].item().height() <= this.findKey)) {
                     this.note = "Searching for item with key " + this.findKey;
                     this.curIn++;
                     this.codePart = 3;
@@ -306,14 +213,14 @@ public class PersonGroupImpl implements PersonGroup {
                 }
                 return;
             case 3:
-                if (this.linkArray[this.curIn].item().height() == this.delKey) {
+                if (this.a[this.curIn].item().height() == this.delKey) {
                     this.note = "Have found item with key " + this.delKey;
-                    if (this.curIn == this.totalLinks - 1) {
+                    if (this.curIn == this.size - 1) {
                         this.codePart = 5;
                     } else {
                         this.codePart = 4;
                     }
-                } else if (this.curIn != this.totalLinks - 1 && (this.notSorted || this.linkArray[this.curIn].item().height() <= this.delKey)) {
+                } else if (this.curIn != this.size - 1 && (!this.isSorted || this.a[this.curIn].item().height() <= this.delKey)) {
                     this.note = "Searching for item with key " + this.delKey;
                     this.curIn++;
                     this.codePart = 3;
@@ -332,11 +239,11 @@ public class PersonGroupImpl implements PersonGroup {
             case 5:
                 this.areDeleting = false;
 
-                for (int var3 = this.curIn; var3 < this.totalLinks - 1; ++var3) {
-                    this.linkArray[var3] = this.linkArray[var3 + 1];
+                for (int var3 = this.curIn; var3 < this.size - 1; ++var3) {
+                    this.a[var3] = this.a[var3 + 1];
                 }
 
-                --this.totalLinks;
+                --this.size;
                 this.curIn = 0;
                 this.note = "Deleted item with key " + this.delKey;
                 this.codePart = 6;
@@ -351,18 +258,58 @@ public class PersonGroupImpl implements PersonGroup {
     }
 
     @Override
+    public void reset() {
+        curIn = 0;
+        areInserting = false;
+        insDex = 0;
+        areDeleting = false;
+        delDex = 0;
+        canChangeSort = false;
+    }
+
+    @Override
     public String getNote() {
         return note;
     }
 
     @Override
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    @Override
+    public void setDefaultNote() {
+        note = DEFAULT_NOTE;
+    }
+
+    @Override
     public int size() {
-        return totalLinks;
+        return size;
+    }
+
+    @Override
+    public void setSize(int size) {
+        this.size = size;
+    }
+
+    @Override
+    public void doFill(int size) {
+        this.size = size;
+        Arrays.fill(a, null);
+        reset();
+
+        for (int i = 0; i < this.size; ++i) {
+            a[i] = new Link(Utils.nextPerson());
+        }
+
+        if (isSorted) {
+            Arrays.sort(a, Comparator.nullsLast(Comparator.comparing((Link it) -> it.item().height())));
+        }
     }
 
     @Override
     public Person getPerson(int index) {
-        return linkArray[index].item();
+        return a[index].item();
     }
 
     @Override
@@ -371,8 +318,19 @@ public class PersonGroupImpl implements PersonGroup {
     }
 
     @Override
+    public void setInsertingPerson(Person person) {
+        tempPers = person;
+    }
+
+    @Override
     public Integer insertingIndex() {
         return areInserting ? insDex : null;
+    }
+
+    @Override
+    public void setInsertingIndex(Integer index) {
+        areInserting = index != null;
+        insDex = index != null ? index : 0;
     }
 
     @Override
@@ -381,7 +339,37 @@ public class PersonGroupImpl implements PersonGroup {
     }
 
     @Override
-    public Integer currentIndex() {
+    public void setDeletingIndex(Integer index) {
+        areDeleting = index != null;
+        delDex = index != null ? index : 0;
+    }
+
+    @Override
+    public int currentIndex() {
         return curIn;
+    }
+
+    @Override
+    public void setCurrentIndex(int index) {
+        curIn = index;
+    }
+
+    @Override
+    public boolean isSorted() {
+        return isSorted;
+    }
+
+    @Override
+    public void setSorted(boolean isSorted) {
+        if (canChangeSort) {
+            this.isSorted = isSorted;
+        } else {
+            note = "To change sort status, create list with New";
+        }
+    }
+
+    @Override
+    public void setCanChangeSorted(boolean canChange) {
+        canChangeSort = canChange;
     }
 }

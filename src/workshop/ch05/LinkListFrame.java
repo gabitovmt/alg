@@ -124,19 +124,12 @@ public class LinkListFrame extends JFrame implements ActionListener, ItemListene
     }
 
     public void itemStateChanged(ItemEvent e) {
-        boolean notSorted = e.getSource() == this.nosort;
+        boolean isSorted = e.getSource() == sort;
+        pg.setSorted(isSorted);
 
-        boolean var3 = this.pg.getSortStatus();
-        boolean var4 = this.pg.getChangeStatus();
-        this.pg.setSortStatus(notSorted);
-        if (notSorted && var4 && !var3 || !notSorted && !var4 && var3) {
-            this.nosort.setState(true);
-            this.sort.setState(false);
-        }
+        nosort.setState(!pg.isSorted());
+        sort.setState(pg.isSorted());
 
-        if (!notSorted && var4 && var3 || notSorted && !var4 && !var3) {
-            this.nosort.setState(false);
-            this.sort.setState(true);
-        }
+        repaint();
     }
 }

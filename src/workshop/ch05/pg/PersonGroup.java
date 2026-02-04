@@ -9,5 +9,7 @@ public interface PersonGroup {
     Person insertingPerson();
     Integer insertingIndex();
     Integer deletingIndex();
-    Integer currentIndex();
+    int currentIndex();
+
+    boolean isSorted();
 }
