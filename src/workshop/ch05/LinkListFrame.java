@@ -11,9 +11,9 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 public class LinkListFrame extends JFrame implements ActionListener, ItemListener {
-    private static final int DEFAULT_WIDTH = 440;
-    private static final int DEFAULT_HEIGHT = 300;
-    private static final int DEFAULT_PERSON_SIZE = 13;
+    private static final int DEFAULT_WIDTH = 640;
+    private static final int DEFAULT_HEIGHT = 400;
+    private static final int DEFAULT_PERSON_SIZE = 30;
 
     private final transient PersonGroupImpl pg;
 

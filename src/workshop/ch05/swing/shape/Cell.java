@@ -4,7 +4,6 @@ import java.awt.*;
 
 public record Cell(Rectangle r, Color c, String label) implements Shape {
     private static final int H_PADDING = 4;
-    private static final int V_PADDING = 1;
 
     @Override
     public void draw(Graphics g) {
@@ -17,6 +16,8 @@ public record Cell(Rectangle r, Color c, String label) implements Shape {
         g.setColor(Color.BLACK);
 
         var fm = g.getFontMetrics();
-        g.drawString(label, r.x + r.width - H_PADDING - fm.stringWidth(label), r.y + V_PADDING + fm.getAscent());
+        int x = r.x + r.width - H_PADDING - fm.stringWidth(label);
+        int y = r.y + (r.height - fm.getAscent()) / 2 + fm.getAscent();
+        g.drawString(label, x, y);
     }
 }

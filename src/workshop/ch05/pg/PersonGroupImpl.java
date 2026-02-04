@@ -61,6 +61,7 @@ public class PersonGroupImpl implements MutablePersonGroup {
         currentIndex = 0;
         insertingIndex = null;
         deletingIndex = null;
+        insertingPerson = null;
         canChangeSort = false;
     }
 

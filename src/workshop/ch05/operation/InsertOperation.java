@@ -104,6 +104,7 @@ public class InsertOperation extends BaseOperation {
             }
 
             pg.setPerson(pg.currentIndex(), pg.insertingPerson());
+            pg.setInsertingPerson(null);
             pg.setSize(pg.size() + 1);
             nextState(new State6());
         }
