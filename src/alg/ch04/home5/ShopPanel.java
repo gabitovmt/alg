@@ -4,10 +4,11 @@ import javax.swing.*;
 import java.awt.*;
 
 public class ShopPanel extends JPanel {
-    public static final int PADDING = 4;
-    public static final int QUEUE_HEIGHT = 24;
-    public static final int CASHBOX_WIDTH = QUEUE_HEIGHT * 3;
-    public static final int PERSON_WIDTH = QUEUE_HEIGHT;
+    private static final int PADDING = 4;
+    private static final int QUEUE_HEIGHT = 24;
+    private static final int CASHBOX_WIDTH = QUEUE_HEIGHT * 3;
+    private static final Dimension PERSON_SIZE = new Dimension(QUEUE_HEIGHT, QUEUE_HEIGHT);
+    private static final Font FONT = new Font("SansSerif", Font.BOLD, 14);
 
     private final transient Shop shop;
 
@@ -22,6 +23,7 @@ public class ShopPanel extends JPanel {
     }
 
     private void draw(Graphics g) {
+        g.setFont(FONT);
         fillBackground(g);
         drawQueues(g);
     }
@@ -32,12 +34,12 @@ public class ShopPanel extends JPanel {
         g.fillRect((int) cb.getX(), (int) cb.getY(), (int) cb.getWidth(), (int) cb.getHeight());
     }
 
-    private void drawRect(Graphics g, int x, int y, int width, int height, Color color, String text, boolean center) {
+    private void drawRect(Graphics g, Rectangle r, Color color, String text, boolean center) {
         g.setColor(Color.BLACK);
-        g.fillRect(x, y, width, height);
+        g.fillRect(r.x, r.y, r.width, r.height);
 
         g.setColor(color);
-        g.fill3DRect(x + 1, y + 1, width - 1, height - 1, true);
+        g.fill3DRect(r.x + 1, r.y + 1, r.width - 1, r.height - 1, true);
 
         if (text == null || text.isBlank()) {
             return;
@@ -48,27 +50,40 @@ public class ShopPanel extends JPanel {
         int textHeight = fm.getHeight();
 
         g.setColor(Color.BLACK);
-        int textX = center ? x + (width - textWidth) / 2 : x + PADDING;
-        int textY = y + fm.getAscent() + (height - textHeight) / 2;
+        int textX = center ? r.x + (r.width - textWidth) / 2 : r.x + PADDING;
+        int textY = r.y + fm.getAscent() + (r.height - textHeight) / 2;
         g.drawString(text, textX, textY);
     }
 
-    private void drawCashbox(Graphics g, int idx) {
+    private void drawCashbox(Graphics g, int idx, Point p) {
         int no = idx + 1;
-        drawRect(g, 0, QUEUE_HEIGHT * idx, CASHBOX_WIDTH, QUEUE_HEIGHT, Color.LIGHT_GRAY, "Касса " + no, false);
+        var r = new Rectangle(p, new Dimension(CASHBOX_WIDTH, QUEUE_HEIGHT));
+        drawRect(g, r, Color.LIGHT_GRAY, "Касса " + no, false);
     }
 
-    private void drawPerson(Graphics g, int queueIdx, int personIdx, Person person) {
-
+    private void drawPerson(Graphics g, Point p, Person person) {
+        drawRect(g, new Rectangle(p, PERSON_SIZE), person.color(), Integer.toString(person.id()), true);
     }
 
-    private void drawQueue(Graphics g, int idx) {
-        drawCashbox(g, idx);
+    private void drawPeople(Graphics g, Point p, Person[] people) {
+        for (var idx = 0; idx < people.length; idx++) {
+            var personPoint = new Point(p.x + idx * PERSON_SIZE.width, p.y);
+            drawPerson(g, personPoint, people[idx]);
+        }
+    }
+
+    private void drawQueue(Graphics g, Point p, int idx) {
+        drawCashbox(g, idx, p);
+
+        Person[] people = shop.personQueue(idx).toArray();
+        var peoplePoint = new Point(p.x + CASHBOX_WIDTH, p.y);
+        drawPeople(g, peoplePoint, people);
     }
 
     private void drawQueues(Graphics g) {
-        for (int i = 0; i < shop.cashboxCount(); i++) {
-            drawQueue(g, i);
+        for (int idx = 0; idx < shop.cashboxCount(); idx++) {
+            var p = new Point(0, idx * QUEUE_HEIGHT);
+            drawQueue(g, p, idx);
         }
     }
 }

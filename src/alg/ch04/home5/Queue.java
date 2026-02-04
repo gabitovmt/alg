@@ -64,7 +64,11 @@ public class Queue<T> {
 
     @SuppressWarnings("unchecked")
     public synchronized T[] toArray() {
-        var b = (T[]) new Object[size];
+        if (isEmpty()) {
+            return (T[]) Array.newInstance(a.getClass().getComponentType(), 0);
+        }
+
+        var b = (T[]) Array.newInstance(a.getClass().getComponentType(), size);
         if (rear >= front) {
             System.arraycopy(a, front, b, 0, size);
         } else {

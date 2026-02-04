@@ -4,9 +4,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class ShopDemo extends JFrame implements ActionListener {
-    private static final int DEFAULT_CASHBOX_COUNT = 10;
+    private static final int DEFAULT_CASHBOX_COUNT = 5;
     private static final int DEFAULT_QUEUE_MAX_SIZE = 50;
     private final transient Shop shop;
 
@@ -30,11 +32,19 @@ public class ShopDemo extends JFrame implements ActionListener {
         add(new ShopPanel(shop), BorderLayout.CENTER);
 
         setVisible(true);
+
+        Executors.newSingleThreadScheduledExecutor()
+                .scheduleWithFixedDelay(this::workCashboxes, 1, 1, TimeUnit.SECONDS);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         shop.newPerson();
+        repaint();
+    }
+
+    private void workCashboxes() {
+        shop.workCashboxes();
         repaint();
     }
 }

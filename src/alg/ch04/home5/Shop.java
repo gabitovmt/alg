@@ -54,7 +54,7 @@ public class Shop {
     }
 
     private void workCashbox(Queue<Person> queue) {
-        if (!queue.isEmpty() && rand.nextBoolean()) {
+        if (!queue.isEmpty() && rand.nextDouble() < 0.1) {
             queue.remove();
         }
     }
