@@ -7,6 +7,7 @@ public interface MutablePersonGroup extends PersonGroup {
     void setDefaultNote();
 
     void setSize(int size);
+    void setPerson(int index, Person person);
 
     void doFill(int size);
 

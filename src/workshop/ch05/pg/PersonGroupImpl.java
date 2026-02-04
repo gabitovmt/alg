@@ -1,5 +1,7 @@
 package workshop.ch05.pg;
 
+import workshop.ch05.operation.FindOperation;
+import workshop.ch05.operation.InsertOperation;
 import workshop.ch05.operation.NewListOperation;
 import workshop.ch05.operation.Operation;
 import workshop.ch05.operation.OperationMode;
@@ -9,188 +11,53 @@ import java.util.Comparator;
 
 public class PersonGroupImpl implements MutablePersonGroup {
     private static final String DEFAULT_NOTE = "Press any button";
-    private static final int MAX_SIZE = 28;
 
-    private final Link[] a = new Link[MAX_SIZE];
+    private String note = DEFAULT_NOTE;
+
+    private final Link[] a = new Link[Constants.MAX_SIZE];
     private int size = 0;
-    private Operation operation;
 
-    private Person tempPers;
-    private String note;
-    private int insKey;
-    private int findKey;
-    private int delKey;
-    private int codePart;
-    private int codePart2;
-    private int opMode;
-
-    private int curIn;
+    private Person insertingPerson;
+    private int currentIndex;
+    private Integer insertingIndex;
+    private Integer deletingIndex;
 
     private boolean isSorted;
     private boolean canChangeSort;
 
-    private int insDex;
-    private boolean areInserting;
-    private boolean insertAtEnd;
+    private int delKey;
+    private int codePart;
+    private int opMode;
 
-    private int delDex;
     private boolean areDeleting;
 
-    public PersonGroupImpl() {
-        note = DEFAULT_NOTE;
-        operation = new NewListOperation(this);
-        codePart = 1;
-        codePart2 = 1;
-    }
+    private Operation operation = new NewListOperation(this);
 
     public void newList(Integer size) {
-        this.opMode = 1;
+        opMode = 1;
         if (operation.getMode() != OperationMode.NEW_LIST) {
             operation = new NewListOperation(this);
         }
         operation.run(size);
     }
 
-    public void insert(Integer var2) {
-        this.areDeleting = false;
-        if (this.opMode != 3) {
-            this.opMode = 3;
-            this.codePart = 1;
+    public void insert(Integer insKey) {
+        opMode = 3;
+        if (operation.getMode() != OperationMode.INSERT) {
+            operation = new InsertOperation(this);
         }
-
-        switch (this.codePart) {
-            case 1:
-                this.curIn = 0;
-                this.insertAtEnd = false;
-                this.note = "Enter key of item to insert";
-                this.codePart = 2;
-                return;
-            case 2:
-                if (var2 != null && var2 >= 0 && var2 <= 999) {
-                    if (this.size >= 28) {
-                        this.note = "CAN'T INSERT: no room in display";
-                        this.codePart = 6;
-                    } else {
-                        this.insKey = var2;
-                        this.tempPers = new Person(this.insKey, Utils.nextColor());
-                        if (!this.isSorted) {
-                            this.note = "Will insert item with key " + this.insKey;
-                            this.codePart = 4;
-                        } else {
-                            this.note = "Will search for insertion point";
-                            this.codePart = 3;
-                        }
-                    }
-                } else {
-                    this.note = "CAN'T INSERT: need key between 0 and " + 999;
-                    this.codePart = 1;
-                }
-                return;
-            case 3:
-                if (this.curIn == this.size - 1 && this.insKey > this.a[this.curIn].item().height()) {
-                    this.note = "Found insertion point at end of list";
-                    this.insertAtEnd = true;
-                    this.codePart = 5;
-                } else if (this.insKey > this.a[this.curIn].item().height()) {
-                    this.note = "Searching for insertion point";
-                    this.curIn++;
-                    this.codePart = 3;
-                } else {
-                    this.note = "Have found insertion point";
-                    this.codePart = 4;
-                }
-                return;
-            case 4:
-                this.areInserting = true;
-                if (!this.isSorted) {
-                    this.insDex = 0;
-                } else {
-                    this.insDex = this.curIn;
-                }
-
-                this.note = "Inserted item; will redraw list";
-                this.codePart = 5;
-                return;
-            case 5:
-                if (this.insertAtEnd) {
-                    this.curIn++;
-                    this.note = "Inserted item with key " + this.insKey + " at end of list";
-                } else {
-                    this.areInserting = false;
-
-                    for (int var3 = this.size; var3 > this.curIn; --var3) {
-                        this.a[var3] = this.a[var3 - 1];
-                    }
-
-                    this.note = "Inserted item with key " + this.insKey;
-                }
-
-                this.a[this.curIn] = new Link(this.tempPers);
-                ++this.size;
-                this.codePart = 6;
-                return;
-            case 6:
-                this.note = "Insertion completed; total items = " + this.size;
-                this.codePart = 7;
-                return;
-            case 7:
-                this.curIn = 0;
-                this.note = "Press any button";
-                this.codePart = 1;
-                return;
-            default:
-        }
+        operation.run(insKey);
     }
 
-    public void find(Integer var2) {
-        this.areInserting = false;
-        this.areDeleting = false;
-        if (this.opMode != 4) {
-            this.opMode = 4;
-            this.codePart = 1;
+    public void find(Integer findKey) {
+        opMode = 4;
+        if (operation.getMode() != OperationMode.FIND) {
+            operation = new FindOperation(this);
         }
-
-        switch (this.codePart) {
-            case 1:
-                this.note = "Enter key of item to find";
-                this.codePart = 2;
-                break;
-            case 2:
-                if (var2 != null && var2 >= 0 && var2 <= 999) {
-                    this.findKey = var2;
-                    this.curIn = 0;
-                    this.note = "Looking for item with key " + this.findKey;
-                    this.codePart = 3;
-                } else {
-                    this.note = "ERROR: use key between 0 and " + 999;
-                    this.codePart = 1;
-                }
-                break;
-            case 3:
-                if (this.a[this.curIn].item().height() == this.findKey) {
-                    this.note = "Have found item with key " + this.findKey;
-                    this.codePart = 6;
-                } else if (this.curIn != this.size - 1 && (!this.isSorted || this.a[this.curIn].item().height() <= this.findKey)) {
-                    this.note = "Searching for item with key " + this.findKey;
-                    this.curIn++;
-                    this.codePart = 3;
-                } else {
-                    this.note = "Can't locate item with key " + this.findKey;
-                    this.codePart = 6;
-                }
-            case 4:
-            case 5:
-            default:
-                break;
-            case 6:
-                this.curIn = 0;
-                this.note = "Press any button";
-                this.codePart = 1;
-        }
+        operation.run(findKey);
     }
 
     public void delete(Integer var2) {
-        this.areInserting = false;
         if (this.opMode != 5) {
             this.opMode = 5;
             this.codePart = 1;
@@ -204,7 +71,7 @@ public class PersonGroupImpl implements MutablePersonGroup {
             case 2:
                 if (var2 != null && var2 >= 0 && var2 <= 999) {
                     this.delKey = var2;
-                    this.curIn = 0;
+                    this.currentIndex = 0;
                     this.note = "Looking for item with key " + this.delKey;
                     this.codePart = 3;
                 } else {
@@ -213,16 +80,16 @@ public class PersonGroupImpl implements MutablePersonGroup {
                 }
                 return;
             case 3:
-                if (this.a[this.curIn].item().height() == this.delKey) {
+                if (this.a[this.currentIndex].item().height() == this.delKey) {
                     this.note = "Have found item with key " + this.delKey;
-                    if (this.curIn == this.size - 1) {
+                    if (this.currentIndex == this.size - 1) {
                         this.codePart = 5;
                     } else {
                         this.codePart = 4;
                     }
-                } else if (this.curIn != this.size - 1 && (!this.isSorted || this.a[this.curIn].item().height() <= this.delKey)) {
+                } else if (this.currentIndex != this.size - 1 && (!this.isSorted || this.a[this.currentIndex].item().height() <= this.delKey)) {
                     this.note = "Searching for item with key " + this.delKey;
-                    this.curIn++;
+                    this.currentIndex++;
                     this.codePart = 3;
                 } else {
                     this.note = "Can't locate item with key " + this.delKey;
@@ -232,24 +99,24 @@ public class PersonGroupImpl implements MutablePersonGroup {
                 return;
             case 4:
                 this.areDeleting = true;
-                this.delDex = this.curIn;
+                this.deletingIndex = this.currentIndex;
                 this.note = "Deleted item; will redraw list";
                 this.codePart = 5;
                 return;
             case 5:
                 this.areDeleting = false;
 
-                for (int var3 = this.curIn; var3 < this.size - 1; ++var3) {
+                for (int var3 = this.currentIndex; var3 < this.size - 1; ++var3) {
                     this.a[var3] = this.a[var3 + 1];
                 }
 
                 --this.size;
-                this.curIn = 0;
+                this.currentIndex = 0;
                 this.note = "Deleted item with key " + this.delKey;
                 this.codePart = 6;
                 return;
             case 6:
-                this.curIn = 0;
+                this.currentIndex = 0;
                 this.note = "Press any button";
                 this.codePart = 1;
                 return;
@@ -259,11 +126,9 @@ public class PersonGroupImpl implements MutablePersonGroup {
 
     @Override
     public void reset() {
-        curIn = 0;
-        areInserting = false;
-        insDex = 0;
-        areDeleting = false;
-        delDex = 0;
+        currentIndex = 0;
+        insertingIndex = null;
+        deletingIndex = null;
         canChangeSort = false;
     }
 
@@ -309,49 +174,57 @@ public class PersonGroupImpl implements MutablePersonGroup {
 
     @Override
     public Person getPerson(int index) {
-        return a[index].item();
+        return a[index] != null ? a[index].item() : null;
+    }
+
+    @Override
+    public Person getCurrentPerson() {
+        return getPerson(currentIndex);
+    }
+
+    @Override
+    public void setPerson(int index, Person person) {
+        a[index] = new Link(person);
     }
 
     @Override
     public Person insertingPerson() {
-        return tempPers;
+        return insertingPerson;
     }
 
     @Override
     public void setInsertingPerson(Person person) {
-        tempPers = person;
+        insertingPerson = person;
     }
 
     @Override
     public Integer insertingIndex() {
-        return areInserting ? insDex : null;
+        return insertingIndex;
     }
 
     @Override
     public void setInsertingIndex(Integer index) {
-        areInserting = index != null;
-        insDex = index != null ? index : 0;
+        insertingIndex = index;
     }
 
     @Override
     public Integer deletingIndex() {
-        return areDeleting ? delDex : null;
+        return deletingIndex;
     }
 
     @Override
     public void setDeletingIndex(Integer index) {
-        areDeleting = index != null;
-        delDex = index != null ? index : 0;
+        deletingIndex = index;
     }
 
     @Override
     public int currentIndex() {
-        return curIn;
+        return currentIndex;
     }
 
     @Override
     public void setCurrentIndex(int index) {
-        curIn = index;
+        currentIndex = index;
     }
 
     @Override

@@ -5,6 +5,7 @@ public interface PersonGroup {
 
     int size();
     Person getPerson(int index);
+    Person getCurrentPerson();
 
     Person insertingPerson();
     Integer insertingIndex();

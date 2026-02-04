@@ -1,9 +1,9 @@
 package workshop.ch05.operation;
 
+import workshop.ch05.pg.Constants;
 import workshop.ch05.pg.MutablePersonGroup;
 
 public class NewListOperation extends BaseOperation {
-    private static final int MAX_SIZE = 28;
     private int newSize;
 
     public NewListOperation(MutablePersonGroup pg) {
@@ -15,6 +15,7 @@ public class NewListOperation extends BaseOperation {
         @Override
         public void run(Integer value) {
             pg.setNote("Enter size of linked list to create");
+            pg.reset();
             nextState(new State2());
         }
     }
@@ -22,12 +23,12 @@ public class NewListOperation extends BaseOperation {
     private class State2 implements State {
         @Override
         public void run(Integer value) {
-            if (value != null && value >= 0 && value <= MAX_SIZE) {
+            if (value != null && value >= 0 && value <= Constants.MAX_SIZE) {
                 pg.setNote("Will create list with " + value + " links");
                 newSize = value;
                 nextState(new State3());
             } else {
-                pg.setNote("ERROR: use size between 0 and " + MAX_SIZE);
+                pg.setNote("ERROR: use size between 0 and " + Constants.MAX_SIZE);
                 nextState(new State1());
             }
         }

@@ -98,7 +98,7 @@ public class PersonGroupPanel extends JPanel {
     public void drawLink(Graphics g, int idx) {
         int x = 32 + 57 * (idx % 7);
         int y = 89 + 57 * (idx / 7);
-        if (pg.getPerson(pg.currentIndex()) != null) {
+        if (pg.getPerson(idx) != null) {
             personCell(x, y - 5, pg.getPerson(idx)).draw(g);
 
             if (idx < pg.size() - 1) {
