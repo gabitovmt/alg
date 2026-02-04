@@ -120,7 +120,7 @@ public class InsertOperation extends BaseOperation {
     private class State7 implements State {
         @Override
         public void run(Integer value) {
-            pg.setCurrentIndex(0);
+            pg.reset();
             pg.setDefaultNote();
             nextState(new State1());
         }

@@ -1,5 +1,6 @@
 package workshop.ch05.pg;
 
+import workshop.ch05.operation.DeleteOperation;
 import workshop.ch05.operation.FindOperation;
 import workshop.ch05.operation.InsertOperation;
 import workshop.ch05.operation.NewListOperation;
@@ -25,16 +26,9 @@ public class PersonGroupImpl implements MutablePersonGroup {
     private boolean isSorted;
     private boolean canChangeSort;
 
-    private int delKey;
-    private int codePart;
-    private int opMode;
-
-    private boolean areDeleting;
-
     private Operation operation = new NewListOperation(this);
 
     public void newList(Integer size) {
-        opMode = 1;
         if (operation.getMode() != OperationMode.NEW_LIST) {
             operation = new NewListOperation(this);
         }
@@ -42,7 +36,6 @@ public class PersonGroupImpl implements MutablePersonGroup {
     }
 
     public void insert(Integer insKey) {
-        opMode = 3;
         if (operation.getMode() != OperationMode.INSERT) {
             operation = new InsertOperation(this);
         }
@@ -50,78 +43,17 @@ public class PersonGroupImpl implements MutablePersonGroup {
     }
 
     public void find(Integer findKey) {
-        opMode = 4;
         if (operation.getMode() != OperationMode.FIND) {
             operation = new FindOperation(this);
         }
         operation.run(findKey);
     }
 
-    public void delete(Integer var2) {
-        if (this.opMode != 5) {
-            this.opMode = 5;
-            this.codePart = 1;
+    public void delete(Integer delKey) {
+        if (operation.getMode() != OperationMode.DELETE) {
+            operation = new DeleteOperation(this);
         }
-
-        switch (this.codePart) {
-            case 1:
-                this.note = "Enter key of item to delete";
-                this.codePart = 2;
-                return;
-            case 2:
-                if (var2 != null && var2 >= 0 && var2 <= 999) {
-                    this.delKey = var2;
-                    this.currentIndex = 0;
-                    this.note = "Looking for item with key " + this.delKey;
-                    this.codePart = 3;
-                } else {
-                    this.note = "ERROR: use key between 0 and " + 999;
-                    this.codePart = 1;
-                }
-                return;
-            case 3:
-                if (this.a[this.currentIndex].item().height() == this.delKey) {
-                    this.note = "Have found item with key " + this.delKey;
-                    if (this.currentIndex == this.size - 1) {
-                        this.codePart = 5;
-                    } else {
-                        this.codePart = 4;
-                    }
-                } else if (this.currentIndex != this.size - 1 && (!this.isSorted || this.a[this.currentIndex].item().height() <= this.delKey)) {
-                    this.note = "Searching for item with key " + this.delKey;
-                    this.currentIndex++;
-                    this.codePart = 3;
-                } else {
-                    this.note = "Can't locate item with key " + this.delKey;
-                    this.codePart = 6;
-                }
-
-                return;
-            case 4:
-                this.areDeleting = true;
-                this.deletingIndex = this.currentIndex;
-                this.note = "Deleted item; will redraw list";
-                this.codePart = 5;
-                return;
-            case 5:
-                this.areDeleting = false;
-
-                for (int var3 = this.currentIndex; var3 < this.size - 1; ++var3) {
-                    this.a[var3] = this.a[var3 + 1];
-                }
-
-                --this.size;
-                this.currentIndex = 0;
-                this.note = "Deleted item with key " + this.delKey;
-                this.codePart = 6;
-                return;
-            case 6:
-                this.currentIndex = 0;
-                this.note = "Press any button";
-                this.codePart = 1;
-                return;
-            default:
-        }
+        operation.run(delKey);
     }
 
     @Override
