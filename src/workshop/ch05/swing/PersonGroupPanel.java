@@ -6,7 +6,6 @@ import workshop.ch05.swing.shape.Arrow;
 import workshop.ch05.swing.shape.Background;
 import workshop.ch05.swing.shape.Cell;
 import workshop.ch05.swing.shape.Direction;
-import workshop.ch05.swing.shape.Line;
 import workshop.ch05.swing.shape.Note;
 import workshop.ch05.swing.shape.Shape;
 
@@ -36,6 +35,7 @@ public class PersonGroupPanel extends JPanel {
             new Arrow.Line((CELL_SIZE.height + CELL_SPACING.height) / 4, Direction.SOUTH),
             new Arrow.Line(CELL_SPACING.width / 2, Direction.EAST)
     );
+
     private static final List<Arrow.Line> FRONT_INS_ARROW_SIZE = List.of(
             new Arrow.Line(8, Direction.EAST),
             new Arrow.Line(16, Direction.NORTH),
@@ -51,14 +51,32 @@ public class PersonGroupPanel extends JPanel {
             new Arrow.Line(8, Direction.EAST)
     );
     private static final List<Arrow.Line> BACK_REAR_INS_ARROW_SIZE = List.of(
-            new Arrow.Line(BACK_ARROW_SIZE.get(0).size(), Direction.EAST),
-            new Arrow.Line(BACK_ARROW_SIZE.get(1).size(), Direction.SOUTH),
+            BACK_ARROW_SIZE.get(0),
+            BACK_ARROW_SIZE.get(1),
             new Arrow.Line(BACK_ARROW_SIZE.get(2).size() + 24, Direction.WEST),
             new Arrow.Line(BACK_ARROW_SIZE.get(3).size() + 32, Direction.SOUTH),
             new Arrow.Line(BACK_ARROW_SIZE.get(4).size() - 8, Direction.EAST)
     );
+
+    private static final List<Arrow.Line> DEL_ARROW_SIZE = List.of(
+            new Arrow.Line(CELL_SIZE.width + CELL_SPACING.width * 2, Direction.EAST)
+    );
+    private static final List<Arrow.Line> DEL_LAST_COL_ARROW_SIZE = List.of(
+            new Arrow.Line(BACK_ARROW_SIZE.get(0).size() + CELL_SIZE.width + CELL_SPACING.width, Direction.EAST),
+            BACK_ARROW_SIZE.get(1),
+            BACK_ARROW_SIZE.get(2),
+            BACK_ARROW_SIZE.get(3),
+            BACK_ARROW_SIZE.get(4)
+    );
+    private static final List<Arrow.Line> DEL_FIRST_COL_ARROW_SIZE = List.of(
+            BACK_ARROW_SIZE.get(0),
+            BACK_ARROW_SIZE.get(1),
+            BACK_ARROW_SIZE.get(2),
+            BACK_ARROW_SIZE.get(3),
+            new Arrow.Line(BACK_ARROW_SIZE.get(4).size() + CELL_SIZE.width + CELL_SPACING.width, Direction.EAST)
+    );
+
     private static final Dimension TIP_SIZE = new Dimension(3, 5);
-    private static final int DEL_LINE_WIDTH = CELL_SIZE.width + CELL_SPACING.width;
 
     private static final List<Arrow.Line> POSITION_SIZE = List.of(new Arrow.Line(24, Direction.NORTH));
     private static final Dimension POSITION_TIP_SIZE = new Dimension(6, 10);
@@ -124,19 +142,24 @@ public class PersonGroupPanel extends JPanel {
         return new Arrow(new Point(x, y), Color.BLACK, BACK_ARROW_SIZE, TIP_SIZE, false);
     }
 
-    private Arrow link(int idx) {
-        int x = personX(idx) + CELL_SIZE.width;
-        int y = personY(idx) + CELL_SIZE.height / 2;
+    private int linkX(int idx) {
+        return personX(idx) + CELL_SIZE.width;
+    }
 
+    private int linkY(int idx) {
+        return personY(idx) + CELL_SIZE.height / 2;
+    }
+
+    private Arrow link(int idx) {
         return idx % CELL_COLS != CELL_COLS - 1
-                ? arrowCell(x, y)
-                : backArrowCell(x, y);
+                ? arrowCell(linkX(idx), linkY(idx))
+                : backArrowCell(linkX(idx), linkY(idx));
     }
 
     private List<Arrow> links() {
         return IntStream.range(0, pg.size() - 1)
                 .filter(idx -> !Objects.equals(idx + 1, pg.insertingIndex())
-//                        && !Objects.equals(idx, pg.deletingIndex())
+                        && !Objects.equals(idx, pg.deletingIndex())
                         && !Objects.equals(idx + 1, pg.deletingIndex()))
                 .mapToObj(this::link)
                 .toList();
@@ -182,9 +205,7 @@ public class PersonGroupPanel extends JPanel {
         }
 
         if (pg.insertingIndex() % CELL_COLS == 0) {
-            Arrow rearArrow = backRearInsArrowCell(
-                    personX(idx - 1) + CELL_SIZE.width, personY(idx - 1) + CELL_SIZE.height / 2
-            );
+            Arrow rearArrow = backRearInsArrowCell(linkX(idx - 1), linkY(idx - 1));
             return List.of(cell, arrow, rearArrow);
         }
 
@@ -192,15 +213,32 @@ public class PersonGroupPanel extends JPanel {
         return List.of(cell, arrow, rearArrow);
     }
 
-    private List<Line> delLink() {
-        if (pg.deletingIndex() == null || pg.deletingIndex() == 0) {
+    private Arrow delArrowCell(int x, int y) {
+        return new Arrow(new Point(x, y), Color.BLACK, DEL_ARROW_SIZE, TIP_SIZE, false);
+    }
+
+    private Arrow delLastColArrowCell(int x, int y) {
+        return new Arrow(new Point(x, y), Color.BLACK, DEL_LAST_COL_ARROW_SIZE, TIP_SIZE, false);
+    }
+
+    private Arrow delFirstColArrowCell(int x, int y) {
+        return new Arrow(new Point(x, y), Color.BLACK, DEL_FIRST_COL_ARROW_SIZE, TIP_SIZE, false);
+    }
+
+    private List<Arrow> delLink() {
+        var idx = pg.deletingIndex();
+        if (idx == null || idx == 0 || idx == pg.size() - 1) {
             return List.of();
         }
 
-        int x = personX(pg.deletingIndex()) + CELL_SIZE.width;
-        int y = personY(pg.deletingIndex()) + CELL_SIZE.height / 2;
-        var line = new Line(new Rectangle(x, y, DEL_LINE_WIDTH, 0), Color.BLACK);
+        if (idx % CELL_COLS == CELL_COLS - 1) {
+            return List.of(delLastColArrowCell(linkX(idx - 1), linkY(idx - 1)));
+        }
 
-        return List.of(line);
+        if (idx % CELL_COLS == 0) {
+            return List.of(delFirstColArrowCell(linkX(idx - 1), linkY(idx - 1)));
+        }
+
+        return List.of(delArrowCell(linkX(idx - 1), linkY(idx - 1)));
     }
 }
