@@ -1,9 +1,9 @@
-package alg.ch05.ex01;
+package alg.ch05.ex02;
 
 public class Link {
-    private final int iData;    // Данные (ключ)
-    private final double dData; // Данные
-    Link next;      // Следующий элемент в списке
+    private final int iData;
+    private final double dData;
+    Link next;
 
     public Link(int iData, double dData) {
         this.iData = iData;
