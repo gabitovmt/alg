@@ -169,6 +169,16 @@ public class Array {
         }
     }
 
+    public void insertionListSort() {
+        var list = new SortedList();
+        for (long l : a) {
+            list.insert(l);
+        }
+        for (int i = 0; i < a.length; i++) {
+            a[i] = list.remove();
+        }
+    }
+
     @Override
     public String toString() {
         final int maxSize = 100;

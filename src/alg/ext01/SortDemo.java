@@ -14,6 +14,7 @@ public class SortDemo {
         var insertionSort = new Array(size);
         var oddEvenSort = new Array(size);
         var parallelOddEvenSort = new Array(size);
+        var insertionListSort = new Array(size);
 
         for (int i = 0; i < size; i++) {
             long n = RANDOM.nextLong();
@@ -22,6 +23,7 @@ public class SortDemo {
             insertionSort.set(i, n);
             oddEvenSort.set(i, n);
             parallelOddEvenSort.set(i, n);
+            insertionListSort.set(i, n);
         }
 
         System.out.println("Size of elements: " + size);
@@ -30,7 +32,7 @@ public class SortDemo {
         speedTest("Insertion Sort        ", insertionSort, Array::insertionSort);
         speedTest("Odd Even Sort         ", oddEvenSort, Array::oddEvenSort);
         speedTest("Parallel Odd Even Sort", parallelOddEvenSort, Array::parallelOddEvenSort);
-
+        speedTest("Insertion List Sort   ", insertionListSort, Array::insertionListSort);
     }
 
     private static void speedTest(String nameTest, Array a, Consumer<Array> sort) {
