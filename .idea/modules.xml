@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/ru.maratgabitov.iml" filepath="$PROJECT_DIR$/ru.maratgabitov.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/alg.iml" filepath="$PROJECT_DIR$/.idea/modules/alg.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/alg.main.iml" filepath="$PROJECT_DIR$/.idea/modules/alg.main.iml" />
     </modules>
   </component>
 </project>

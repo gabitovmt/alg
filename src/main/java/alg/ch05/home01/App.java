@@ -3,6 +3,7 @@ package alg.ch05.home01;
 import alg.ch05.ext01.LinkedList;
 import alg.ch05.ext01.TwoEndedList;
 
+// Упражнение 2
 public class App {
 
     @SuppressWarnings("all")
