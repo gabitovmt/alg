@@ -143,4 +143,9 @@ public class LinkedList<E> extends AbstractCollection<E> implements Deque<E> {
     public Iterator<E> iterator() {
         return new NodeIterator<>(head);
     }
+
+    @Override
+    public Iterator<E> descendingIterator() {
+        return new DescendingIterator<>(tail);
+    }
 }

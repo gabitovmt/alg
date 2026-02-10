@@ -9,4 +9,5 @@ public interface Deque<E> extends Queue<E> {
     E removeLast() throws NoSuchElementException;
     E getFirst() throws NoSuchElementException;
     E getLast() throws NoSuchElementException;
+    Iterator<E> descendingIterator();
 }

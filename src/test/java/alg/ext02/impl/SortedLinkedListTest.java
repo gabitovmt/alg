@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class SortedLinkedListTest {
 
     @Test
-    @DisplayName("Массив пустой")
+    @DisplayName("Список пустой")
     void emptyTest() {
         var list = new SortedLinkedList<Integer>();
 

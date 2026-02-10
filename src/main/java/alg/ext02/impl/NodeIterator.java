@@ -5,7 +5,7 @@ import alg.ext02.Iterator;
 import java.util.NoSuchElementException;
 
 class NodeIterator<E> implements Iterator<E> {
-    private Node<E> current;
+    protected Node<E> current;
 
     NodeIterator(Node<E> current) {
         this.current = current;
@@ -22,9 +22,9 @@ class NodeIterator<E> implements Iterator<E> {
             throw new NoSuchElementException();
         }
 
-        var element = current.item;
+        var item = current.item;
         current = current.next;
 
-        return element;
+        return item;
     }
 }
