@@ -2,8 +2,17 @@ package alg.ext02.impl;
 
 import alg.ext02.Collection;
 
+import java.lang.reflect.Array;
+import java.util.NoSuchElementException;
+
 abstract class AbstractCollection<E> implements Collection<E> {
     protected int size;
+
+    protected void requireNotEmpty() {
+        if (size == 0) {
+            throw new NoSuchElementException();
+        }
+    }
 
     @Override
     public int size() {
@@ -28,5 +37,18 @@ abstract class AbstractCollection<E> implements Collection<E> {
         }
 
         return sb.append("]").toString();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public E[] toArray(Class<E> clazz) {
+        var array = (E[]) Array.newInstance(clazz, size);
+
+        var iter = iterator();
+        for (int i = 0; i < size; i++) {
+            array[i] = iter.next();
+        }
+
+        return array;
     }
 }

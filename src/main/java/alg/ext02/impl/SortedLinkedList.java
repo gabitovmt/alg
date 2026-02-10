@@ -3,7 +3,6 @@ package alg.ext02.impl;
 import alg.ext02.Iterator;
 import alg.ext02.PriorityQueue;
 
-import java.lang.reflect.Array;
 import java.util.NoSuchElementException;
 
 public class SortedLinkedList<E extends Comparable<E>> extends AbstractCollection<E> implements PriorityQueue<E> {
@@ -23,7 +22,7 @@ public class SortedLinkedList<E extends Comparable<E>> extends AbstractCollectio
 
         Node<E> prev = null;
         Node<E> current = head;
-        while (current != null && e.compareTo(current.element) > 0) {
+        while (current != null && e.compareTo(current.item) > 0) {
             prev = current;
             current = current.next;
         }
@@ -40,14 +39,14 @@ public class SortedLinkedList<E extends Comparable<E>> extends AbstractCollectio
     }
 
     @Override
-    public boolean remove(E e) {
+    public boolean remove(E e) throws NoSuchElementException {
         if (isEmpty()) {
             return false;
         }
 
         Node<E> prev = null;
         Node<E> current = head;
-        while (current != null && !e.equals(current.element)) {
+        while (current != null && !e.equals(current.item)) {
             prev = current;
             current = current.next;
         }
@@ -67,12 +66,10 @@ public class SortedLinkedList<E extends Comparable<E>> extends AbstractCollectio
     }
 
     @Override
-    public E remove() {
-        if (isEmpty()) {
-            throw new NoSuchElementException();
-        }
+    public E remove() throws NoSuchElementException {
+        requireNotEmpty();
 
-        var element = head.element;
+        var element = head.item;
         head = head.next;
         size--;
 
@@ -80,58 +77,14 @@ public class SortedLinkedList<E extends Comparable<E>> extends AbstractCollectio
     }
 
     @Override
-    public E element() {
-        if (isEmpty()) {
-            throw new NoSuchElementException();
-        }
+    public E element() throws NoSuchElementException {
+        requireNotEmpty();
 
-        return head.element;
+        return head.item;
     }
 
     @Override
     public Iterator<E> iterator() {
-        return new IteratorImpl();
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public E[] toArray(Class<E> clazz) {
-        var array = (E[]) Array.newInstance(clazz, size);
-        var current = head;
-        for (int i = 0; i < size; i++, current = current.next) {
-            array[i] = current.element;
-        }
-
-        return array;
-    }
-
-    private class IteratorImpl implements Iterator<E> {
-        private Node<E> current = head;
-
-        @Override
-        public boolean hasNext() {
-            return current != null;
-        }
-
-        @Override
-        public E next() throws NoSuchElementException {
-            if (!hasNext()) {
-                throw new NoSuchElementException();
-            }
-
-            var element = current.element;
-            current = current.next;
-
-            return element;
-        }
-    }
-
-    private static class Node<E> {
-        E element;
-        Node<E> next;
-
-        Node(E element) {
-            this.element = element;
-        }
+        return new NodeIterator<>(head);
     }
 }
