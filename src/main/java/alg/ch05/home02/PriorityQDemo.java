@@ -4,6 +4,7 @@ import alg.ext02.PriorityQueue;
 import alg.ext02.impl.SortedLinkedList;
 
 // Программный проект 5.1
+// Реализация приоритетной очереди на базе сортированного связанного списка
 public class PriorityQDemo {
 
     @SuppressWarnings("java:S106")

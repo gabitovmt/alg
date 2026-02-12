@@ -1,9 +1,10 @@
-package alg.ch05.home3;
+package alg.ch05.home03;
 
 import alg.ext02.Deque;
 import alg.ext02.impl.LinkedList;
 
 // Программный проект 5.2
+// Реализация дека на базе двусвязного двустороннего списка
 public class DequeDemo {
 
     @SuppressWarnings("java:S106")
