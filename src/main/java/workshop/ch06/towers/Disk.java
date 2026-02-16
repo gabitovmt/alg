@@ -3,31 +3,26 @@ package workshop.ch06.towers;
 import java.awt.Color;
 import java.awt.Graphics;
 
-public class Disk {
-    private final int groundLevel = 300;
-    private final int height = 20;
-    public int width;
-    public Color color;
-    public String label;
+public record Disk(int width, Color color, String label) {
+    private static final int SIZE = 20;
+    private static final int SIZE_HALF = SIZE / 2;
+    private static final int BOTTOM_Y = 300;
 
-    public Disk(int var1, Color var2, String var3) {
-        this.width = var1;
-        this.color = var2;
-        this.label = var3;
-    }
+    public void drawDisk(Graphics g, int centerX, int diskNum) {
+        int x = centerX - width / 2;
+        int y = BOTTOM_Y - (diskNum + 1) * SIZE;
 
-    public void drawDisk(Graphics var1, int var2, int var3) {
-        int var4 = var2 - this.width / 2;
-        int var5 = 300 - (var3 + 1) * 20;
-        var1.setColor(Color.black);
-        var1.drawRect(var4, var5, this.width - 1, 19);
-        var1.drawOval(var4 - 10, var5, 19, 19);
-        var1.drawOval(var4 + this.width - 10 - 1, var5, 19, 19);
-        var1.setColor(this.color);
-        var1.fillRect(var4 + 1, var5 + 1, this.width - 2, 18);
-        var1.fillOval(var4 - 10 + 1, var5 + 1, 18, 18);
-        var1.fillOval(var4 + this.width - 10, var5 + 1, 18, 18);
-        var1.setColor(Color.black);
-        var1.drawString(this.label, var4, var5 + 10 + 4);
+        g.setColor(Color.BLACK);
+        g.drawRect(x, y, width - 1, SIZE - 1);
+        g.drawOval(x - SIZE_HALF, y, SIZE - 1, SIZE - 1);
+        g.drawOval(x + width - SIZE_HALF - 1, y, SIZE - 1, SIZE - 1);
+
+        g.setColor(color);
+        g.fillRect(x + 1, y + 1, width - 2, SIZE - 2);
+        g.fillOval(x - SIZE_HALF + 1, y + 1, SIZE - 2, SIZE - 2);
+        g.fillOval(x + width - SIZE_HALF, y + 1, SIZE - 2, SIZE - 2);
+
+        g.setColor(Color.BLACK);
+        g.drawString(label, x, y + SIZE_HALF + 4);
     }
 }

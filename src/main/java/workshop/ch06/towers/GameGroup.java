@@ -90,13 +90,13 @@ public class GameGroup {
         this.to = this.closeTo(var1, var2);
         if (this.from != -1 && this.to != -1 && this.from != this.to) {
             this.note = "Dragged to tower " + this.towerArray[this.to].label;
-            if (!this.towerArray[this.to].isEmpty() && this.towerArray[this.from].peekDisk().width > this.towerArray[this.to].peekDisk().width) {
+            if (!this.towerArray[this.to].isEmpty() && this.towerArray[this.from].peekDisk().width() > this.towerArray[this.to].peekDisk().width()) {
                 this.note = "Must put a SMALLER Disk ON a LARGER Disk";
             } else {
                 Disk var3 = this.towerArray[this.from].removeDisk();
                 this.towerArray[this.to].insertDisk(var3);
                 this.diskMoved = true;
-                this.note = "Moved Disk " + var3.label + " from " + this.towerArray[this.from].label + " to " + this.towerArray[this.to].label;
+                this.note = "Moved Disk " + var3.label() + " from " + this.towerArray[this.from].label + " to " + this.towerArray[this.to].label;
                 if (this.towerArray[2].isFull()) {
                     this.note = "Congratulations! You moved all the disks!";
                 } else {
@@ -140,10 +140,10 @@ public class GameGroup {
                 break;
             case 2:
                 this.theseParams = this.theStack.peek();
-                this.n = this.theseParams.n;
-                this.from = this.theseParams.from;
-                this.to = this.theseParams.to;
-                this.inter = this.theseParams.inter;
+                this.n = this.theseParams.n();
+                this.from = this.theseParams.from();
+                this.to = this.theseParams.to();
+                this.inter = this.theseParams.inter();
                 this.note = "Entering function with " + this.n + " disks";
                 this.codePart = 3;
                 break;
@@ -152,7 +152,7 @@ public class GameGroup {
                     Disk var3 = this.towerArray[this.from].removeDisk();
                     this.towerArray[this.to].insertDisk(var3);
                     this.diskMoved = true;
-                    this.note = "Moved last Disk " + var3.label + " from " + this.towerArray[this.from].label + " to " + this.towerArray[this.to].label;
+                    this.note = "Moved last Disk " + var3.label() + " from " + this.towerArray[this.from].label + " to " + this.towerArray[this.to].label;
                     if (this.towerArray[2].isFull()) {
                         this.note = "Congratulations! You moved all the disks!";
                     }
@@ -184,14 +184,14 @@ public class GameGroup {
                 break;
             case 7:
                 int var2 = this.n;
-                this.codePart = this.theseParams.codePart;
+                this.codePart = this.theseParams.codePart();
                 this.theStack.pop();
                 if (!this.theStack.isEmpty()) {
                     this.theseParams = this.theStack.peek();
-                    this.n = this.theseParams.n;
-                    this.from = this.theseParams.from;
-                    this.to = this.theseParams.to;
-                    this.inter = this.theseParams.inter;
+                    this.n = this.theseParams.n();
+                    this.from = this.theseParams.from();
+                    this.to = this.theseParams.to();
+                    this.inter = this.theseParams.inter();
                 }
 
                 this.note = "Returning from function with " + var2 + " disks";

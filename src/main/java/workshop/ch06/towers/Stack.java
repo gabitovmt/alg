@@ -1,33 +1,31 @@
 package workshop.ch06.towers;
 
 public class Stack {
-    private int maxSize;
-    private Params[] stackArray;
+    private final Params[] a;
     private int top;
 
-    public Stack(int var1) {
-        this.maxSize = var1;
-        this.stackArray = new Params[this.maxSize];
-        this.top = -1;
+    public Stack(int maxSize) {
+        a = new Params[maxSize];
+        top = -1;
     }
 
-    public void push(Params var1) {
-        this.stackArray[++this.top] = var1;
+    public void push(Params p) {
+        a[++top] = p;
     }
 
     public Params pop() {
-        return this.stackArray[this.top--];
+        return a[top--];
     }
 
     public Params peek() {
-        return this.stackArray[this.top];
+        return a[top];
     }
 
     public boolean isEmpty() {
-        return this.top == -1;
+        return top == -1;
     }
 
     public boolean isFull() {
-        return this.top == this.maxSize - 1;
+        return top == a.length - 1;
     }
 }
