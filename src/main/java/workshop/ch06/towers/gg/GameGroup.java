@@ -1,4 +1,6 @@
-package workshop.ch06.towers;
+package workshop.ch06.towers.gg;
+
+import workshop.ch06.towers.support.Utils;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -43,12 +45,7 @@ public class GameGroup {
         this.towerArray[2] = new Tower(360, 'C', this.nDisks);
 
         for(int var2 = 0; var2 < this.nDisks; ++var2) {
-            int var3 = 120 - var2 * this.widthFactor;
-            int var4 = 75 + (int)(Math.random() * (double)180.0F);
-            int var5 = 75 + (int)(Math.random() * (double)180.0F);
-            int var6 = 75 + (int)(Math.random() * (double)180.0F);
-            Color var7 = new Color(var4, var5, var6);
-            Disk var8 = new Disk(var3, var7, String.valueOf(this.nDisks - var2));
+            Disk var8 = new Disk(Utils.nextColor(), this.nDisks - var2 - 1);
             this.towerArray[0].insertDisk(var8);
         }
 
@@ -90,7 +87,7 @@ public class GameGroup {
         this.to = this.closeTo(var1, var2);
         if (this.from != -1 && this.to != -1 && this.from != this.to) {
             this.note = "Dragged to tower " + this.towerArray[this.to].label;
-            if (!this.towerArray[this.to].isEmpty() && this.towerArray[this.from].peekDisk().width() > this.towerArray[this.to].peekDisk().width()) {
+            if (!this.towerArray[this.to].isEmpty() && this.towerArray[this.from].peekDisk().num() > this.towerArray[this.to].peekDisk().num()) {
                 this.note = "Must put a SMALLER Disk ON a LARGER Disk";
             } else {
                 Disk var3 = this.towerArray[this.from].removeDisk();

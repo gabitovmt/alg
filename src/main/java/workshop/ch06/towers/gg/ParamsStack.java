@@ -1,4 +1,4 @@
-package workshop.ch06.towers;
+package workshop.ch06.towers.gg;
 
 public class ParamsStack extends Stack<Params> {
 

@@ -1,5 +1,7 @@
 package workshop.ch06.towers;
 
+import workshop.ch06.towers.gg.GameGroup;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
