@@ -1,23 +1,26 @@
 package workshop.ch06.towers;
 
-public class Stack {
-    private final Params[] a;
+import java.lang.reflect.Array;
+
+public class Stack<E> {
+    private final E[] a;
     private int top;
 
-    public Stack(int maxSize) {
-        a = new Params[maxSize];
+    @SuppressWarnings("unchecked")
+    public Stack(Class<E> clazz, int maxSize) {
+        a = (E[]) Array.newInstance(clazz, maxSize);
         top = -1;
     }
 
-    public void push(Params p) {
-        a[++top] = p;
+    public void push(E item) {
+        a[++top] = item;
     }
 
-    public Params pop() {
+    public E pop() {
         return a[top--];
     }
 
-    public Params peek() {
+    public E peek() {
         return a[top];
     }
 

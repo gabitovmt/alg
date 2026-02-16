@@ -23,10 +23,10 @@ public class GameGroup {
     private int drawMode;
     private boolean diskMoved;
     private int ddCode;
-    private tower[] towerArray;
+    private Tower[] towerArray;
     private int nDisks;
     private int widthFactor;
-    private Stack theStack;
+    private ParamsStack theStack;
     private Params theseParams;
     private int n;
     private int from;
@@ -37,10 +37,10 @@ public class GameGroup {
     public GameGroup(int var1) {
         this.nDisks = var1;
         this.widthFactor = 120 / this.nDisks;
-        this.towerArray = new tower[3];
-        this.towerArray[0] = new tower(80, 'A', this.nDisks);
-        this.towerArray[1] = new tower(220, 'B', this.nDisks);
-        this.towerArray[2] = new tower(360, 'C', this.nDisks);
+        this.towerArray = new Tower[3];
+        this.towerArray[0] = new Tower(80, 'A', this.nDisks);
+        this.towerArray[1] = new Tower(220, 'B', this.nDisks);
+        this.towerArray[2] = new Tower(360, 'C', this.nDisks);
 
         for(int var2 = 0; var2 < this.nDisks; ++var2) {
             int var3 = 120 - var2 * this.widthFactor;
@@ -52,7 +52,7 @@ public class GameGroup {
             this.towerArray[0].insertDisk(var8);
         }
 
-        this.theStack = new Stack(this.nDisks);
+        this.theStack = new ParamsStack(this.nDisks);
         this.note = "Press any button, or drag Disk to another post";
         this.diskMoved = false;
         this.drawMode = 2;

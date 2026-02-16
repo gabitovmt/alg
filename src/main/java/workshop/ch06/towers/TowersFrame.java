@@ -6,7 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 public class TowersFrame extends JFrame implements Runnable, ActionListener {
     private static final int DEFAULT_WIDTH = 440;
