@@ -1,6 +1,8 @@
 package workshop.ch06.towers;
 
 import workshop.ch06.towers.gg.GameGroup;
+import workshop.ch06.towers.swing.GamePanel;
+import workshop.ch06.towers.swing.shape.TowersShape;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,9 +12,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class TowersFrame extends JFrame implements Runnable, ActionListener {
-    private static final int DEFAULT_WIDTH = 440;
-    private static final int DEFAULT_HEIGHT = 325;
+    private static final int DEFAULT_WIDTH = 460;
+    private static final int DEFAULT_HEIGHT = 350;
     private static final int DEFAULT_DISKS = 4;
+
+    private transient GameGroup game;
 
     private final Button newButton = makeButton("New");
     private final Button stepButton = makeButton("Step");
@@ -21,7 +25,6 @@ public class TowersFrame extends JFrame implements Runnable, ActionListener {
     private final TextField tf = new TextField("", 4);
 
     private Thread runner;
-    private GameGroup game;
     private boolean wasClearPressed = false;
     private int GPNumber = -1;
     private boolean isNumber = false;
@@ -36,9 +39,11 @@ public class TowersFrame extends JFrame implements Runnable, ActionListener {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("LinkList Workshop");
 
+        game = new GameGroup(DEFAULT_DISKS);
+
         setLayout(new BorderLayout());
         add(makeToolPanel(), BorderLayout.NORTH);
-        game = new GameGroup(DEFAULT_DISKS);
+        add(new GamePanel(game), BorderLayout.CENTER);
         addMouseListener(new MouseListenerImpl());
 
         repaint();
@@ -96,14 +101,6 @@ public class TowersFrame extends JFrame implements Runnable, ActionListener {
             runner = null;
         }
 
-    }
-
-    public void paint(Graphics var1) {
-        game.draw(var1);
-    }
-
-    public void update(Graphics var1) {
-        paint(var1);
     }
 
     public void actionPerformed(ActionEvent e) {

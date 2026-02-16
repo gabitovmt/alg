@@ -5,9 +5,8 @@ import workshop.ch06.towers.gg.Tower;
 
 import java.awt.*;
 
-public record TowerShape(Tower tower, int centerX, int y) implements Shape {
+public record TowerShape(Tower tower, int centerX, int y, int height) implements Shape {
     private static final int WIDTH = 15;
-    private static final int HEIGHT = 220;
     private static final int LABEL_OFFSET = 15;
 
     @Override
@@ -18,7 +17,7 @@ public record TowerShape(Tower tower, int centerX, int y) implements Shape {
 
     private void drawTower(Graphics g) {
         g.setColor(tower.color());
-        g.fillRect(centerX - WIDTH / 2, y, WIDTH, HEIGHT);
+        g.fillRect(centerX - WIDTH / 2, y, WIDTH, height);
         drawDisks(g);
     }
 
@@ -33,7 +32,7 @@ public record TowerShape(Tower tower, int centerX, int y) implements Shape {
     }
 
     private void drawDisks(Graphics g) {
-        int bottomY = y + HEIGHT;
+        int bottomY = y + height;
 
         Disk[] disks = tower.toArray();
         for (int i = 0; i < disks.length; i++) {
