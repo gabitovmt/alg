@@ -1,6 +1,7 @@
 package workshop.ch06.towers.gg;
 
 import workshop.ch06.towers.support.Utils;
+import workshop.ch06.towers.swing.shape.TowerShape;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -24,11 +25,9 @@ public class GameGroup {
     private int codePart;
     private int drawMode;
     private boolean diskMoved;
-    private int ddCode;
     private Tower[] towerArray;
     private int nDisks;
-    private int widthFactor;
-    private ParamsStack theStack;
+    private Stack<Params> theStack;
     private Params theseParams;
     private int n;
     private int from;
@@ -38,18 +37,17 @@ public class GameGroup {
 
     public GameGroup(int var1) {
         this.nDisks = var1;
-        this.widthFactor = 120 / this.nDisks;
         this.towerArray = new Tower[3];
-        this.towerArray[0] = new Tower(80, 'A', this.nDisks);
-        this.towerArray[1] = new Tower(220, 'B', this.nDisks);
-        this.towerArray[2] = new Tower(360, 'C', this.nDisks);
+        this.towerArray[0] = new Tower(Utils.nextColor(), "A", this.nDisks);
+        this.towerArray[1] = new Tower(Utils.nextColor(), "B", this.nDisks);
+        this.towerArray[2] = new Tower(Utils.nextColor(), "C", this.nDisks);
 
-        for(int var2 = 0; var2 < this.nDisks; ++var2) {
+        for (int var2 = 0; var2 < this.nDisks; ++var2) {
             Disk var8 = new Disk(Utils.nextColor(), this.nDisks - var2 - 1);
             this.towerArray[0].insertDisk(var8);
         }
 
-        this.theStack = new ParamsStack(this.nDisks);
+        this.theStack = new Stack<>(Params.class, this.nDisks);
         this.note = "Press any button, or drag Disk to another post";
         this.diskMoved = false;
         this.drawMode = 2;
@@ -74,10 +72,10 @@ public class GameGroup {
         if (this.from == -1) {
             this.note = "DRAG the CENTER of the Disk";
         } else if (this.towerArray[this.from].isEmpty()) {
-            this.note = "NO DISKS on tower " + this.towerArray[this.from].label;
+            this.note = "NO DISKS on tower " + this.towerArray[this.from].name();
             this.from = -1;
         } else {
-            this.note = "Dragging from tower " + this.towerArray[this.from].label;
+            this.note = "Dragging from tower " + this.towerArray[this.from].name();
             this.drawMode = 1;
         }
     }
@@ -86,14 +84,14 @@ public class GameGroup {
         this.diskMoved = false;
         this.to = this.closeTo(var1, var2);
         if (this.from != -1 && this.to != -1 && this.from != this.to) {
-            this.note = "Dragged to tower " + this.towerArray[this.to].label;
+            this.note = "Dragged to tower " + this.towerArray[this.to].name();
             if (!this.towerArray[this.to].isEmpty() && this.towerArray[this.from].peekDisk().num() > this.towerArray[this.to].peekDisk().num()) {
                 this.note = "Must put a SMALLER Disk ON a LARGER Disk";
             } else {
                 Disk var3 = this.towerArray[this.from].removeDisk();
                 this.towerArray[this.to].insertDisk(var3);
                 this.diskMoved = true;
-                this.note = "Moved Disk " + var3.label() + " from " + this.towerArray[this.from].label + " to " + this.towerArray[this.to].label;
+                this.note = "Moved Disk " + var3.label() + " from " + this.towerArray[this.from].name() + " to " + this.towerArray[this.to].name();
                 if (this.towerArray[2].isFull()) {
                     this.note = "Congratulations! You moved all the disks!";
                 } else {
@@ -149,7 +147,7 @@ public class GameGroup {
                     Disk var3 = this.towerArray[this.from].removeDisk();
                     this.towerArray[this.to].insertDisk(var3);
                     this.diskMoved = true;
-                    this.note = "Moved last Disk " + var3.label() + " from " + this.towerArray[this.from].label + " to " + this.towerArray[this.to].label;
+                    this.note = "Moved last Disk " + var3.label() + " from " + this.towerArray[this.from].name() + " to " + this.towerArray[this.to].name();
                     if (this.towerArray[2].isFull()) {
                         this.note = "Congratulations! You moved all the disks!";
                     }
@@ -161,7 +159,7 @@ public class GameGroup {
                 }
                 break;
             case 4:
-                this.note = "Will move top " + (this.n - 1) + " disks from " + this.towerArray[this.from].label + " to " + this.towerArray[this.inter].label;
+                this.note = "Will move top " + (this.n - 1) + " disks from " + this.towerArray[this.from].name() + " to " + this.towerArray[this.inter].name();
                 this.theseParams = new Params(this.n - 1, this.from, this.inter, this.to, 5);
                 this.theStack.push(this.theseParams);
                 this.codePart = 2;
@@ -170,11 +168,11 @@ public class GameGroup {
                 Disk var1 = this.towerArray[this.from].removeDisk();
                 this.towerArray[this.to].insertDisk(var1);
                 this.diskMoved = true;
-                this.note = "Moved remaining Disk " + this.n + " from " + this.towerArray[this.from].label + " to " + this.towerArray[this.to].label;
+                this.note = "Moved remaining Disk " + this.n + " from " + this.towerArray[this.from].name() + " to " + this.towerArray[this.to].name();
                 this.codePart = 6;
                 break;
             case 6:
-                this.note = "Will move top " + (this.n - 1) + " disks from " + this.towerArray[this.inter].label + " to " + this.towerArray[this.to].label;
+                this.note = "Will move top " + (this.n - 1) + " disks from " + this.towerArray[this.inter].name() + " to " + this.towerArray[this.to].name();
                 this.theseParams = new Params(this.n - 1, this.inter, this.to, this.from, 7);
                 this.theStack.push(this.theseParams);
                 this.codePart = 2;
@@ -206,32 +204,35 @@ public class GameGroup {
         this.note = "ARE YOU SURE? Press again to reset game";
     }
 
-    public void draw(Graphics var1) {
+    public void draw(Graphics g) {
         if (this.drawMode == 2) {
-            var1.setColor(Color.lightGray);
-            var1.fillRect(0, 0, 440, 325);
-            var1.setColor(Color.black);
-            var1.drawRect(2, 71, 436, 229);
+            g.setColor(Color.lightGray);
+            g.fillRect(0, 0, 440, 325);
+            g.setColor(Color.black);
+            g.drawRect(2, 71, 436, 229);
 
-            for(int var2 = 0; var2 < 3; ++var2) {
-                this.towerArray[var2].drawTower(var1, this.drawMode, 0);
+            for (int var2 = 0; var2 < 3; ++var2) {
+                drawTower(g, towerArray[var2]);
             }
         } else {
-            for(int var3 = 0; var3 < 3; ++var3) {
+            for (int var3 = 0; var3 < 3; ++var3) {
                 if (this.diskMoved && var3 == this.from) {
-                    this.ddCode = 1;
-                    this.towerArray[var3].drawTower(var1, this.drawMode, this.ddCode);
+                    drawTower(g, towerArray[var3]);
                 } else if (this.diskMoved && var3 == this.to) {
-                    this.ddCode = 2;
-                    this.towerArray[var3].drawTower(var1, this.drawMode, this.ddCode);
+                    drawTower(g, towerArray[var3]);
                 }
             }
         }
 
-        var1.setColor(Color.lightGray);
-        var1.fillRect(10, 45, 430, 25);
-        var1.setColor(Color.black);
-        var1.drawString(this.note, 16, 64);
+        g.setColor(Color.lightGray);
+        g.fillRect(10, 45, 430, 25);
+        g.setColor(Color.black);
+        g.drawString(this.note, 16, 64);
         this.drawMode = 2;
+    }
+
+    private void drawTower(Graphics g, Tower tower) {
+        int[] xCenter = {80, 220, 360};
+        new TowerShape(tower, xCenter[tower.name().charAt(0) - 'A'], 80).draw(g);
     }
 }
