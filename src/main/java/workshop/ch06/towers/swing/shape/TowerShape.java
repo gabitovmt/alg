@@ -15,9 +15,14 @@ public record TowerShape(Tower tower, int centerX, int y, int height) implements
         drawString(g);
     }
 
+    public Rectangle getBounds() {
+        return new Rectangle(centerX - WIDTH / 2, y, WIDTH, height);
+    }
+
     private void drawTower(Graphics g) {
         g.setColor(tower.color());
-        g.fillRect(centerX - WIDTH / 2, y, WIDTH, height);
+        var r = getBounds();
+        g.fillRect(r.x, r.y, r.width, r.height);
         drawDisks(g);
     }
 

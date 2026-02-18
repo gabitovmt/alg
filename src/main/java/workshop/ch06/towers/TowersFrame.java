@@ -1,6 +1,6 @@
 package workshop.ch06.towers;
 
-import workshop.ch06.towers.gg.MutableGameImpl;
+import workshop.ch06.towers.gg.GameImpl;
 import workshop.ch06.towers.swing.GamePanel;
 
 import javax.swing.*;
@@ -15,7 +15,7 @@ public class TowersFrame extends JFrame implements Runnable, ActionListener {
     private static final int DEFAULT_HEIGHT = 350;
     private static final int DEFAULT_DISKS = 4;
 
-    private transient MutableGameImpl game;
+    private final transient GameImpl game;
 
     private final Button newButton = makeButton("New");
     private final Button stepButton = makeButton("Step");
@@ -23,9 +23,6 @@ public class TowersFrame extends JFrame implements Runnable, ActionListener {
 
     private final TextField tf = new TextField("", 4);
 
-    private boolean wasClearPressed = false;
-    private int GPNumber = -1;
-    private boolean isNumber = false;
     private boolean runFlag = false;
 
     public static void main(String[] args) {
@@ -37,12 +34,13 @@ public class TowersFrame extends JFrame implements Runnable, ActionListener {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("LinkList Workshop");
 
-        game = new MutableGameImpl(DEFAULT_DISKS);
+        game = new GameImpl(DEFAULT_DISKS);
 
         setLayout(new BorderLayout());
         add(makeToolPanel(), BorderLayout.NORTH);
-        add(new GamePanel(game), BorderLayout.CENTER);
-        addMouseListener(new MouseListenerImpl());
+        var gamePanel = new GamePanel(game);
+        add(gamePanel, BorderLayout.CENTER);
+        gamePanel.addMouseListener(new MouseListenerImpl());
 
         repaint();
 
@@ -88,38 +86,16 @@ public class TowersFrame extends JFrame implements Runnable, ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == newButton) {
-            runFlag = false;
-            if (wasClearPressed) {
-                wasClearPressed = false;
-                String var2 = tf.getText();
-                isNumber = true;
-
-                try {
-                    GPNumber = Integer.parseInt(var2);
-                } catch (NumberFormatException var4) {
-                    isNumber = false;
-                }
-
-                if (isNumber && GPNumber <= 10 && GPNumber >= 1) {
-                    game = new MutableGameImpl(GPNumber);
-                } else {
-                    game.creationError();
-                }
-            } else {
-                wasClearPressed = true;
-                game.warningNew();
-            }
+            game.newGame(getValue());
         }
 
         if (e.getSource() == stepButton) {
             runFlag = false;
-            wasClearPressed = false;
             game.step();
         }
 
         if (e.getSource() == runButton) {
             runFlag = true;
-            wasClearPressed = false;
             game.setDone(false);
         }
 
@@ -145,11 +121,18 @@ public class TowersFrame extends JFrame implements Runnable, ActionListener {
         }
     }
 
+    private Integer getValue() {
+        try {
+            return Integer.valueOf(tf.getText());
+        } catch (NumberFormatException ex) {
+            return null;
+        }
+    }
+
     private class MouseListenerImpl extends MouseAdapter {
 
         @Override
         public void mousePressed(MouseEvent e) {
-            wasClearPressed = false;
             if (e.getClickCount() == 1) {
                 game.startDrag(e.getX(), e.getY());
             }

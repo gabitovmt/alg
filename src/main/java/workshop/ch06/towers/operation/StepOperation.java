@@ -1,14 +1,14 @@
 package workshop.ch06.towers.operation;
 
 import workshop.ch06.towers.gg.Disk;
-import workshop.ch06.towers.gg.MutableGame;
+import workshop.ch06.towers.gg.Game;
 import workshop.ch06.towers.gg.Stack;
 
 public class StepOperation extends BaseOperation {
     private Command c;
     private final Stack<Command> commands;
 
-    public StepOperation(MutableGame game) {
+    public StepOperation(Game game) {
         super(OperationMode.STEP, game);
         nextState(new State1());
         commands = new Stack<>(Command.class, game.disksCount());

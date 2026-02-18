@@ -1,13 +1,13 @@
 package workshop.ch06.towers.operation;
 
-import workshop.ch06.towers.gg.MutableGame;
+import workshop.ch06.towers.gg.Game;
 
 public abstract class BaseOperation implements Operation {
     private final OperationMode mode;
-    protected final MutableGame game;
+    protected final Game game;
     private State state;
 
-    protected BaseOperation(OperationMode mode, MutableGame game) {
+    protected BaseOperation(OperationMode mode, Game game) {
         this.mode = mode;
         this.game = game;
     }

@@ -22,6 +22,19 @@ public record TowersShape(Game game) implements Shape {
         drawRect(g);
     }
 
+    public Tower getTowerByCoords(int x, int y) {
+        Tower[] towers = game.towers();
+        for (int i = 0; i < towers.length; i++) {
+            TowerShape towerShape = towerShape(towers[i], i);
+            Rectangle r = towerShape.getBounds();
+            if (r.contains(x, y)) {
+                return towers[i];
+            }
+        }
+
+        return null;
+    }
+
     private void fillBackground(Graphics g) {
         g.setColor(Color.LIGHT_GRAY);
         var cb = g.getClipBounds();
@@ -51,7 +64,11 @@ public record TowersShape(Game game) implements Shape {
     }
 
     private void drawTower(Graphics g, Tower tower, int index) {
+        towerShape(tower, index).draw(g);
+    }
+
+    private TowerShape towerShape(Tower tower, int index) {
         int centerX = TOWER_OFFSET + TOWER_WIDTH / 2 + TOWER_WIDTH * index;
-        new TowerShape(tower, centerX, TOWER_TOP, TOWER_HEIGHT).draw(g);
+        return new TowerShape(tower, centerX, TOWER_TOP, TOWER_HEIGHT);
     }
 }
