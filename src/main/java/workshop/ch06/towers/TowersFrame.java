@@ -1,8 +1,7 @@
 package workshop.ch06.towers;
 
-import workshop.ch06.towers.gg.GameGroup;
+import workshop.ch06.towers.gg.MutableGameImpl;
 import workshop.ch06.towers.swing.GamePanel;
-import workshop.ch06.towers.swing.shape.TowersShape;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,7 +15,7 @@ public class TowersFrame extends JFrame implements Runnable, ActionListener {
     private static final int DEFAULT_HEIGHT = 350;
     private static final int DEFAULT_DISKS = 4;
 
-    private transient GameGroup game;
+    private transient MutableGameImpl game;
 
     private final Button newButton = makeButton("New");
     private final Button stepButton = makeButton("Step");
@@ -24,7 +23,6 @@ public class TowersFrame extends JFrame implements Runnable, ActionListener {
 
     private final TextField tf = new TextField("", 4);
 
-    private Thread runner;
     private boolean wasClearPressed = false;
     private int GPNumber = -1;
     private boolean isNumber = false;
@@ -39,7 +37,7 @@ public class TowersFrame extends JFrame implements Runnable, ActionListener {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("LinkList Workshop");
 
-        game = new GameGroup(DEFAULT_DISKS);
+        game = new MutableGameImpl(DEFAULT_DISKS);
 
         setLayout(new BorderLayout());
         add(makeToolPanel(), BorderLayout.NORTH);
@@ -87,22 +85,7 @@ public class TowersFrame extends JFrame implements Runnable, ActionListener {
         return panel;
     }
 
-    public void start() {
-        if (runner == null) {
-            runner = new Thread(this);
-            runner.start();
-        }
-
-    }
-
-    public void stop() {
-        if (runner != null) {
-            runner.stop();
-            runner = null;
-        }
-
-    }
-
+    @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == newButton) {
             runFlag = false;
@@ -118,7 +101,7 @@ public class TowersFrame extends JFrame implements Runnable, ActionListener {
                 }
 
                 if (isNumber && GPNumber <= 10 && GPNumber >= 1) {
-                    game = new GameGroup(GPNumber);
+                    game = new MutableGameImpl(GPNumber);
                 } else {
                     game.creationError();
                 }
@@ -147,11 +130,11 @@ public class TowersFrame extends JFrame implements Runnable, ActionListener {
         while (true) {
             if (runFlag) {
                 game.step();
-                ((Component) this).repaint();
+                repaint();
                 byte var1 = 100;
 
                 try {
-                    Thread.sleep((long) var1);
+                    Thread.sleep(var1);
                 } catch (InterruptedException var2) {
                 }
 
@@ -163,6 +146,7 @@ public class TowersFrame extends JFrame implements Runnable, ActionListener {
     }
 
     private class MouseListenerImpl extends MouseAdapter {
+
         @Override
         public void mousePressed(MouseEvent e) {
             wasClearPressed = false;

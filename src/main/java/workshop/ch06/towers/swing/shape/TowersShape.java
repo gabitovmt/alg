@@ -1,11 +1,11 @@
 package workshop.ch06.towers.swing.shape;
 
-import workshop.ch06.towers.gg.GameGroup;
+import workshop.ch06.towers.gg.Game;
 import workshop.ch06.towers.gg.Tower;
 
 import java.awt.*;
 
-public record TowersShape(GameGroup group) implements Shape {
+public record TowersShape(Game game) implements Shape {
     private static final int NOTE_X = 16;
     private static final int NOTE_Y = 24;
     private static final int TOWER_HEIGHT = 220;
@@ -35,14 +35,14 @@ public record TowersShape(GameGroup group) implements Shape {
 
     private void drawNote(Graphics g) {
         g.setColor(Color.BLACK);
-        g.drawString(group.note(), NOTE_X, NOTE_Y);
+        g.drawString(game.note(), NOTE_X, NOTE_Y);
     }
 
     private void drawTowers(Graphics g) {
         var prevFont = g.getFont();
         g.setFont(FONT);
 
-        Tower[] towers = group.towers();
+        Tower[] towers = game.towers();
         for (int i = 0; i < towers.length; ++i) {
             drawTower(g, towers[i], i);
         }
