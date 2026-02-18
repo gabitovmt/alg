@@ -12,7 +12,7 @@ public interface Game {
 
     boolean isDone();
 
-    void setDone(boolean done);
+    boolean canRunning();
 
     int disksCount();
 

@@ -11,7 +11,6 @@ public class GameImpl implements Game {
     private String note;
     private int disksCount;
     private final Tower[] towers = new Tower[3];
-    private boolean isDone;
     private Operation operation;
     private Tower from;
 
@@ -41,12 +40,12 @@ public class GameImpl implements Game {
 
     @Override
     public boolean isDone() {
-        return isDone;
+        return towers[2].isFull();
     }
 
     @Override
-    public void setDone(boolean isDone) {
-        this.isDone = isDone;
+    public boolean canRunning() {
+        return operation != null && operation.mode() == OperationMode.STEP || towers[0].isFull();
     }
 
     @Override
@@ -91,6 +90,7 @@ public class GameImpl implements Game {
             return;
         }
 
+        operation = null;
         note = "Dragged to tower " + to.name();
         if (!to.isEmpty() && from.peekDisk().num() > to.peekDisk().num()) {
             note = "Must put a SMALLER Disk ON a LARGER Disk";
@@ -102,7 +102,7 @@ public class GameImpl implements Game {
         note = String.format(
                 "Moved Disk %s from %s to %s", disk.label(), from.name(), to.name()
         );
-        if (towers[2].isFull()) {
+        if (isDone()) {
             note = "Congratulations! You moved all the disks!";
         }
     }

@@ -9,11 +9,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
-public class TowersFrame extends JFrame implements Runnable, ActionListener {
+public class TowersFrame extends JFrame implements ActionListener {
     private static final int DEFAULT_WIDTH = 460;
     private static final int DEFAULT_HEIGHT = 350;
     private static final int DEFAULT_DISKS = 4;
+
+    private final transient ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+    private transient ScheduledFuture<?> stepTask;
 
     private final transient GameImpl game;
 
@@ -22,8 +29,6 @@ public class TowersFrame extends JFrame implements Runnable, ActionListener {
     private final Button runButton = makeButton("Run");
 
     private final TextField tf = new TextField("", 4);
-
-    private boolean runFlag = false;
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(TowersFrame::new);
@@ -90,35 +95,42 @@ public class TowersFrame extends JFrame implements Runnable, ActionListener {
         }
 
         if (e.getSource() == stepButton) {
-            runFlag = false;
             game.step();
         }
 
         if (e.getSource() == runButton) {
-            runFlag = true;
-            game.setDone(false);
+            if (stepTask == null) {
+                runStepTask();
+            } else {
+                stopStepTask();
+            }
         }
 
         repaint();
     }
 
-    public void run() {
-        while (true) {
-            if (runFlag) {
-                game.step();
-                repaint();
-                byte var1 = 100;
-
-                try {
-                    Thread.sleep(var1);
-                } catch (InterruptedException var2) {
-                }
-
-                if (game.isDone()) {
-                    runFlag = false;
-                }
-            }
+    private void runStepTask() {
+        if (stepTask == null) {
+            int delay = 100;
+            stepTask = executor.scheduleAtFixedRate(this::stepTask, delay, delay, TimeUnit.MILLISECONDS);
         }
+    }
+
+    private void stopStepTask() {
+        if (stepTask != null) {
+            stepTask.cancel(false);
+            stepTask = null;
+        }
+    }
+
+    private void stepTask() {
+        if (game.isDone() || !game.canRunning()) {
+            stopStepTask();
+            return;
+        }
+
+        game.step();
+        repaint();
     }
 
     private Integer getValue() {

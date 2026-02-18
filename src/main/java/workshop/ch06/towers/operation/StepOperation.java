@@ -53,7 +53,7 @@ public class StepOperation extends BaseOperation {
             game.setNote(String.format(
                     "Moved last Disk %s from %s to %s", disk.label(), towerName(c.from), towerName(c.to)
             ));
-            if (game.tower(2).isFull()) {
+            if (game.isDone()) {
                 game.setNote("Congratulations! You moved all the disks!");
             }
 
@@ -112,7 +112,6 @@ public class StepOperation extends BaseOperation {
         @Override
         public void run(Integer value) {
             game.setNote("Press New to reset");
-            game.setDone(true);
             nextState(new State1());
         }
     }
