@@ -17,4 +17,11 @@ public interface PersonGroup {
     void incComparisons();
     void incCopies();
     void sortStep();
+    int lower();
+    void setLower(int lower);
+    int upper();
+    void setUpper(int upper);
+    int mid();
+    void setMid(int mid);
+    void setPtr(int ptr);
 }

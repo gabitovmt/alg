@@ -80,7 +80,11 @@ public class MergeSortFrame extends JFrame implements ActionListener {
         } else if (e.getSource() == stepButton) {
             pg.sortStep();
         } else if (e.getSource() == runButton) {
-            startSorting();
+            if (sortingTask == null && !pg.isDone()) {
+                startSorting();
+            } else if (sortingTask != null) {
+                stopSorting();
+            }
         }
 
         if (e.getSource() != runButton) {
