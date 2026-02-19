@@ -1,4 +1,4 @@
-package workshop.ch06.mergesort.pg;
+package workshop.ch06.mergesort.support;
 
 import java.awt.*;
 import java.util.Random;

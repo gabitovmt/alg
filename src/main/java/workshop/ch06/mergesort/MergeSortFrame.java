@@ -2,18 +2,23 @@ package workshop.ch06.mergesort;
 
 import workshop.ch06.mergesort.pg.PersonGroup;
 import workshop.ch06.mergesort.pg.PersonGroupImpl;
+import workshop.ch06.mergesort.pg.Size;
 import workshop.ch06.mergesort.swing.BarPanel;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 public class MergeSortFrame extends JFrame implements ActionListener {
     private static final int DEFAULT_WIDTH = 360;
-    private static final int DEFAULT_HEIGHT = 360;
+    private static final int DEFAULT_HEIGHT = 400;
 
-    private final PersonGroup pg;
+    private final transient PersonGroup pg;
 
     private final Button newButton = makeButton("New");
     private final Button orderButton = makeButton("Order");
@@ -21,15 +26,8 @@ public class MergeSortFrame extends JFrame implements ActionListener {
     private final Button stepButton = makeButton("Step");
     private final Button runButton = makeButton("Run");
 
-    private Image offscreenImage;
-    private Graphics offscreenGraphics;
-    private int aWidth;
-    private int aHeight;
-    private Thread runner;
-    private int groupSize = 12;
-//    private personGroup thePersonGroup;
-    private boolean runFlag;
-    private int order = 1;
+    private final transient ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+    private transient ScheduledFuture<?> sortingTask;
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(MergeSortFrame::new);
@@ -80,66 +78,39 @@ public class MergeSortFrame extends JFrame implements ActionListener {
         } else if (e.getSource() == sizeButton) {
             pg.switchSize();
         } else if (e.getSource() == stepButton) {
-            //
+            pg.sortStep();
         } else if (e.getSource() == runButton) {
-            //
+            startSorting();
+        }
+
+        if (e.getSource() != runButton) {
+            stopSorting();
         }
 
         repaint();
     }
 
-/*    public void actionPerformed(ActionEvent var1) {
-        if (((EventObject)var1).getSource() == this.newButton) {
-            this.runFlag = false;
-            this.order = this.order == 1 ? 2 : 1;
-            this.thePersonGroup = new personGroup(this.groupSize, this.order);
-        } else if (((EventObject)var1).getSource() == this.sizeButton) {
-            this.runFlag = false;
-            this.groupSize = this.groupSize == 12 ? 100 : 12;
-            this.thePersonGroup = new personGroup(this.groupSize, this.order);
-        } else if (((EventObject)var1).getSource() == this.drawButton) {
-            this.thePersonGroup.setDrawMode(2);
-        } else if (((EventObject)var1).getSource() == this.runButton) {
-            this.thePersonGroup.setDrawMode(1);
-            this.runFlag = true;
-        } else if (((EventObject)var1).getSource() == this.stepButton && !this.thePersonGroup.getDone()) {
-            this.thePersonGroup.setDrawMode(1);
-            this.runFlag = false;
-            this.thePersonGroup.sortStep();
-            this.thePersonGroup.setDrawMode(1);
+    private void startSorting() {
+        if (sortingTask == null && !pg.isDone()) {
+            int delay = pg.size() == Size.NORMAL ? 250 : 75;
+            sortingTask = executor.scheduleAtFixedRate(this::sortStep, delay, delay, TimeUnit.MILLISECONDS);
         }
-
-        ((Component)this).repaint();
-    }*/
-
-/*    public void start() {
-        if (this.runner == null) {
-            this.runner = new Thread(this);
-            this.runner.start();
-        }
-
     }
 
-    public void stop() {
-        this.runner = null;
+    private void stopSorting() {
+        if (sortingTask != null) {
+            sortingTask.cancel(false);
+            sortingTask = null;
+        }
     }
 
-    public void run() {
-        Thread var1 = Thread.currentThread();
-
-        while(this.runner == var1) {
-            if (this.runFlag && !this.thePersonGroup.getDone()) {
-                this.thePersonGroup.sortStep();
-                ((Component)this).repaint();
-                this.thePersonGroup.setDrawMode(1);
-                int var2 = this.groupSize == 12 ? 250 : 75;
-
-                try {
-                    Thread.sleep((long)var2);
-                } catch (InterruptedException var3) {
-                }
-            }
+    private void sortStep() {
+        if (pg.isDone()) {
+            stopSorting();
+            return;
         }
 
-    }*/
+        pg.sortStep();
+        repaint();
+    }
 }
