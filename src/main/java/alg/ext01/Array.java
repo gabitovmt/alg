@@ -15,6 +15,11 @@ public class Array {
         a = new long[size];
     }
 
+    public Array(Array array) {
+        a = new long[array.a.length];
+        System.arraycopy(array.a, 0, a, 0, a.length);
+    }
+
     public void set(int index, long value) {
         a[index] = value;
     }
