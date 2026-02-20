@@ -179,6 +179,48 @@ public class Array {
         }
     }
 
+    public void mergeSort() {
+        long[] workSpace = new long[a.length];
+        recMergeSort(workSpace, 0, a.length - 1);
+    }
+
+    private void recMergeSort(long[] workSpace, int lowerBound, int upperBound) {
+        if (lowerBound == upperBound) {
+            return;
+        }
+
+        int mid = (lowerBound + upperBound) / 2;
+        recMergeSort(workSpace, lowerBound, mid);
+        recMergeSort(workSpace, mid + 1, upperBound);
+        merge(workSpace, lowerBound, mid + 1, upperBound);
+    }
+
+    private void merge(long[] workSpace, int lowPtr, int highPtr, int upperBound) {
+        int i = 0;
+        int lowerBound = lowPtr;
+        int mid = highPtr - 1;
+        int n = upperBound - lowerBound + 1;
+
+        while (lowPtr <= mid && highPtr <= upperBound) {
+            if (a[lowPtr] <= a[highPtr]) {
+                workSpace[i++] = a[lowPtr++];
+            } else {
+                workSpace[i++] = a[highPtr++];
+            }
+        }
+
+        while (lowPtr <= mid) {
+            workSpace[i++] = a[lowPtr++];
+        }
+        while (highPtr <= upperBound) {
+            workSpace[i++] = a[highPtr++];
+        }
+
+        for (i = 0; i < n; i++) {
+            a[lowerBound + i] = workSpace[i];
+        }
+    }
+
     @Override
     public String toString() {
         final int maxSize = 100;

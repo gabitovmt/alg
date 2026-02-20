@@ -7,6 +7,16 @@ import java.util.function.Consumer;
 public class SortDemo {
     private static final Random RANDOM = new Random();
 
+    /**
+     * Size of elements: 100000
+     * Bubble Sort            : 9390 ms
+     * Selection Sort         : 1759 ms
+     * Insertion Sort         : 343 ms
+     * Odd Even Sort          : 5047 ms
+     * Parallel Odd Even Sort : 11411 ms
+     * Insertion List Sort    : 12703 ms
+     * Merge Sort             : 23 ms
+     */
     public static void main(String[] args) {
         int size = 100_000;
         var bubbleSort = new Array(size);
@@ -15,6 +25,7 @@ public class SortDemo {
         var oddEvenSort = new Array(size);
         var parallelOddEvenSort = new Array(size);
         var insertionListSort = new Array(size);
+        var mergeSort = new Array(size);
 
         for (int i = 0; i < size; i++) {
             long n = RANDOM.nextLong();
@@ -24,6 +35,7 @@ public class SortDemo {
             oddEvenSort.set(i, n);
             parallelOddEvenSort.set(i, n);
             insertionListSort.set(i, n);
+            mergeSort.set(i, n);
         }
 
         System.out.println("Size of elements: " + size);
@@ -33,6 +45,7 @@ public class SortDemo {
         speedTest("Odd Even Sort         ", oddEvenSort, Array::oddEvenSort);
         speedTest("Parallel Odd Even Sort", parallelOddEvenSort, Array::parallelOddEvenSort);
         speedTest("Insertion List Sort   ", insertionListSort, Array::insertionListSort);
+        speedTest("Merge Sort            ", mergeSort, Array::mergeSort);
     }
 
     private static void speedTest(String nameTest, Array a, Consumer<Array> sort) {
