@@ -64,7 +64,8 @@ class SortTest {
 
         return Stream.of(
                 Arguments.of(new Array(a), "Insertion Sort", (Consumer<Array>) Array::insertionSort),
-                Arguments.of(new Array(a), "Merge Sort", (Consumer<Array>) Array::mergeSort)
+                Arguments.of(new Array(a), "Merge Sort", (Consumer<Array>) Array::mergeSort),
+                Arguments.of(new Array(a), "Improved Merge Sort", (Consumer<Array>) Array::improvedMergeSort)
         );
     }
 

@@ -221,8 +221,35 @@ public class Array {
             workSpace[i++] = a[highPtr++];
         }
 
-        for (i = 0; i < n; i++) {
-            a[lowerBound + i] = workSpace[i];
+        System.arraycopy(workSpace, 0, a, lowerBound, n);
+    }
+
+    public void improvedMergeSort() {
+        recImprovedMergeSort(new long[a.length], 0, a.length - 1);
+    }
+
+    private void recImprovedMergeSort(long[] ws, int lowerBound, int upperBound) {
+        if (upperBound - lowerBound < 250) {
+            insertionSort(lowerBound, upperBound);
+            return;
+        }
+
+        int mid = (lowerBound + upperBound) / 2;
+        recImprovedMergeSort(ws, lowerBound, mid);
+        recImprovedMergeSort(ws, mid + 1, upperBound);
+
+        merge(ws, lowerBound, mid + 1, upperBound);
+    }
+
+    private void insertionSort(int lowerBound, int upperBound) {
+        for (int out = lowerBound + 1; out <= upperBound; out++) {
+            long temp = a[out];
+            int in = out;
+            while (in > lowerBound && a[in - 1] >= temp) {
+                a[in] = a[in - 1];
+                --in;
+            }
+            a[in] = temp;
         }
     }
 
